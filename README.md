@@ -26,8 +26,8 @@ This is a **local prototype**. It has no accounts, server database, verified ISL
 
 Start with [contribution.md](contribution.md), [architecture](docs/architecture.md), and [content guide](docs/content-guide.md). The collaboration baseline is `base/collaborative-mvp`. Use independent `feature/`, `fix/`, `content/`, and `chore/` branches and pull requests.
 
-## Hosting later
+## Hosting
 
-No service has been deployed. The current scaffold uses React, TypeScript, Vinext/Vite, and Base UI components. Vinext is beta: evaluate its stability before public production. The generated Cloudflare configuration is an optional deployment path, not a requirement to use proprietary storage. A self-hosted web runtime and PostgreSQL (or an open-source managed PostgreSQL service) can be evaluated when authentication and shared progress are added. See the architecture document for migration boundaries.
+For Vercel, use the checked-in static build configuration described in [Vercel deployment](docs/vercel.md). Run `pnpm build:vercel` and `pnpm preview:vercel` to check that target locally. A Vercel deployment has not been verified by this fix. The current scaffold uses React, TypeScript, Vinext/Vite, and Base UI components. Vinext is beta: evaluate its stability before public production. The generated Cloudflare configuration is an optional deployment path, not a requirement to use proprietary storage. A self-hosted web runtime and PostgreSQL (or an open-source managed PostgreSQL service) can be evaluated when authentication and shared progress are added. See the architecture document for migration boundaries.
 
 Code is MIT licensed. New educational media must carry explicit reuse permission and attribution. No third-party lesson media is bundled.

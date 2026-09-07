@@ -12,7 +12,9 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts"
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "build:vercel": "vite build --config vite.vercel.config.ts && node scripts/verify-vercel-build.mjs",
+    "preview:vercel": "vite preview --config vite.vercel.config.ts"
   },
   "dependencies": {
     "react": "19.2.6",
