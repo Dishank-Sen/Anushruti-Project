@@ -18,7 +18,7 @@ Open the local address printed by the server. Check changes with `pnpm typecheck
 - A responsive learner dashboard, class and subject filters, and ten sample lessons.
 - Self-paced visual lesson steps, transcripts, and interactive questions.
 - Device-local lesson completion and activity insights, with a reset option.
-- Communication practice extension points and an illustrative team workspace.
+- Communication cards, an optional [Voice Garden](docs/voice-garden.md) with live level/pitch feedback, and an illustrative team workspace.
 
 This is a **local prototype**. It has no accounts, server database, verified ISL videos, speech assessment, or real role-based access control. Progress belongs to the browser/device, not an identified child. Clearing browser storage clears progress. Do not enter real child data in the team demo. Visual lesson completion is not video watch completion.
 
