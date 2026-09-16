@@ -243,7 +243,7 @@ export function LearningWorkspace({
                     <div>
                       <p className="eyebrow">LITTLE SCIENTISTS · CLASS 1</p>
                       <h2>From tiny leaves to a great big universe.</h2>
-                      <p>Four adventures. Plenty of things to try.</p>
+                      <p>Eight adventures. Plenty of things to try.</p>
                     </div>
                   </div>
                 )}

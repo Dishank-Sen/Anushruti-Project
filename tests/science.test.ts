@@ -4,21 +4,33 @@ import { existsSync } from 'node:fs';
 import { lessons, scienceImages, butterflyStages } from '../lib/lessons.ts';
 void test('discovery labs belong only to Class 1 Science and retain unique lesson IDs', () => {
   const labs = lessons.filter((l) => l.science);
-  assert.equal(labs.length, 4);
+  assert.equal(labs.length, 8);
   assert.ok(labs.every((l) => l.grade === 1 && l.subject === 'Science'));
   assert.equal(new Set(lessons.map((l) => l.id)).size, lessons.length);
   assert.deepEqual(
     new Set(labs.map((l) => l.science?.activity)),
-    new Set(['grow', 'cycle', 'space', 'day']),
+    new Set([
+      'grow',
+      'cycle',
+      'space',
+      'day',
+      'food',
+      'living',
+      'body',
+      'weather',
+    ]),
   );
   for (let grade = 2; grade <= 5; grade++)
     assert.equal(lessons.filter((l) => l.grade === grade).length, 2);
 });
-void test('every discovery photograph is locally available with source, credit and descriptive alt', () => {
+void test('every discovery image is locally available with source, credit and descriptive alt', () => {
   for (const image of Object.values(scienceImages)) {
     assert.ok(existsSync(new URL('../public' + image.src, import.meta.url)));
     assert.ok(image.alt.length > 20);
-    assert.match(image.source, /^https:\/\/commons.wikimedia.org\/wiki\/File:/);
+    assert.ok(
+      image.source.startsWith('https://commons.wikimedia.org/wiki/File:') ||
+        image.source === '/images/science/body.svg',
+    );
     assert.match(image.credit, /CC0|Public domain/);
   }
   assert.deepEqual(

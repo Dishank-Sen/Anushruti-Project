@@ -6,14 +6,150 @@ export type Lesson = {
   description: string;
   minutes: number;
   science?: {
-    topic: 'Biology' | 'Space';
-    activity: 'grow' | 'cycle' | 'space' | 'day';
-    image: 'sunflower' | 'butterfly' | 'earth' | 'moon';
+    topic: 'Biology' | 'Space' | 'Our world' | 'Our body';
+    activity:
+      | 'grow'
+      | 'cycle'
+      | 'space'
+      | 'day'
+      | 'food'
+      | 'living'
+      | 'body'
+      | 'weather';
+    image: 'sunflower' | 'butterfly' | 'earth' | 'moon' | 'body';
   };
   steps: { visual: string; title: string; text: string }[];
   question: { prompt: string; options: string[]; answer: number; hint: string };
 };
 export const lessons: Lesson[] = [
+  {
+    id: 'leaf-food-factory',
+    grade: 1,
+    subject: 'Science',
+    title: 'A leaf makes food',
+    description: 'Explore a tiny sunlight-powered food factory.',
+    minutes: 5,
+    science: { topic: 'Biology', activity: 'food', image: 'sunflower' },
+    steps: [
+      {
+        visual: '☀️ → 🍃',
+        title: 'Catch the light',
+        text: 'Green leaves use energy from light to make food.',
+      },
+      {
+        visual: '💧 + 〰 → 🍃',
+        title: 'Water and a gas from air',
+        text: 'Roots take in water. Leaves take in a gas called carbon dioxide from the air.',
+      },
+      {
+        visual: '🍃 → ◇',
+        title: 'Food for the plant',
+        text: 'Using light, the plant turns water and carbon dioxide into sugar, its food. This is called photosynthesis. Oxygen is released too.',
+      },
+    ],
+    question: {
+      prompt: 'What helps a green leaf make food?',
+      options: ['Light, water and carbon dioxide', 'A toy car', 'Only soil'],
+      answer: 0,
+      hint: 'Leaves use light energy, water and carbon dioxide to make sugar. Soil is not the plant’s food.',
+    },
+  },
+  {
+    id: 'living-things',
+    grade: 1,
+    subject: 'Science',
+    title: 'Is it alive?',
+    description: 'Sort a little collection of living and non-living things.',
+    minutes: 5,
+    science: { topic: 'Biology', activity: 'living', image: 'butterfly' },
+    steps: [
+      {
+        visual: '🌳 🦋',
+        title: 'Living things grow',
+        text: 'Plants and animals are living things. They grow and need water and air.',
+      },
+      {
+        visual: '🪨 ⚽',
+        title: 'Non-living things',
+        text: 'A rock and a ball are not alive. They do not need food or grow like a plant.',
+      },
+      {
+        visual: '🚗 ≠ 🦋',
+        title: 'Moving is not enough',
+        text: 'A toy car can move, but it is not alive. A tree stays in one place and is alive!',
+      },
+    ],
+    question: {
+      prompt: 'Which one is a living thing?',
+      options: ['A toy car', 'A tree', 'A rock'],
+      answer: 1,
+      hint: 'A tree grows and needs water and air. Moving alone does not make something alive.',
+    },
+  },
+  {
+    id: 'my-body',
+    grade: 1,
+    subject: 'Science',
+    title: 'Meet your amazing body',
+    description: 'Match body parts with some of the things they do.',
+    minutes: 5,
+    science: { topic: 'Our body', activity: 'body', image: 'body' },
+    steps: [
+      {
+        visual: '👀',
+        title: 'Eyes and seeing',
+        text: 'Eyes can help us notice colours and shapes. People explore the world in different ways.',
+      },
+      {
+        visual: '👃',
+        title: 'Nose and smelling',
+        text: 'The nose helps us breathe and notice smells.',
+      },
+      {
+        visual: '✋',
+        title: 'Hands and touch',
+        text: 'Hands can feel textures, hold things and communicate. Our bodies and abilities are different, and all belong.',
+      },
+    ],
+    question: {
+      prompt: 'Which body part helps us notice a smell?',
+      options: ['Hands', 'Nose', 'Eyes'],
+      answer: 1,
+      hint: 'The nose helps us notice smells. This activity uses pictures, so no smelling or speaking is needed.',
+    },
+  },
+  {
+    id: 'weather-watch',
+    grade: 1,
+    subject: 'Science',
+    title: 'What is the weather?',
+    description: 'Look at the sky and help pack for the day.',
+    minutes: 5,
+    science: { topic: 'Our world', activity: 'weather', image: 'earth' },
+    steps: [
+      {
+        visual: '☀️',
+        title: 'A sunny day',
+        text: 'Sunlight makes the day bright. Shade and a hat can help us stay comfortable outside.',
+      },
+      {
+        visual: '🌧️',
+        title: 'A rainy day',
+        text: 'Rain is water falling from clouds. A raincoat helps keep us dry.',
+      },
+      {
+        visual: '❄️',
+        title: 'A cold day',
+        text: 'Some days are cold. Warm clothes help keep our bodies warm. Weather can change, and sunshine does not always mean warmth.',
+      },
+    ],
+    question: {
+      prompt: 'What helps keep us dry in rain?',
+      options: ['A raincoat', 'A sun hat alone', 'A paper book'],
+      answer: 0,
+      hint: 'A raincoat keeps rain off our clothes. Ask an adult about the weather before going outside.',
+    },
+  },
   {
     id: 'butterfly-life',
     grade: 1,
@@ -437,6 +573,12 @@ export const lessons: Lesson[] = [
 ];
 
 export const scienceImages = {
+  body: {
+    src: '/images/science/body.svg',
+    alt: 'Illustrated child with eyes, nose and hands visible',
+    credit: 'Anushruti original illustration · CC0',
+    source: '/images/science/body.svg',
+  },
   sunflower: {
     src: '/images/science/sunflower.webp',
     alt: 'Close-up of a sunflower with yellow petals around a patterned centre',
@@ -504,5 +646,87 @@ export const spaceObjects = [
     fact: 'Our Moon reflects sunlight and travels around Earth.',
     task: 'Find the object that travels around Earth.',
     image: 'moon',
+  },
+] as const;
+
+export const livingCards = [
+  {
+    name: 'Tree',
+    symbol: '🌳',
+    living: true,
+    why: 'A tree grows and needs water and air.',
+  },
+  {
+    name: 'Toy car',
+    symbol: '🚗',
+    living: false,
+    why: 'A toy car can move, but it does not grow or need food.',
+  },
+  {
+    name: 'Butterfly',
+    symbol: '🦋',
+    living: true,
+    why: 'A butterfly is an animal. It grows through its life cycle.',
+  },
+  {
+    name: 'Rock',
+    symbol: '🪨',
+    living: false,
+    why: 'A rock is not alive. It does not need food or water.',
+  },
+  {
+    name: 'Sunflower',
+    symbol: '🌻',
+    living: true,
+    why: 'A sunflower is a living plant.',
+  },
+  {
+    name: 'Ball',
+    symbol: '⚽',
+    living: false,
+    why: 'A ball can roll, but it is not alive.',
+  },
+] as const;
+export const bodyCards = [
+  {
+    name: 'Eyes',
+    symbol: '👀',
+    task: 'Find the part that can help us see shapes.',
+    fact: 'Eyes can help us see shapes and colours.',
+  },
+  {
+    name: 'Nose',
+    symbol: '👃',
+    task: 'Find the part that helps us notice smells.',
+    fact: 'The nose helps us breathe and notice smells.',
+  },
+  {
+    name: 'Hands',
+    symbol: '✋',
+    task: 'Find the parts that can feel a soft cloth.',
+    fact: 'Hands can feel textures and help us communicate.',
+  },
+] as const;
+export const weatherCards = [
+  {
+    name: 'Sunny',
+    symbol: '☀️',
+    item: 'Sun hat',
+    itemSymbol: '👒',
+    fact: 'A hat and shade help on a sunny day.',
+  },
+  {
+    name: 'Rainy',
+    symbol: '🌧️',
+    item: 'Raincoat',
+    itemSymbol: '🧥',
+    fact: 'A raincoat helps keep us dry.',
+  },
+  {
+    name: 'Cold',
+    symbol: '❄️',
+    item: 'Warm scarf',
+    itemSymbol: '🧣',
+    fact: 'Warm clothes help keep us warm on a cold day.',
   },
 ] as const;

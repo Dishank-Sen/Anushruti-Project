@@ -1,6 +1,12 @@
 'use client';
 /* oxlint-disable next/no-img-element, jsx-a11y/prefer-tag-over-role -- Local static photographs and a labelled inline SVG diagram. */
 import { useState } from 'react';
+import {
+  LeafFactory,
+  LivingSort,
+  BodyMatch,
+  WeatherPack,
+} from './science-more';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { RotateCcw, Sparkles } from 'lucide-react';
@@ -23,7 +29,7 @@ export function SciencePhoto({ image }: { image: keyof typeof scienceImages }) {
         loading="lazy"
       />
       <figcaption>
-        Real-world window{' '}
+        {image === 'body' ? 'Picture model' : 'Real-world window'}{' '}
         <a href={photo.source} target="_blank" rel="noreferrer">
           {photo.credit} ↗
         </a>
@@ -55,6 +61,14 @@ export function ScienceLab({ lesson }: { lesson: Lesson }) {
           <Cycle />
         ) : lesson.science.activity === 'space' ? (
           <Space />
+        ) : lesson.science.activity === 'food' ? (
+          <LeafFactory />
+        ) : lesson.science.activity === 'living' ? (
+          <LivingSort />
+        ) : lesson.science.activity === 'body' ? (
+          <BodyMatch />
+        ) : lesson.science.activity === 'weather' ? (
+          <WeatherPack />
         ) : (
           <Day />
         )}
