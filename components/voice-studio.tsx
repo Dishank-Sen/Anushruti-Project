@@ -1,779 +1,846 @@
 'use client';
-/* oxlint-disable jsx-a11y/prefer-tag-over-role -- Segmented meter and inline SVG chart use their supported ARIA roles; replacing the SVG with an img would discard live geometry. */
+/* oxlint-disable jsx-a11y/prefer-tag-over-role -- Inline SVG is a live chart, not a replaceable image asset. */
 import { useEffect, useRef, useState } from 'react';
 import {
   Activity,
-  ArrowRight,
   AudioLines,
   Check,
-  CircleHelp,
-  Feather,
+  ChevronRight,
   Mic,
   MicOff,
+  Pause,
   Play,
-  ShieldCheck,
-  Sparkles,
-  Target,
+  Settings2,
+  SlidersHorizontal,
+  Star,
+  Volume2,
+  WandSparkles,
   Waves,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useVoiceInput } from '@/hooks/use-voice-input';
+import { useWordRecognition } from '@/hooks/use-word-recognition';
 import {
   calibrate,
   clamp,
-  levelZone,
-  practiceWords,
   semitones,
-  targetAt,
-  type Exercise,
   type VoiceSample,
 } from '@/lib/voice/analysis';
-
-type Reference = { db: number; hz: number };
-type Point = { t: number; pitch: number | null };
-type Result = {
-  demo: boolean;
-  voiced: number;
-  matched: number;
-  exercise: Exercise;
-};
-type Run = {
-  kind: 'calibrate' | 'practice';
-  started: number;
-  exercise: Exercise;
-  demo: boolean;
-  reference: Reference;
-  samples: VoiceSample[];
-  voiced: number;
-  matched: number;
-  last: number;
-};
-const idle: VoiceSample = { db: -90, hz: null, confidence: 0, clipped: false };
-const exercises = [
-  {
-    id: 'steady' as const,
-    icon: Waves,
-    title: 'A steady stream',
-    description: 'Keep a gentle sound steady.',
-    label: 'Follow the straight path',
-    cue: 'Try a comfortable “mmm”. Let your line stay near the dotted path.',
-  },
-  {
-    id: 'hill' as const,
-    icon: Activity,
-    title: 'A little voice hill',
-    description: 'Go a little up, then back down.',
-    label: 'Follow the little hill',
-    cue: 'Start in your own voice. Glide gently up, then return. No need to stretch.',
-  },
-  {
-    id: 'words' as const,
-    icon: AudioLines,
-    title: 'Words in bloom',
-    description: 'Explore the shape of a word.',
-    label: 'Discover your word’s shape',
-    cue: 'Say the word at your own pace. This shows your sound; it does not judge pronunciation.',
-  },
+import {
+  advanceRound,
+  practiceStars,
+  freshRound,
+  guideAt,
+  levels,
+  wordMatches,
+  type Module,
+  type Round,
+  type VoiceFrame,
+} from '@/lib/voice/practice';
+const modules: { id: Module; name: string; icon: typeof Waves }[] = [
+  { id: 'steady', name: 'Steady voice', icon: Waves },
+  { id: 'hill', name: 'Pitch hills', icon: Activity },
+  { id: 'volume', name: 'Volume waves', icon: Volume2 },
+  { id: 'rhythm', name: 'Speak & pause', icon: Pause },
+  { id: 'words', name: 'Words & phrases', icon: AudioLines },
 ];
-export function VoiceStudio() {
-  const [exercise, setExercise] = useState<Exercise>('steady');
-  const [sample, setSample] = useState<VoiceSample>(idle);
+const silent: VoiceFrame = {
+  db: -90,
+  hz: null,
+  confidence: 0,
+  clipped: false,
+  speech: false,
+  held: false,
+  noiseDb: -60,
+  snr: 0,
+  learningNoise: false,
+};
+type Reference = { db: number; hz: number };
+type Point = { x: number; y: number | null };
+export function VoiceStudio({ grade = 1 }: { grade?: number }) {
+  const [module, setModule] = useState<Module>('steady');
+  const [level, setLevel] = useState(grade <= 2 ? 0 : grade <= 4 ? 1 : 2);
+  const [frame, setFrame] = useState(silent);
   const [reference, setReference] = useState<Reference | null>(null);
-  const [phase, setPhase] = useState<'idle' | 'calibrate' | 'practice'>('idle');
-  const [elapsed, setElapsed] = useState(0);
+  const [phase, setPhase] = useState<
+    'idle' | 'room' | 'voice' | 'ready' | 'practice' | 'done'
+  >('idle');
+  const [round, setRound] = useState<Round>(freshRound);
   const [points, setPoints] = useState<Point[]>([]);
-  const [result, setResult] = useState<Result | null>(null);
-  const [rounds, setRounds] = useState(0);
-  const [demo, setDemo] = useState(false);
-  const [message, setMessage] = useState('');
+  const [total, setTotal] = useState(0);
+  const [stars, setStars] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
-  const run = useRef<Run | null>(null);
+  const [matchedWord, setMatchedWord] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
+  const [manualPitch, setManualPitch] = useState(220);
+  const [manualLevel, setManualLevel] = useState(-28);
+  const [manualFloor, setManualFloor] = useState(-60);
+  const [sensitivity, setSensitivity] = useState(6);
+  const [online, setOnline] = useState(false);
+  const [demo, setDemo] = useState(false);
+  const [demoResult, setDemoResult] = useState(false);
+  const [notice, setNotice] = useState('');
+  const recognition = useWordRecognition();
+  const calibration = useRef(false);
+  const calibrationFrames = useRef<VoiceSample[]>([]);
+  const active = useRef<Round | null>(null);
+  const lastTime = useRef(0);
+  const earned = useRef(0);
+  const wordRewarded = useRef(false);
   const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const consumeRef = useRef<(value: VoiceSample, time: number) => void>(
-    () => {},
-  );
+  const consumer = useRef<(f: VoiceFrame, t: number) => void>(() => {});
+  const difficulty = levels[level];
+  const word = difficulty.words[wordIndex % difficulty.words.length];
   function clearDemo() {
     if (demoTimer.current !== null) {
       clearInterval(demoTimer.current);
       demoTimer.current = null;
     }
   }
-  function stopFlow() {
+  function stopped() {
+    recognition.stop();
     clearDemo();
-    run.current = null;
-    setPhase('idle');
+    active.current = null;
+    calibration.current = false;
     setDemo(false);
-    setSample(idle);
-  }
-  function consume(value: VoiceSample, time: number) {
-    setSample(value);
-    const active = run.current;
-    if (!active) return;
-    const t = (time - active.started) / 1000;
-    const dt = Math.min(Math.max((time - active.last) / 1000, 0), 0.15);
-    active.last = time;
-    const duration = active.kind === 'calibrate' ? 3 : 5;
-    setElapsed(Math.min(t, duration));
-    active.samples.push(value);
-    if (active.kind === 'practice') {
-      const pitch =
-        value.hz !== null ? semitones(value.hz, active.reference.hz) : null;
-      setPoints((previous) =>
-        [...previous, { t: Math.min(t, 5), pitch }].slice(-75),
-      );
-      if (value.hz !== null && !value.clipped) {
-        active.voiced += dt;
-        if (
-          Math.abs(pitch! - targetAt(active.exercise, t)) <= 1.5 &&
-          levelZone(value.db, active.reference.db) === 'comfortable'
-        )
-          active.matched += dt;
-      }
-    }
-    if (t < duration) return;
-    run.current = null;
+    setFrame(silent);
     setPhase('idle');
-    if (active.kind === 'calibrate') {
-      const target = calibrate(active.samples);
-      if (target) {
-        setReference(target);
-        setMessage(
-          'Your starting voice is set. Choose a little practice when you’re ready.',
-        );
-      } else
-        setMessage(
-          'We couldn’t find a steady starting sound. Try again in a quiet spot, with a gentle hum. Don’t push your voice.',
-        );
-    } else {
-      setResult({
-        demo: active.demo,
-        voiced: Math.min(5, active.voiced),
-        matched: Math.min(5, active.matched),
-        exercise: active.exercise,
-      });
-      if (!active.demo && active.voiced >= 0.5) setRounds((n) => n + 1);
-      setMessage(
-        active.demo
-          ? 'Demo finished. These were simulated signals, not your voice.'
-          : active.voiced < 0.5
-            ? 'We didn’t find a clear voice this time. You can try again or take a break.'
-            : 'A little practice, a little discovery. Take a breath before another go.',
-      );
+    setReference(null);
+  }
+  function consume(sample: VoiceFrame, time: number) {
+    setFrame(sample);
+    const dt = lastTime.current
+      ? Math.min((time - lastTime.current) / 1000, 0.15)
+      : 0;
+    lastTime.current = time;
+    if (sample.learningNoise) {
+      setPhase('room');
+      return;
     }
-    if (active.demo) {
-      clearDemo();
-      setDemo(false);
-      setSample(idle);
+    if (calibration.current) {
+      setPhase('voice');
+      if (sample.speech && sample.hz !== null) {
+        calibrationFrames.current.push(sample);
+        calibrationFrames.current = calibrationFrames.current.slice(-40);
+        const result = calibrate(calibrationFrames.current);
+        if (result) {
+          calibration.current = false;
+          setReference(result);
+          setManualPitch(Math.round(result.hz));
+          setManualLevel(Math.round(result.db));
+          setManualFloor(Math.round(sample.noiseDb));
+          setPhase('ready');
+          setNotice('Ready');
+        }
+      }
+      return;
+    }
+    const running = active.current;
+    if (!running || !reference) return;
+    const next = advanceRound(running, sample, dt, module, level, reference);
+    active.current = next;
+    setRound(next);
+    const chartValue = sample.speech
+      ? module === 'volume'
+        ? sample.db - reference.db
+        : sample.hz !== null
+          ? semitones(sample.hz, reference.hz)
+          : null
+      : null;
+    setPoints((previous) =>
+      [...previous, { x: next.progress, y: chartValue }].slice(-180),
+    );
+    const collected = practiceStars(next, module, level);
+    if (collected > earned.current) {
+      const gained = collected - earned.current;
+      if (!demo) setTotal((n) => n + gained);
+      earned.current = collected;
+      setStars(collected);
+    }
+    if (next.done) {
+      active.current = null;
+      setPhase('done');
+      if (demo) {
+        clearDemo();
+        setDemo(false);
+        setFrame(silent);
+      }
     }
   }
   useEffect(() => {
-    consumeRef.current = consume;
+    consumer.current = consume;
   });
   useEffect(() => () => clearDemo(), []);
-  const microphone = useVoiceInput(consume, stopFlow);
-  const busy = phase !== 'idle';
-  const live = microphone.state === 'live';
-  const current = exercises.find((e) => e.id === exercise)!;
-  const displayReference = demo ? { db: -28, hz: 220 } : reference;
-  const zone = sample.clipped
-    ? 'strong'
-    : levelZone(sample.db, displayReference?.db ?? -28);
-  const hasSignal = (live || demo) && sample.db > -55;
-  const feedback =
-    !live && !demo
-      ? 'Ready when you are'
-      : sample.clipped
-        ? 'Signal too strong'
-        : !hasSignal
-          ? 'Try a gentle sound'
-          : !displayReference
-            ? 'Let’s find your starting voice'
-            : zone === 'quiet'
-              ? 'A softer sound'
-              : zone === 'strong'
-                ? 'Ease gently'
-                : 'In your target zone';
-  const detail =
-    !live && !demo
-      ? 'Start your microphone, or explore the demo.'
-      : sample.clipped
-        ? 'Ease your voice or move the microphone farther away.'
-        : !displayReference
-          ? 'Choose “Set my voice” and hum comfortably.'
-          : zone === 'strong'
-            ? 'No need to push. Try your comfortable voice.'
-            : zone === 'quiet'
-              ? 'Stay comfortable. Moving a little closer may help.'
-              : 'Notice how this feels. Your own voice, your own pace.';
-  function startRun(kind: 'calibrate' | 'practice', simulated = false) {
-    if (!simulated && !live) return;
-    const base = simulated ? { db: -28, hz: 220 } : reference;
-    if (kind === 'practice' && !base) return;
-    setMessage('');
-    setResult(null);
+  const mic = useVoiceInput(consume, stopped);
+  const live = mic.state === 'live';
+  useEffect(() => {
+    if (
+      module === 'words' &&
+      live &&
+      !wordRewarded.current &&
+      recognition.finalText &&
+      wordMatches(recognition.finalText, word)
+    ) {
+      wordRewarded.current = true;
+      setMatchedWord(true);
+      setTotal((n) => n + 1);
+    }
+  }, [recognition.finalText, word, module, live]);
+  function resetPractice() {
+    active.current = null;
+    setRound(freshRound());
     setPoints([]);
-    setElapsed(0);
-    setPhase(kind);
-    run.current = {
-      kind,
-      started: performance.now(),
-      last: performance.now(),
-      exercise,
-      demo: simulated,
-      reference: base ?? { db: -28, hz: 220 },
-      samples: [],
-      voiced: 0,
-      matched: 0,
-    };
+    earned.current = 0;
+    setStars(0);
+    wordRewarded.current = false;
+    setMatchedWord(false);
+    recognition.clear();
+    setNotice('');
+  }
+  async function startMic() {
+    setDemoResult(false);
+    resetPractice();
+    calibration.current = true;
+    calibrationFrames.current = [];
+    setReference(null);
+    setNotice('');
+    await mic.start();
+  }
+  function autoCalibrate() {
+    resetPractice();
+    recognition.stop();
+    calibration.current = true;
+    calibrationFrames.current = [];
+    setReference(null);
+    setPhase('room');
+    mic.recalibrate();
+  }
+  function applyManual() {
+    mic.manual(manualFloor, sensitivity);
+    calibration.current = false;
+    resetPractice();
+    setReference({ db: manualLevel, hz: manualPitch });
+    setPhase('ready');
+    setManualOpen(false);
+  }
+  function startRound() {
+    if (!live || !reference) return;
+    resetPractice();
+    lastTime.current = 0;
+    active.current = freshRound();
+    setPhase('practice');
   }
   function startDemo() {
-    microphone.stop();
-    setMessage('');
+    mic.stop();
+    resetPractice();
+    setReference({ db: -28, hz: 220 });
     setDemo(true);
-    startRun('practice', true);
-    const started = performance.now();
+    setDemoResult(true);
+    setPhase('practice');
+    active.current = freshRound();
+    lastTime.current = 0;
+    let ticks = 0;
     demoTimer.current = setInterval(() => {
-      const time = performance.now();
-      const t = (time - started) / 1000;
-      const offset = targetAt(exercise, t) + Math.sin(t * 5) * 0.65;
-      consumeRef.current(
+      ticks++;
+      const p = active.current?.progress ?? 0;
+      const resting = module === 'rhythm' && !!active.current?.expectRest;
+      const target = guideAt(module, p);
+      consumer.current(
         {
-          db: -28 + Math.sin(t * 3) * 4,
-          hz: 220 * 2 ** (offset / 12),
+          db: resting
+            ? -65
+            : -28 + (module === 'volume' ? target : Math.sin(ticks * 0.25)),
+          hz: resting
+            ? null
+            : 220 *
+              2 **
+                ((module === 'hill' ? target : Math.sin(ticks * 0.1) * 0.4) /
+                  12),
           confidence: 1,
           clipped: false,
+          speech: !resting,
+          held: false,
+          noiseDb: -65,
+          snr: resting ? 0 : 37,
+          learningNoise: false,
         },
-        time,
+        performance.now(),
       );
     }, 80);
   }
-  function choose(value: string) {
-    if (busy) return;
-    setExercise(value as Exercise);
-    setResult(null);
-    setPoints([]);
-    setElapsed(0);
-    setMessage('');
+  function changeModule(next: Module) {
+    if (active.current || demo) return;
+    recognition.stop();
+    setModule(next);
+    resetPractice();
+    setPhase(reference ? 'ready' : 'idle');
   }
-  const targetPath = Array.from(
-    { length: 51 },
+  const target = guideAt(module, round.progress);
+  const pitchDelta =
+    frame.hz && reference ? semitones(frame.hz, reference.hz) - target : 0;
+  const levelDelta = reference
+    ? frame.db - reference.db - (module === 'volume' ? target : 0)
+    : 0;
+  let cue = 'Ready to try?',
+    symbol = '✦',
+    tone = 'idle';
+  if (phase === 'room') {
+    cue = 'Stay quiet · learning room noise';
+    symbol = '◌';
+  } else if (phase === 'voice') {
+    cue = frame.speech ? 'Finding your voice…' : 'Now hum gently: mmm';
+    symbol = '〰';
+  } else if (phase === 'done') {
+    cue = demoResult
+      ? 'Demo complete'
+      : stars >= 2
+        ? 'You did it!'
+        : 'Practice complete';
+    symbol = stars ? '★' : '✓';
+    tone = 'good';
+  } else if (live || demo) {
+    if (!reference) {
+      cue = 'Calibrate your microphone';
+      symbol = '◎';
+    } else if (module === 'rhythm' && phase === 'practice') {
+      cue = round.expectRest ? 'Pause · breathe' : 'Say “ma”';
+      symbol = round.expectRest ? 'Ⅱ' : '●';
+      tone = round.expectRest ? 'rest' : frame.speech ? 'good' : 'idle';
+    } else if (frame.clipped) {
+      cue = 'A little softer';
+      symbol = '↓';
+      tone = 'strong';
+    } else if (frame.held) {
+      cue = 'Keep going';
+      symbol = '〰';
+    } else if (!frame.speech) {
+      cue =
+        phase === 'practice'
+          ? 'Take a breath · progress saved'
+          : 'Waiting for your voice';
+      symbol = 'Ⅱ';
+      tone = 'rest';
+    } else if (frame.clipped || levelDelta > 6) {
+      cue = 'A little softer';
+      symbol = '↓';
+      tone = 'strong';
+    } else if (module === 'words') {
+      cue = matchedWord ? 'Word heard!' : 'Voice detected';
+      symbol = matchedWord ? '★' : '●';
+      tone = 'good';
+    } else if (module !== 'volume' && !frame.hz) {
+      cue = 'Voice detected · try a steady hum';
+      symbol = '〰';
+    } else if (
+      module !== 'volume' &&
+      Math.abs(pitchDelta) > difficulty.tolerance
+    ) {
+      cue = pitchDelta > 0 ? 'A little lower' : 'A little higher';
+      symbol = pitchDelta > 0 ? '↓' : '↑';
+      tone = 'adjust';
+    } else if (levelDelta < -6) {
+      cue = 'Softer signal · move closer';
+      symbol = '↗';
+      tone = 'adjust';
+    } else {
+      cue = 'On track!';
+      symbol = '★';
+      tone = 'good';
+    }
+  }
+  const locked =
+    phase === 'practice' || phase === 'room' || phase === 'voice' || demo;
+  const chartTarget = Array.from(
+    { length: 61 },
     (_, i) =>
-      `${i === 0 ? 'M' : 'L'} ${40 + i * 10.4} ${140 - targetAt(exercise, i / 10) * 14}`,
+      `${i ? 'L' : 'M'} ${30 + i * 9} ${145 - guideAt(module, i / 60) * 20}`,
   ).join(' ');
-  const trail = points
-    .map((point, i) =>
-      point.pitch === null
+  const chartLine = points
+    .map((p, i) =>
+      p.y === null
         ? ''
-        : `${i === 0 || points[i - 1].pitch === null ? 'M' : 'L'} ${40 + point.t * 104} ${140 - clamp(point.pitch, -7, 7) * 14}`,
+        : `${i === 0 || points[i - 1].y === null ? 'M' : 'L'} ${30 + p.x * 540} ${145 - clamp(p.y, -5, 5) * 20}`,
     )
     .join(' ');
   const last = points.at(-1);
-  const voicedPitch = (live || demo) && sample.hz !== null;
   return (
-    <div className={`voice-studio ${live ? 'voice-is-live' : ''}`}>
-      <div className="voice-heading">
-        <div>
-          <p className="eyebrow">A LITTLE PRACTICE. YOUR OWN PACE.</p>
-          <h1>
-            Make your voice <em>visible.</em>
-          </h1>
-          <p>
-            A gentle space to explore your sound, one little ripple at a time.
-          </p>
-        </div>
-        <span className="voice-optional">
-          <Feather size={16} /> Always optional
+    <div className={`vg ${live ? 'vg-live' : ''}`}>
+      <header className="vg-heading">
+        <h1>
+          Voice garden <span>✦</span>
+        </h1>
+        <span className="vg-wallet">
+          <Star size={18} /> {total} {total === 1 ? 'star' : 'stars'}
         </span>
-      </div>
-      <div className="voice-top-note">
-        <ShieldCheck size={17} />
-        <span>
-          Your microphone stays on this device. Nothing is recorded or uploaded.
-        </span>
-      </div>
-      <Tabs value={exercise} onValueChange={(v) => choose(String(v))}>
-        <TabsList
-          className="voice-exercises"
-          aria-label="Choose a voice exercise"
-        >
-          {exercises.map(({ id, icon: Icon, title, description }) => (
-            <TabsTrigger key={id} value={id} disabled={busy}>
-              <span className="exercise-icon">
-                <Icon />
-              </span>
-              <span>
-                <strong>{title}</strong>
-                <small>{description}</small>
-              </span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent value={exercise}>
-          <div className="voice-workbench">
-            <section
-              className={`voice-signal signal-${zone}`}
-              aria-labelledby="signal-title"
-            >
-              <div className="signal-header">
-                <span id="signal-title">YOUR SOUND, IN COLOUR</span>
-                <span
-                  className={`signal-status ${live || demo ? 'active' : ''}`}
-                >
-                  <span />
-                  {demo
-                    ? 'Demo · simulated'
-                    : live
-                      ? 'Mic is on'
-                      : 'Mic is off'}
-                </span>
-              </div>
-              <div
-                className="voice-orbit"
-                style={
-                  {
-                    '--signal-scale': hasSignal
-                      ? String(0.85 + clamp((sample.db + 60) / 60, 0, 1) * 0.25)
-                      : '0.85',
-                  } as React.CSSProperties
-                }
-              >
-                <div className="orbit-ring ring-one" />
-                <div className="orbit-ring ring-two" />
-                <div className="orbit-core">
-                  <AudioLines size={52} />
-                  <span>
-                    {!live && !demo
-                      ? 'Let’s explore'
-                      : !hasSignal
-                        ? 'A little sound'
-                        : zone === 'comfortable' && displayReference
-                          ? 'Nice & gentle'
-                          : zone === 'strong'
-                            ? 'Ease gently'
-                            : 'Soft & gentle'}
-                  </span>
-                </div>
-                <span className="orbit-star star-one">✦</span>
-                <span className="orbit-star star-two">✧</span>
-              </div>
-              <h2>{feedback}</h2>
-              <p className="signal-detail">{detail}</p>
-              <div
-                className="voice-meter"
-                role="meter"
-                aria-label="Device-relative microphone level in dBFS"
-                aria-valuemin={-60}
-                aria-valuemax={0}
-                aria-valuenow={Math.round(Math.max(-60, sample.db))}
-                aria-valuetext={
-                  !live && !demo
-                    ? 'Microphone off'
-                    : `${Math.round(sample.db)} dBFS, ${feedback}`
-                }
-              >
-                {Array.from({ length: 30 }, (_, i) => {
-                  const db = -60 + i * 2;
-                  return (
-                    <span
-                      key={i}
-                      className={`${levelZone(db, displayReference?.db ?? -28)} ${hasSignal && sample.db >= db ? 'lit' : ''}`}
-                    />
-                  );
-                })}
-              </div>
-              <div className="meter-legend">
-                <span>
-                  <i className="blue" /> Softer
-                </span>
-                <span>
-                  <i className="green" /> Target
-                </span>
-                <span>
-                  <i className="red" /> Stronger
-                </span>
-              </div>
-              <div className="signal-numbers">
-                <div>
-                  <strong>
-                    {hasSignal ? Math.round(sample.db) : '—'}
-                    <small>dBFS</small>
-                  </strong>
-                  <span>Microphone level</span>
-                </div>
-                <div>
-                  <strong>
-                    {voicedPitch ? Math.round(sample.hz!) : '—'}
-                    <small>Hz</small>
-                  </strong>
-                  <span>
-                    {hasSignal && !voicedPitch
-                      ? 'Pitch not clear yet'
-                      : 'Estimated pitch'}
-                  </span>
-                </div>
-              </div>
-              <div className="microphone-actions">
-                {live || microphone.state === 'requesting' ? (
-                  <Button
-                    className="voice-stop"
-                    onClick={() => {
-                      microphone.stop();
-                      setMessage(
-                        'Microphone stopped. Take all the time you need.',
-                      );
-                    }}
-                  >
-                    <MicOff size={18} />
-                    {microphone.state === 'requesting'
-                      ? 'Cancel microphone'
-                      : 'Stop microphone'}
-                  </Button>
-                ) : (
-                  <Button
-                    className="voice-start"
-                    disabled={demo}
-                    onClick={() => {
-                      setReference(null);
-                      setResult(null);
-                      setPoints([]);
-                      setElapsed(0);
-                      setSample(idle);
-                      setMessage('');
-                      void microphone.start();
-                    }}
-                  >
-                    <Mic size={19} />
-                    {microphone.state === 'error'
-                      ? 'Try microphone again'
-                      : 'Start microphone'}
-                    <ArrowRight size={17} />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  className="voice-demo"
-                  disabled={live || microphone.state === 'requesting'}
-                  onClick={() => (demo ? stopFlow() : startDemo())}
-                >
-                  <Play size={15} />
-                  {demo ? 'Stop demo' : 'Try a demo first'}
-                </Button>
-              </div>
-              <p className="signal-footnote">
-                No speakers or headphones needed.
-              </p>
-            </section>
-            <div className="voice-practice-side">
-              <section className="voice-target-card">
-                <div className="voice-card-title">
-                  <span className="voice-step">1</span>
-                  <div>
-                    <h2>Find your starting voice</h2>
-                    <p>A target made from your comfortable hum.</p>
-                  </div>
-                  {reference && <Check className="voice-check" />}
-                </div>
-                <div className="voice-setup-row">
-                  <p>
-                    {phase === 'calibrate'
-                      ? 'Hum gently for a moment. Breathe whenever you need.'
-                      : reference
-                        ? 'Your starting voice is set for this microphone session.'
-                        : 'Sit comfortably. Keep the mic in one place. Try a gentle “mmm” for 3 seconds.'}
-                  </p>
-                  <Button
-                    className="voice-set"
-                    variant="outline"
-                    disabled={!live || busy}
-                    onClick={() => startRun('calibrate')}
-                  >
-                    <Target size={17} />
-                    {reference ? 'Set again' : 'Set my voice'}
-                  </Button>
-                </div>
-                {phase === 'calibrate' && (
-                  <Progress
-                    aria-label="Comfortable voice setup"
-                    value={(elapsed / 3) * 100}
-                  />
-                )}
-              </section>
-              <section className="voice-trail-card">
-                <div className="voice-card-title">
-                  <span className="voice-step">2</span>
-                  <div>
-                    <h2>{current.label}</h2>
-                    <p>{current.cue}</p>
-                  </div>
-                  <span className="round-duration">5 sec</span>
-                </div>
-                {exercise === 'words' && (
-                  <div className="voice-word">
-                    <span aria-hidden="true">
-                      {practiceWords[wordIndex].symbol}
-                    </span>
-                    <div>
-                      <strong>{practiceWords[wordIndex].word}</strong>
-                      <p>{practiceWords[wordIndex].cue}</p>
-                    </div>
-                    <Button
-                      disabled={busy}
-                      variant="outline"
-                      onClick={() => {
-                        setWordIndex((i) => (i + 1) % practiceWords.length);
-                        setPoints([]);
-                        setResult(null);
-                      }}
-                    >
-                      Next word <ArrowRight size={16} />
-                    </Button>
-                  </div>
-                )}
-                <div className="trail-legend">
-                  <span>
-                    <i className="target-key" />
-                    {exercise === 'words' ? 'Starting pitch' : 'Gentle guide'}
-                  </span>
-                  <span>
-                    <i className="voice-key" />
-                    {demo ? 'Simulated voice' : 'Your voice'}
-                  </span>
-                </div>
-                <svg
-                  className="voice-chart"
-                  viewBox="0 0 600 265"
-                  role="img"
-                  aria-label={
-                    exercise === 'words'
-                      ? 'Pitch trace over five seconds. Gaps mean no clear pitch.'
-                      : 'Pitch practice graph. Dotted guide and solid measured voice trace over five seconds. Gaps mean no clear pitch.'
-                  }
-                >
-                  {[0, 1, 2, 3, 4, 5].map((i) => (
-                    <g key={i}>
-                      <line
-                        x1={40 + i * 104}
-                        x2={40 + i * 104}
-                        y1="38"
-                        y2="224"
-                        stroke="#e7ebf5"
-                      />
-                      <text x={40 + i * 104} y="248" textAnchor="middle">
-                        {i}s
-                      </text>
-                    </g>
-                  ))}
-                  {[70, 140, 210].map((y) => (
-                    <line
-                      key={y}
-                      x1="40"
-                      x2="560"
-                      y1={y}
-                      y2={y}
-                      stroke="#e7ebf5"
-                    />
-                  ))}
-                  {exercise !== 'words' && (
-                    <path
-                      d={targetPath}
-                      fill="none"
-                      stroke="#e0f4ee"
-                      strokeWidth="42"
-                      strokeLinecap="round"
-                    />
-                  )}
-                  <path
-                    d={targetPath}
-                    fill="none"
-                    stroke="#75ad9d"
-                    strokeWidth="2.5"
-                    strokeDasharray="6 7"
-                  />
-                  <text x="42" y="24">
-                    A little higher ↑
-                  </text>
-                  <text x="42" y="218">
-                    A little lower ↓
-                  </text>
-                  <path
-                    d={trail}
-                    stroke="#6759d5"
-                    fill="none"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  {last?.pitch !== null && last?.pitch !== undefined && (
-                    <circle
-                      cx={40 + last.t * 104}
-                      cy={140 - clamp(last.pitch, -7, 7) * 14}
-                      r="7"
-                      fill="#6759d5"
-                      stroke="white"
-                      strokeWidth="3"
-                    />
-                  )}
-                </svg>
-                <div className="trail-bottom">
-                  <span>
-                    {phase === 'practice'
-                      ? `${elapsed.toFixed(1)} / 5 seconds`
-                      : exercise === 'words'
-                        ? 'Every word has its own shape.'
-                        : 'Stay near the path, without pushing.'}
-                  </span>
-                  <Button
-                    className="voice-practice-button"
-                    disabled={!live || !reference || busy}
-                    onClick={() => startRun('practice')}
-                  >
-                    <Play size={16} />{' '}
-                    {result ? 'Try another round' : 'Start a little practice'}
-                  </Button>
-                </div>
-                {busy && (
-                  <Button
-                    className="voice-pause-round"
-                    variant="ghost"
-                    onClick={() => {
-                      run.current = null;
-                      clearDemo();
-                      setDemo(false);
-                      setPhase('idle');
-                      setMessage(
-                        'Round stopped. You can take a break and try again.',
-                      );
-                    }}
-                  >
-                    Stop this round
-                  </Button>
-                )}
-              </section>
-              <div className="voice-encouragement">
-                <span>✦</span>
-                <p>
-                  <strong>Little tries count. Breaks do too.</strong>
-                  <br />
-                  Relax your shoulders. Use a comfortable voice. Stop if it
-                  feels tiring.
-                </p>
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
-      {live && (
-        <div className="voice-live-dock">
-          <span>
-            <Mic size={16} /> Your microphone is on
-          </span>
-          <Button onClick={microphone.stop}>Stop mic</Button>
-        </div>
-      )}
-      {(microphone.error || message) && (
-        <output
-          className={`voice-message ${microphone.error ? 'voice-error' : ''}`}
-          aria-live="polite"
-        >
-          {microphone.error || message}
-        </output>
-      )}
-      {result && (
-        <section className="voice-result">
-          <div className="result-icon">
-            <Sparkles />
-          </div>
-          <div>
-            <p className="eyebrow">
-              {result.demo
-                ? 'DEMO RECAP · SIMULATED SIGNAL'
-                : 'YOUR LITTLE DISCOVERY'}
-            </p>
-            <h2>
-              {result.voiced < 0.5
-                ? 'Let’s try again when you’re ready.'
-                : result.exercise === 'words'
-                  ? 'You made a word-shaped ripple.'
-                  : 'You made your voice visible.'}
-            </h2>
-            <p>
-              {result.exercise === 'words'
-                ? 'We measure pitch and level, not whether a word was pronounced correctly.'
-                : 'Time near the guide means a clear pitch within the guide band and level near your starting voice. This is exploration, not a grade.'}
-            </p>
-          </div>
-          <div className="result-stat">
-            <strong>
-              {result.voiced.toFixed(1)}
-              <small>s</small>
-            </strong>
-            <span>Clear voice detected</span>
-          </div>
-          {result.exercise !== 'words' && (
-            <div className="result-stat">
-              <strong>
-                {result.matched.toFixed(1)}
-                <small>s</small>
-              </strong>
-              <span>Near your guide</span>
-            </div>
+      </header>
+      <div className="vg-controls">
+        <label>
+          Level
+          <select
+            aria-label="Practice level"
+            value={level}
+            disabled={locked}
+            onChange={(e) => {
+              setLevel(Number(e.target.value));
+              resetPractice();
+              setWordIndex(0);
+              recognition.stop();
+            }}
+          >
+            {levels.map((l, i) => (
+              <option key={l.name} value={i}>
+                {l.name} · {l.classes}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="vg-mic-actions">
+          {live || mic.state === 'requesting' ? (
+            <Button variant="outline" onClick={mic.stop}>
+              <MicOff size={17} />
+              {mic.state === 'requesting'
+                ? 'Cancel microphone'
+                : 'Stop microphone'}
+            </Button>
+          ) : (
+            <Button disabled={demo} onClick={() => void startMic()}>
+              <Mic size={17} />
+              Start microphone
+            </Button>
           )}
-        </section>
-      )}
-      <div className="voice-bottom">
-        <span>
-          <Feather size={17} />
-          {rounds
-            ? `${rounds} little ${rounds === 1 ? 'practice' : 'practices'} this visit`
-            : 'No scores. No rush. Just discovery.'}
-        </span>
-        <span>Signing, pointing and typing belong here too.</span>
-      </div>
-      <details className="voice-guide">
-        <summary>
-          <CircleHelp size={18} /> For grown-ups: what the colours and lines
-          mean
-        </summary>
-        <div>
-          <p>
-            <strong>Loudness and pitch are different.</strong> Blue → green →
-            red shows microphone level relative to a comfortable starting voice.
-            dBFS is a device-relative digital level, not calibrated
-            environmental decibels (dB SPL), hearing safety, or a clinical
-            assessment. Microphones, distance and background sounds change it.
-          </p>
-          <p>
-            The line estimates pitch in Hz from periodic sound. It may not track
-            breathy sounds, consonants, background noise or every voice
-            reliably. The pitch guide is relative to the child’s hum (±1.5
-            semitones around the path), with a small 3-semitone hill. There is
-            no universally correct pitch for a child. A gap means “not enough
-            information,” not “wrong.”
-          </p>
-          <p>
-            Help the child set a comfortable voice; never ask them to shout or
-            strain to reach green. Exercises and prompts are optional
-            exploration, not validated speech therapy or pronunciation scoring.
-            Review with a deaf educator or speech-language professional before
-            structured instruction.{' '}
-            <a
-              href="https://www.nidcd.nih.gov/health/taking-care-your-voice"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Read NIDCD voice-care guidance ↗
-            </a>
-          </p>
-          <p>
-            Audio is analysed in memory only. No recordings, speech-recognition
-            service, uploads or stored voice profiles. Stop releases the
-            microphone; leaving or hiding the page also stops it. Starting it
-            again requires setting a fresh reference.
-          </p>
+          <Button
+            variant="ghost"
+            disabled={live || mic.state === 'requesting'}
+            onClick={() => (demo ? stopped() : startDemo())}
+          >
+            {demo ? 'Stop demo' : 'Try demo'}
+          </Button>
         </div>
+      </div>
+      <div className="vg-modules" role="group" aria-label="Practice modules">
+        {modules.map(({ id, name, icon: Icon }) => (
+          <Button
+            variant="outline"
+            aria-pressed={module === id}
+            disabled={locked}
+            key={id}
+            onClick={() => changeModule(id)}
+          >
+            <Icon size={21} />
+            <span>{name}</span>
+          </Button>
+        ))}
+      </div>
+      <div className="vg-grid">
+        <section
+          className={`vg-stage vg-${tone}`}
+          aria-label="Live practice feedback"
+        >
+          <div className="vg-stage-top">
+            <span>
+              {demo || demoResult
+                ? 'DEMO · SIMULATED'
+                : live
+                  ? 'LIVE PRACTICE'
+                  : 'PRACTICE SPACE'}
+            </span>
+            <div
+              className="vg-earned"
+              aria-label={`${stars} of 3 practice stars`}
+            >
+              {[1, 2, 3].map((n) => (
+                <Star
+                  key={n}
+                  className={stars >= n ? 'earned' : ''}
+                  size={25}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="vg-feedback">
+            <div
+              className="vg-symbol"
+              key={`${symbol}-${stars}`}
+              aria-hidden="true"
+            >
+              {symbol}
+            </div>
+            <h2>{cue}</h2>
+          </div>
+          {module === 'words' ? (
+            <div className="vg-word">
+              <strong>{word}</strong>
+              <Button
+                variant="ghost"
+                disabled={phase === 'practice' || demo}
+                onClick={() => {
+                  setWordIndex((i) => i + 1);
+                  resetPractice();
+                }}
+                aria-label="Next word"
+              >
+                <ChevronRight />
+              </Button>
+              <p>
+                {matchedWord
+                  ? '✓ Word heard'
+                  : recognition.text
+                    ? `Heard: ${recognition.text}`
+                    : 'Say it in your own voice.'}
+              </p>
+            </div>
+          ) : module === 'rhythm' ? (
+            <div
+              className="vg-beats"
+              aria-label={`${round.bursts} of ${difficulty.cycles} speak-and-pause cycles`}
+            >
+              {Array.from({ length: difficulty.cycles }, (_, i) => (
+                <span
+                  className={
+                    i < round.bursts
+                      ? 'complete'
+                      : i === round.bursts
+                        ? 'current'
+                        : ''
+                  }
+                  key={i}
+                >
+                  {i < round.bursts ? <Check /> : <AudioLines />}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <svg
+              className="vg-chart"
+              viewBox="0 0 600 260"
+              role="img"
+              aria-label={
+                module === 'volume'
+                  ? 'Loudness guide and live signal'
+                  : 'Pitch guide and live voice trace'
+              }
+            >
+              {[55, 100, 145, 190, 235].map((y) => (
+                <line key={y} x1="30" x2="570" y1={y} y2={y} stroke="#dce6ee" />
+              ))}
+              <path
+                d={chartTarget}
+                fill="none"
+                stroke="#cdeee1"
+                strokeWidth={difficulty.tolerance * 30}
+                strokeLinecap="round"
+              />
+              <path
+                d={chartTarget}
+                fill="none"
+                stroke="#69a990"
+                strokeWidth="3"
+                strokeDasharray="6 8"
+              />
+              <path
+                d={chartLine}
+                fill="none"
+                stroke={tone === 'good' ? '#237b58' : '#6963ca'}
+                strokeWidth="5"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+              {last?.y !== null && last?.y !== undefined && (
+                <circle
+                  cx={30 + last.x * 540}
+                  cy={145 - clamp(last.y, -5, 5) * 20}
+                  r="10"
+                  fill={tone === 'good' ? '#289769' : '#6963ca'}
+                  stroke="white"
+                  strokeWidth="4"
+                />
+              )}
+              <text x="30" y="23">
+                {module === 'volume'
+                  ? 'Softer → gently stronger → softer'
+                  : 'Follow the dotted path'}
+              </text>
+            </svg>
+          )}
+          <div className="vg-round-bar">
+            <Progress
+              aria-label="Practice progress"
+              value={round.progress * 100}
+            />
+            <span>
+              {module === 'rhythm'
+                ? `${round.bursts} / ${difficulty.cycles} cycles`
+                : `${(round.progress * difficulty.seconds).toFixed(1)} / ${difficulty.seconds}s of voice`}
+            </span>
+          </div>
+          <div className="vg-round-actions">
+            {phase === 'practice' ? (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  active.current = null;
+                  clearDemo();
+                  setDemo(false);
+                  setPhase('ready');
+                }}
+              >
+                Stop round
+              </Button>
+            ) : (
+              <Button
+                className="vg-go"
+                disabled={
+                  !live || !reference || phase === 'room' || phase === 'voice'
+                }
+                onClick={startRound}
+              >
+                <Play size={18} />
+                {phase === 'done' ? 'Play again' : 'Start practice'}
+              </Button>
+            )}
+            <span>
+              {phase === 'done'
+                ? `${stars} practice ${stars === 1 ? 'star' : 'stars'} earned`
+                : 'Pauses are welcome.'}
+            </span>
+          </div>
+        </section>
+        <aside className="vg-sidebar">
+          <section className="vg-meter-card">
+            <div className="vg-meter-title">
+              <Mic size={17} />
+              <strong>
+                {demo
+                  ? 'Demo signal'
+                  : live
+                    ? 'Microphone on'
+                    : 'Microphone off'}
+              </strong>
+            </div>
+            <div className="vg-level-readout">
+              <strong>{live || demo ? Math.round(frame.db) : '—'}</strong>
+              <span>dBFS</span>
+              <small>
+                {frame.hz ? `${Math.round(frame.hz)} Hz` : 'Pitch —'}
+              </small>
+            </div>
+            <meter
+              className="sr-only"
+              min={-90}
+              max={0}
+              value={frame.db}
+              aria-label="Microphone level in dBFS"
+            />
+            <div className="vg-bars" aria-hidden="true">
+              {Array.from({ length: 24 }, (_, i) => {
+                const db = -70 + i * 3;
+                const zone = reference
+                  ? db < reference.db - 6
+                    ? 'blue'
+                    : db > reference.db + 6
+                      ? 'red'
+                      : 'green'
+                  : 'blue';
+                return <i key={i} className={frame.db >= db ? zone : ''} />;
+              })}
+            </div>
+            <div className="vg-meter-labels">
+              <span>Soft</span>
+              <span>Target</span>
+              <span>Strong</span>
+            </div>
+            <div className="vg-noise">
+              <span>Background</span>
+              <strong>
+                {live ? `${Math.round(frame.noiseDb)} dBFS` : '—'}
+              </strong>
+            </div>
+          </section>
+          <section className="vg-calibration">
+            <h3>
+              <SlidersHorizontal size={17} /> Calibration
+            </h3>
+            <Button
+              variant="outline"
+              disabled={!live || phase === 'practice'}
+              onClick={autoCalibrate}
+            >
+              <WandSparkles size={16} /> Auto-calibrate
+            </Button>
+            <Button
+              variant="outline"
+              disabled={!live || phase === 'practice'}
+              onClick={() => {
+                calibration.current = false;
+                setManualFloor(Math.round(frame.noiseDb));
+                setManualOpen(true);
+              }}
+            >
+              <Settings2 size={16} /> Manual calibration
+            </Button>
+            <p>
+              {phase === 'room'
+                ? '1 · Stay quiet for 2 seconds'
+                : phase === 'voice'
+                  ? '2 · Hum comfortably until ready'
+                  : reference
+                    ? '✓ Voice reference ready'
+                    : 'Starts automatically with the mic.'}
+            </p>
+          </section>
+          {module === 'words' && (
+            <section className="vg-recognition">
+              <h3>
+                <AudioLines size={17} /> Word recognition
+              </h3>
+              <Button
+                disabled={!live || demo}
+                variant="outline"
+                onClick={() =>
+                  recognition.state === 'off'
+                    ? void recognition.start(online)
+                    : recognition.stop()
+                }
+              >
+                {recognition.state === 'starting'
+                  ? 'Cancel recognition'
+                  : recognition.state === 'listening'
+                    ? 'Stop recognition'
+                    : 'Recognize words'}
+              </Button>
+              <p>
+                {recognition.state === 'listening'
+                  ? online
+                    ? 'Browser speech service active'
+                    : 'On-device recognition active'
+                  : 'English · optional'}
+              </p>
+              <label className="vg-consent">
+                <input
+                  type="checkbox"
+                  checked={online}
+                  onChange={(e) => {
+                    recognition.stop();
+                    setOnline(e.target.checked);
+                  }}
+                />
+                Allow online browser recognition (may send audio to its
+                provider)
+              </label>
+              {recognition.error && <output>{recognition.error}</output>}
+            </section>
+          )}
+        </aside>
+      </div>
+      {(mic.error || notice === 'error') && (
+        <output className="vg-error">{mic.error || notice}</output>
+      )}
+      {live && (
+        <div className="vg-mobile-stop">
+          <span>
+            <Mic size={16} /> Microphone on
+          </span>
+          <Button onClick={mic.stop}>Stop mic</Button>
+        </div>
+      )}
+      <details className="vg-help">
+        <summary>Grown-up settings & measurement notes</summary>
+        <p>
+          Levels are suggestions, not ability labels. Change them freely.
+          Practice stars reward detected effort near a guide; pauses never erase
+          them. A word-recognition match is not a pronunciation or therapy
+          assessment.
+        </p>
+        <p>
+          The microphone measures device-relative dBFS, not environmental
+          decibels. Automatic setup samples room noise, then a comfortable
+          voice. Browser noise suppression and a noise-relative gate reduce
+          steady fan pickup but cannot isolate a speaker perfectly. If your
+          voice is missed, lower the manual noise margin or move the microphone
+          closer; do not strain to reach the guide.
+        </p>
+        <p>
+          Audio analysis stays in memory. Word recognition is on-device by
+          default where supported; the separately selected online mode may send
+          audio to your browser’s recognition provider. Nothing is recorded or
+          saved by this app. Stop or leave the page to release both microphone
+          and recognition. Speech recognition can mishear children and atypical
+          speech.
+        </p>
       </details>
+      <Dialog open={manualOpen} onOpenChange={setManualOpen}>
+        <DialogContent className="vg-manual">
+          <DialogTitle>Manual calibration</DialogTitle>
+          <DialogDescription>
+            Adjust detection for this microphone. Lower the noise margin if
+            quiet speech is missed.
+          </DialogDescription>
+          <label>
+            Noise margin: {sensitivity} dB
+            <Slider
+              aria-label="Noise margin"
+              min={3}
+              max={18}
+              step={1}
+              value={[sensitivity]}
+              onValueChange={(v) => setSensitivity(Array.isArray(v) ? v[0] : v)}
+            />
+          </label>
+          <label>
+            Background level (dBFS)
+            <input
+              type="number"
+              min={-85}
+              max={-10}
+              value={manualFloor}
+              onChange={(e) => setManualFloor(Number(e.target.value))}
+            />
+          </label>
+          <label>
+            Comfortable voice level (dBFS)
+            <input
+              type="number"
+              min={-65}
+              max={-8}
+              value={manualLevel}
+              onChange={(e) => setManualLevel(Number(e.target.value))}
+            />
+          </label>
+          <label>
+            Comfortable pitch (Hz)
+            <input
+              type="number"
+              min={60}
+              max={1000}
+              value={manualPitch}
+              onChange={(e) => setManualPitch(Number(e.target.value))}
+            />
+          </label>
+          <Button
+            disabled={
+              !live ||
+              ![manualFloor, manualLevel, manualPitch].every(Number.isFinite) ||
+              manualFloor < -85 ||
+              manualFloor > -10 ||
+              manualLevel < -65 ||
+              manualLevel > -8 ||
+              manualPitch < 60 ||
+              manualPitch > 1000
+            }
+            onClick={applyManual}
+          >
+            Apply calibration
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

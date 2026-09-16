@@ -26,12 +26,12 @@ export function analyseVoice(
   const db = decibels(input);
   const clipped = input.some((value) => Math.abs(value) >= 0.98);
   const empty = { db, hz: null, confidence: 0, clipped };
-  if (db < -55 || input.length < 1024 || sampleRate < 8000) return empty;
+  if (db < -70 || input.length < 1024 || sampleRate < 8000) return empty;
   const stride = sampleRate >= 32000 ? 2 : 1;
   const size = Math.floor(input.length / stride);
   const rate = sampleRate / stride;
-  const minLag = Math.floor(rate / 700);
-  const maxLag = Math.min(Math.ceil(rate / 70), Math.floor(size / 2) - 1);
+  const minLag = Math.floor(rate / 1000);
+  const maxLag = Math.min(Math.ceil(rate / 60), Math.floor(size / 2) - 1);
   const count = size - maxLag;
   const difference = new Float32Array(maxLag + 1);
   let running = 0;
@@ -53,7 +53,7 @@ export function analyseVoice(
     const denominator = 2 * (2 * middle - right - left);
     const refined = lag + (denominator ? (right - left) / denominator : 0);
     const hz = rate / refined;
-    return hz >= 70 && hz <= 700
+    return hz >= 60 && hz <= 1000
       ? { db, hz, confidence: 1 - middle, clipped }
       : empty;
   }
@@ -81,7 +81,7 @@ export function calibrate(
       s.hz !== null &&
       s.confidence >= 0.85 &&
       !s.clipped &&
-      s.db > -50 &&
+      s.db > -65 &&
       s.db < -8,
   );
   if (voiced.length < 12) return null;

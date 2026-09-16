@@ -145,7 +145,7 @@ export default function Page() {
                 </div>
               )}
               {view === 'voice' ? (
-                <VoiceStudio />
+                <VoiceStudio grade={grade} />
               ) : (
                 <LearningWorkspace view={view} grade={grade} />
               )}

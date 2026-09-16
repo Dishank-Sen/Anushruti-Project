@@ -1,9 +1,10 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { analyseVoice, type VoiceSample } from '@/lib/voice/analysis';
+import { analyseVoice } from '@/lib/voice/analysis';
+import { NoiseGate, type VoiceFrame } from '@/lib/voice/practice';
 export type MicrophoneState = 'off' | 'requesting' | 'live' | 'error';
 export function useVoiceInput(
-  onSample: (sample: VoiceSample, time: number) => void,
+  onSample: (sample: VoiceFrame, time: number) => void,
   onStop: () => void,
 ) {
   const [state, setState] = useState<MicrophoneState>('off');
@@ -20,6 +21,7 @@ export function useVoiceInput(
     frame: number;
   } | null>(null);
   const generation = useRef(0);
+  const gate = useRef(new NoiseGate());
   const release = useCallback(() => {
     generation.current++;
     const active = resources.current;
@@ -71,8 +73,8 @@ export function useVoiceInput(
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
+          echoCancellation: true,
+          noiseSuppression: true,
           autoGainControl: false,
         },
         video: false,
@@ -84,7 +86,17 @@ export function useVoiceInput(
       context = new AudioContext();
       const analyser = context.createAnalyser();
       analyser.fftSize = 4096;
-      context.createMediaStreamSource(stream).connect(analyser);
+      const highpass = context.createBiquadFilter();
+      highpass.type = 'highpass';
+      highpass.frequency.value = 75;
+      const lowpass = context.createBiquadFilter();
+      lowpass.type = 'lowpass';
+      lowpass.frequency.value = 5000;
+      context
+        .createMediaStreamSource(stream)
+        .connect(highpass)
+        .connect(lowpass)
+        .connect(analyser);
       // Deliberately not connected to speakers: no playback, echo, or audio recording.
       resources.current = { stream, context, frame: 0 };
       await context.resume();
@@ -105,6 +117,7 @@ export function useVoiceInput(
           );
         }
       };
+      gate.current.reset(performance.now());
       setState('live');
       const data = new Float32Array(analyser.fftSize);
       let last = 0;
@@ -114,7 +127,10 @@ export function useVoiceInput(
           last = time;
           analyser.getFloatTimeDomainData(data);
           sampleHandler.current(
-            analyseVoice(data, analyser.context.sampleRate),
+            gate.current.update(
+              analyseVoice(data, analyser.context.sampleRate),
+              time,
+            ),
             time,
           );
         }
@@ -139,5 +155,13 @@ export function useVoiceInput(
       );
     }
   }
-  return { state, error, start, stop };
+  return {
+    state,
+    error,
+    start,
+    stop,
+    recalibrate: () => gate.current.reset(performance.now()),
+    manual: (floor: number, margin: number) =>
+      gate.current.manual(floor, margin),
+  };
 }

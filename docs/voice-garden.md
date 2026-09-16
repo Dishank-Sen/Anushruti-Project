@@ -1,39 +1,37 @@
 # Voice Garden
 
-An independent, optional voice-exploration feature at `/?view=voice`, available from the sidebar. Every existing lesson still works without speaking or enabling a microphone. No account, recording, upload, transcription service, or stored voice profile is involved.
+An optional voice-exploration feature at `/?view=voice`. Existing lessons remain usable without speaking or enabling a microphone.
 
 ## Learner flow
 
-1. Start the microphone (HTTPS or localhost required) or explore the clearly labelled simulated demo.
-2. With a supportive adult, use a comfortable hum to set a reference over three seconds. No need to get louder to qualify; move closer or find a quieter space if the signal is unclear.
-3. Choose a steady pitch, a small rise-and-fall, or a word prompt, then start a five-second practice. Stop at any point. Words show a trace, not pronunciation correctness.
-4. See seconds of detectable periodic voice and, for guided exercises, time near the target. There are no grades, streaks, therapeutic claims, or penalties. Demo rounds never count toward real rounds.
+1. Start the microphone or try the clearly labelled simulated demo.
+2. Auto calibration learns room noise for about 2.2 seconds, then asks for a comfortable hum to set a personal reference. The Auto calibrate button repeats this process. Manual calibration adjusts the room floor, noise margin, reference level and pitch.
+3. Choose Steady voice, Pitch hills, Volume waves, Speak & pause, or Words & phrases. Starter (classes 1–2), Explorer (3–4), and Challenge (5+) offer longer rounds, narrower pitch guides and varied prompts. Learners can freely choose another level.
+4. Follow the large symbol, short instruction, animated trace and colour feedback. Pauses preserve progress. Stars arrive during practice; simulated stars do not enter the session total.
+5. Word recognition is separately opt-in. Recognition of a prompt earns a star, but is not a pronunciation or intelligibility assessment.
 
-## Implementation
+## Signal processing and rewards
 
-- `components/voice-studio.tsx`: exercise UI, reference setup, in-memory trace and round feedback.
-- `hooks/use-voice-input.ts`: explicit microphone request, Web Audio graph, throttled analysis and cleanup. No graph connection to speakers. Requested auto gain control, noise suppression and echo cancellation are off where the browser supports these constraints.
-- `lib/voice/analysis.ts`: RMS dBFS, YIN-style periodicity estimator, confidence rejection, reference validation, relative pitch and guide curves. Typed word prompts live here rather than being treated as assessed curriculum lessons.
+- `hooks/use-voice-input.ts` owns microphone capture and cleanup. It requests browser noise suppression and echo cancellation, with automatic gain control off. A 75 Hz high-pass and 5 kHz low-pass feed an analyser, never speakers.
+- `lib/voice/analysis.ts` analyses 4096 samples approximately every 80 ms using RMS dBFS and a periodicity-based pitch estimate across 60–1000 Hz. This is an estimator range, not a target for children. Calibration needs at least 12 clear, unclipped frames and median pitch deviation within two semitones.
+- `lib/voice/practice.ts` learns the 80th-percentile room level and suppresses similar low-SNR periodic background sound. Manual noise margin ranges from 3–18 dB. A short visual hold bridges tiny gaps without inventing pitch or earning credit during silence.
+- Pitch rounds wait for measurable pitch; volume and word rounds can accept unvoiced consonant energy. Ordinary pauses freeze the active clock. Rhythm requires alternating voice bursts and rests; silence alone and clipped input cannot earn credit.
+- Three stars reward 20%, 50% and 80% of a round near the guide (or completed rhythm cycles). Word-round effort and recognized-word rewards are distinct. Session totals, reference values and transcripts are held in memory only.
 
-A 4096-sample buffer is analysed at most every 80 ms. The pitch search is approximately 70–700 Hz and returns null for quiet/aperiodic samples. Gaps never count as a successful match. This range is an estimator boundary, not a desired range for children. The chart shows pitch relative to the child's reference, capped visually at ±7 semitones. The hill rises only 3 semitones. Calibration requires at least 12 clear, unclipped voiced frames, with a median pitch deviation no larger than 2 semitones.
+The meter measures **dBFS**, not calibrated sound pressure (dB SPL). Pitch and loudness are separate quantities. Level guides use the reference ±6 dB; pitch tolerance depends on the chosen level. These are relative practice guides, not clinical or universally correct voice targets.
 
-The meter shows **dBFS**, a digital microphone level, not calibrated **dB SPL**. Colour boundaries are the measured reference ±6 dB. The green band is a relative practice guide, not a clinical, safe-volume, or universally correct pitch target. Before setup the colours are illustrative default level bands; the UI asks the learner to set a reference. Matching requires both a pitch within ±1.5 semitones of the guide and a microphone level within the reference band. Word practice deliberately does not score a target match.
+## Recognition and privacy
 
-All raw samples, derived reference values, traces and results are in memory only. Starting a new microphone session clears the reference and previous trace. Stop, permission cancellation, disconnect, hidden-page, navigation, and unmount paths release tracks and close the AudioContext. A generation token discards a stream returned after cancellation. A stopped round cancels only that round; the always-visible Stop microphone control ends capture.
+`hooks/use-word-recognition.ts` requests English browser speech recognition only after its own Start action. It defaults to on-device recognition and checks that the browser reports an installed local language pack. Unsupported browsers show a message rather than silently using an online service. The explicit online-service checkbox permits the browser provider to receive audio; its availability and processing policies depend on the browser. No application backend receives recordings or transcripts, and the application does not save them.
 
-## Validation and limitations
+Stop mic, hidden-page, page navigation, disconnect and unmount paths release microphone resources. Recognition has independent cancellation and cleanup, and stops with the microphone. A generation token discards late permission or recognition-availability results. Pausing a round keeps the microphone active until Stop mic is selected.
 
-Unit tests cover RMS levels, amplitude invariance of pitch, 44.1/48 kHz signals with harmonics, quiet/constant/noisy input, clipping, calibration rejection and target geometry. Test-generated tones are mathematical fixtures, not recordings of children. Browser tests use a synthetic microphone, not the user's hardware.
+## Verification and limits
 
-Before release, test multiple physical microphones and browsers with deaf educators and a qualified speech-language professional. Background periodic sounds may look like voice; the system cannot identify a speaker. Breathy voices and consonants may have no stable pitch. No clinical benefit, muscle-memory improvement, pronunciation correctness or speech intelligibility has been validated. Prompt words are illustrative practice, not assessed speech instruction. Children should never strain or shout to follow a guide.
+Automated tests cover signal analysis, room-noise rejection, manual sensitivity, pauses, rhythm rests, clipping, partial-success rewards and whole-word matching. Headless Edge with synthetic fan/voice input completed automatic calibration and a rewarded round. Browser checks exercised manual calibration, demo isolation, level selection and mobile layout. Recognition integration checks use a mocked browser engine to verify explicit opt-in, local/online routing, word rewards and cancellation; they do not establish real transcription accuracy.
 
-References: [MDN Web Audio waveform analysis](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatTimeDomainData), [NIDCD voice care](https://www.nidcd.nih.gov/health/taking-care-your-voice).
+Background sound can still resemble speech; the gate does not identify a speaker. Breathy voices may lack a stable pitch. Physical microphones, fan environments and actual recognition need further testing with users and deaf educators. This prototype has no validated therapeutic or muscle-memory benefit. Recognition failure is not evidence of incorrect speech. Prompt content is illustrative and should be reviewed before instructional use. Keep practice comfortable; do not strain to match the guide.
 
-## Verified in this implementation
+Synthetic inputs and screenshots stay under ignored `work/`. No child recordings are committed.
 
-- Ten automated Node tests pass (four existing progress/content tests and six signal-analysis tests).
-- Headless Edge with a synthetic 220 Hz microphone completed reference setup and a guided round, reporting the expected frequency and five seconds near the guide.
-- Browser checks covered demo isolation (no mic request or real-round count), word navigation, permission denial, a late permission result after cancellation, explicit stop, hiding the page, and fresh-session reference reset.
-- Desktop/mobile layouts were inspected; 390 px width and 200% text scaling had no horizontal overflow. Reduced-motion mode and stopping the simulated demo were exercised. Keyboard arrow/Enter exercise selection and the mobile sticky Stop mic control passed browser checks.
-
-These are software checks, not validation with real microphones or children. The local synthetic test inputs and screenshots live only under ignored `work/`; no voice recordings are committed.
+References: [MDN waveform analysis](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatTimeDomainData), [MDN on-device recognition](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/processLocally).
