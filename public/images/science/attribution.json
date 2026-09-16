@@ -218,5 +218,49 @@
     "originalTitle": "File:Fire Extinguisher 501.JPG",
     "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
     "license": "CC BY-SA 3.0"
+  },
+  "salad": {
+    "src": "/images/science/salad.webp",
+    "alt": "A bowl filled with pieces of different fresh fruits",
+    "credit": "Manjeshwari poet mysore · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Fruit_Salad_Or_Fruit_Bowl.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Fruit_Salad_Or_Fruit_Bowl.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Fruit Salad Or Fruit Bowl.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "well": {
+    "src": "/images/science/well.webp",
+    "alt": "A village water well with a protective surrounding wall",
+    "credit": "Suyash.dwivedi · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Public_well_in_Surouli_Bujurg_Village,_Uttar_Pradesh,_India.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Public_well_in_Surouli_Bujurg_Village%2C_Uttar_Pradesh%2C_India.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Public well in Surouli Bujurg Village, Uttar Pradesh, India.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "bank": {
+    "src": "/images/science/bank.webp",
+    "alt": "The Bank of India building on a street in Mumbai",
+    "credit": "DesiBoy101 · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Bank_of_India,_Mumbai_main_branch_as_viewed_from_right_side.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Bank_of_India%2C_Mumbai_main_branch_as_viewed_from_right_side.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Bank of India, Mumbai main branch as viewed from right side.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "ferry": {
+    "src": "/images/science/ferry.webp",
+    "alt": "A passenger ferry travelling on the Padma River",
+    "credit": "Dead.rabbit · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Passenger_Ferry_on_Padma_River.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/1/14/Passenger_Ferry_on_Padma_River.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Passenger Ferry on Padma River.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
   }
 }

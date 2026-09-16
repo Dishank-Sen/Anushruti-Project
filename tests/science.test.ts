@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { lessons, scienceImages, butterflyStages } from '../lib/lessons.ts';
 void test('discovery labs belong only to Class 1 Science and retain unique lesson IDs', () => {
   const labs = lessons.filter((l) => l.science);
-  assert.equal(labs.length, 24);
+  assert.equal(labs.length, 28);
   assert.ok(labs.every((l) => l.grade === 1 && l.subject === 'Science'));
   assert.equal(new Set(lessons.map((l) => l.id)).size, lessons.length);
   assert.deepEqual(
@@ -19,6 +19,7 @@ void test('discovery labs belong only to Class 1 Science and retain unique lesso
       'body',
       'weather',
       'guided',
+      'match',
     ]),
   );
   for (let grade = 2; grade <= 5; grade++)
@@ -42,13 +43,27 @@ void test('every discovery image is locally available with source, credit and de
 
 void test('NCERT path has valid original activities and separate enrichment content', () => {
   const core = lessons.filter((l) => l.curriculum);
-  assert.equal(core.length, 16);
+  assert.equal(core.length, 20);
   assert.equal(lessons.filter((l) => l.science && !l.curriculum).length, 8);
   for (const l of core) {
     assert.equal(l.grade, 1);
     assert.equal(l.subject, 'Science');
-    assert.equal(l.science?.activity, 'guided');
+    assert.ok(['guided', 'match'].includes(l.science!.activity));
     assert.ok(l.curriculum!.page >= 51 && l.curriculum!.page <= 59);
+    if (l.science?.activity === 'match') {
+      assert.ok(l.matching && l.matching.cards.length >= 3);
+      const data = l.matching!;
+      assert.equal(
+        new Set(data.cards.map((c) => c.id)).size,
+        data.cards.length,
+      );
+      assert.equal(new Set(data.bins.map((b) => b.id)).size, data.bins.length);
+      for (const card of data.cards) {
+        assert.ok(data.bins.some((b) => b.id === card.bin));
+        assert.ok(card.explanation.length > 20);
+      }
+      continue;
+    }
     assert.equal(l.guided?.length, 3);
     for (const r of l.guided!) {
       assert.ok(r.answer >= 0 && r.answer < r.options.length);

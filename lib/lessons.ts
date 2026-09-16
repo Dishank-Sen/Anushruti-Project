@@ -16,8 +16,20 @@ export type Lesson = {
       | 'living'
       | 'body'
       | 'weather'
-      | 'guided';
+      | 'guided'
+      | 'match';
     image: keyof typeof scienceImages;
+  };
+  matching?: {
+    prompt: string;
+    bins: { id: string; label: string; symbol: string }[];
+    cards: {
+      id: string;
+      label: string;
+      symbol: string;
+      bin: string;
+      explanation: string;
+    }[];
   };
   curriculum?: { label: string; page: number };
   guided?: {
@@ -31,6 +43,308 @@ export type Lesson = {
   question: { prompt: string; options: string[]; answer: number; hint: string };
 };
 export const lessons: Lesson[] = [
+  {
+    id: 'fruit-salad',
+    grade: 1,
+    subject: 'Science',
+    title: 'Build a fruit salad',
+    description: 'Pick an ingredient, then choose where it belongs.',
+    minutes: 5,
+    science: { topic: 'Our world', activity: 'match', image: 'salad' },
+    curriculum: { label: 'Food ingredients', page: 51 },
+    matching: {
+      prompt: 'Pick an ingredient, then choose where it belongs.',
+      bins: [
+        { id: 'bowl', label: 'Fruit bowl', symbol: '🥣' },
+        { id: 'away', label: 'Not an ingredient', symbol: '↩' },
+      ],
+      cards: [
+        {
+          id: 'banana',
+          label: 'Banana',
+          symbol: '🍌',
+          bin: 'bowl',
+          explanation: 'Banana is a fruit that can go in a fruit salad.',
+        },
+        {
+          id: 'apple',
+          label: 'Apple pieces',
+          symbol: '🍎',
+          bin: 'bowl',
+          explanation:
+            'Apple pieces can go in the bowl. An adult cuts fruit safely.',
+        },
+        {
+          id: 'spoon',
+          label: 'Spoon',
+          symbol: '🥄',
+          bin: 'away',
+          explanation:
+            'A spoon is a tool for serving or eating, not a food ingredient.',
+        },
+        {
+          id: 'grapes',
+          label: 'Grapes',
+          symbol: '🍇',
+          bin: 'bowl',
+          explanation:
+            'Grapes are fruit. An adult prepares fruit safely for each child.',
+        },
+        {
+          id: 'soap',
+          label: 'Soap',
+          symbol: '🧼',
+          bin: 'away',
+          explanation: 'Soap is for washing, never for eating.',
+        },
+      ],
+    },
+    steps: [
+      {
+        visual: '🍎 + 🍌',
+        title: 'What is an ingredient?',
+        text: 'An ingredient is a food used to make a dish.',
+      },
+      {
+        visual: '🥣',
+        title: 'Build a fruit bowl',
+        text: 'A fruit salad can have banana, apple and grapes.',
+      },
+      {
+        visual: '🧑‍🍳',
+        title: 'Prepare with an adult',
+        text: 'Choose foods that suit you. An adult washes and prepares fruit safely.',
+      },
+    ],
+    question: {
+      prompt: 'Which is a food ingredient?',
+      options: ['Spoon', 'Banana', 'Soap'],
+      answer: 1,
+      hint: 'A banana is food. A spoon is a tool. Soap is not food.',
+    },
+  },
+  {
+    id: 'water-source-detective',
+    grade: 1,
+    subject: 'Science',
+    title: 'Be a water detective',
+    description: 'Match each clue to the water source.',
+    minutes: 5,
+    science: { topic: 'Our world', activity: 'match', image: 'well' },
+    curriculum: { label: 'Recognising water sources', page: 54 },
+    matching: {
+      prompt: 'Match each clue to the water source.',
+      bins: [
+        { id: 'well', label: 'Well', symbol: '🕳️' },
+        { id: 'tap', label: 'Tap', symbol: '🚰' },
+        { id: 'lake', label: 'Lake', symbol: '🏞️' },
+      ],
+      cards: [
+        {
+          id: 'below',
+          label: 'Water below the ground',
+          symbol: '↓',
+          bin: 'well',
+          explanation:
+            'A well reaches water below the ground. Stay away from open wells without an adult.',
+        },
+        {
+          id: 'pipe',
+          label: 'Water arrives through a pipe',
+          symbol: '➰',
+          bin: 'tap',
+          explanation: 'A tap controls water supplied through pipes.',
+        },
+        {
+          id: 'land',
+          label: 'Water surrounded by land',
+          symbol: '🌄',
+          bin: 'lake',
+          explanation: 'A lake is a body of water surrounded by land.',
+        },
+      ],
+    },
+    steps: [
+      {
+        visual: '🕳️',
+        title: 'Below the ground',
+        text: 'Wells reach underground water. We only explore wells in pictures here.',
+      },
+      {
+        visual: '🚰',
+        title: 'Through a pipe',
+        text: 'A tap controls the flow of water carried through a pipe.',
+      },
+      {
+        visual: '🏞️',
+        title: 'In the landscape',
+        text: 'Lakes hold water surrounded by land. Rivers flow across the land.',
+      },
+    ],
+    question: {
+      prompt: 'Which controls water from a pipe?',
+      options: ['A tap', 'A tree', 'A stone'],
+      answer: 0,
+      hint: 'A tap controls the flow of water through a pipe.',
+    },
+  },
+  {
+    id: 'places-that-help',
+    grade: 1,
+    subject: 'Science',
+    title: 'A place for each job',
+    description: 'Match a task to a public place.',
+    minutes: 5,
+    science: { topic: 'Our world', activity: 'match', image: 'bank' },
+    curriculum: { label: 'Public facilities and their uses', page: 57 },
+    matching: {
+      prompt: 'Match a task to a public place.',
+      bins: [
+        { id: 'bank', label: 'Bank', symbol: '🏦' },
+        { id: 'station', label: 'Railway station', symbol: '🚉' },
+        { id: 'library', label: 'Library', symbol: '📚' },
+      ],
+      cards: [
+        {
+          id: 'money',
+          label: 'Keep money in an account',
+          symbol: '🪙',
+          bin: 'bank',
+          explanation:
+            'Banks offer services for saving and managing money. Adults help children use these services.',
+        },
+        {
+          id: 'train',
+          label: 'Board a passenger train',
+          symbol: '🚆',
+          bin: 'station',
+          explanation:
+            'People board trains at railway stations. Stay with a trusted adult.',
+        },
+        {
+          id: 'book',
+          label: 'Borrow a storybook',
+          symbol: '📖',
+          bin: 'library',
+          explanation:
+            'Libraries lend books. Return a borrowed book when it is due.',
+        },
+      ],
+    },
+    steps: [
+      {
+        visual: '🏦',
+        title: 'Visit a bank',
+        text: 'A bank offers money services such as savings accounts.',
+      },
+      {
+        visual: '🚉',
+        title: 'Visit a station',
+        text: 'Railway stations help people travel by train.',
+      },
+      {
+        visual: '📚',
+        title: 'Visit a library',
+        text: 'A library helps people find, read and borrow books.',
+      },
+    ],
+    question: {
+      prompt: 'Where can we borrow a book?',
+      options: ['Bank', 'Railway platform', 'Library'],
+      answer: 2,
+      hint: 'Libraries lend books for people to read.',
+    },
+  },
+  {
+    id: 'transport-sort',
+    grade: 1,
+    subject: 'Science',
+    title: 'Sort the travel fleet',
+    description: 'Choose a vehicle, then its travel place.',
+    minutes: 5,
+    science: { topic: 'Our world', activity: 'match', image: 'ferry' },
+    curriculum: { label: 'Land, water and air transport', page: 58 },
+    matching: {
+      prompt: 'Choose a vehicle, then its travel place.',
+      bins: [
+        { id: 'land', label: 'Land', symbol: '🛣️' },
+        { id: 'water', label: 'Water', symbol: '🌊' },
+        { id: 'air', label: 'Air', symbol: '☁️' },
+      ],
+      cards: [
+        {
+          id: 'bus',
+          label: 'Bus',
+          symbol: '🚌',
+          bin: 'land',
+          explanation: 'A bus travels on roads on land.',
+        },
+        {
+          id: 'ferry',
+          label: 'Ferry',
+          symbol: '⛴️',
+          bin: 'water',
+          explanation: 'A ferry carries people or vehicles across water.',
+        },
+        {
+          id: 'plane',
+          label: 'Aeroplane',
+          symbol: '✈️',
+          bin: 'air',
+          explanation: 'An aeroplane flies through the air.',
+        },
+        {
+          id: 'train',
+          label: 'Train',
+          symbol: '🚆',
+          bin: 'land',
+          explanation: 'A train travels on tracks on land.',
+        },
+        {
+          id: 'boat',
+          label: 'Sailing boat',
+          symbol: '⛵',
+          bin: 'water',
+          explanation: 'A sailing boat uses wind to move on water.',
+        },
+        {
+          id: 'heli',
+          label: 'Helicopter',
+          symbol: '🚁',
+          bin: 'air',
+          explanation:
+            'A helicopter flies through the air using turning rotors.',
+        },
+      ],
+    },
+    steps: [
+      {
+        visual: '🚌 🚆',
+        title: 'Travel on land',
+        text: 'Buses use roads and trains use tracks.',
+      },
+      {
+        visual: '⛴️ ⛵',
+        title: 'Travel on water',
+        text: 'Ferries and sailing boats travel across water.',
+      },
+      {
+        visual: '✈️ 🚁',
+        title: 'Travel in the air',
+        text: 'Aeroplanes and helicopters fly in the air.',
+      },
+    ],
+    question: {
+      prompt: 'Which pair travels on water?',
+      options: [
+        'Bus and train',
+        'Ferry and sailing boat',
+        'Aeroplane and helicopter',
+      ],
+      answer: 1,
+      hint: 'Ferries and sailing boats travel on water.',
+    },
+  },
   {
     id: 'food-groups',
     grade: 1,
@@ -1694,6 +2008,40 @@ export const lessons: Lesson[] = [
 ];
 
 export const scienceImages = {
+  salad: {
+    src: '/images/science/salad.webp',
+    alt: 'A bowl filled with pieces of different fresh fruits',
+    credit: 'Manjeshwari poet mysore · CC BY-SA 4.0',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Fruit_Salad_Or_Fruit_Bowl.jpg',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+  well: {
+    src: '/images/science/well.webp',
+    alt: 'A village water well with a protective surrounding wall',
+    credit: 'Suyash.dwivedi · CC BY-SA 4.0',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Public_well_in_Surouli_Bujurg_Village,_Uttar_Pradesh,_India.jpg',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+  bank: {
+    src: '/images/science/bank.webp',
+    alt: 'The Bank of India building on a street in Mumbai',
+    credit: 'DesiBoy101 · CC BY-SA 4.0',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Bank_of_India,_Mumbai_main_branch_as_viewed_from_right_side.jpg',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+
+  ferry: {
+    src: '/images/science/ferry.webp',
+    alt: 'A passenger ferry travelling on the Padma River',
+    credit: 'Dead.rabbit · CC BY-SA 4.0',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Passenger_Ferry_on_Padma_River.jpg',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+
   leaf: {
     src: '/images/science/leaf.webp',
     alt: 'Close-up of the veins and green surface of a leaf',

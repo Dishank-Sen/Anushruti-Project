@@ -2,6 +2,7 @@
 /* oxlint-disable next/no-img-element, jsx-a11y/prefer-tag-over-role -- Local static photographs and a labelled inline SVG diagram. */
 import { useState } from 'react';
 import { CurriculumLab } from './curriculum-lab';
+import { MatchingLab } from './matching-lab';
 import {
   LeafFactory,
   LivingSort,
@@ -61,7 +62,9 @@ export function ScienceLab({ lesson }: { lesson: Lesson }) {
         </Button>
       </header>
       <div key={round}>
-        {lesson.science.activity === 'guided' ? (
+        {lesson.science.activity === 'match' ? (
+          <MatchingLab lesson={lesson} />
+        ) : lesson.science.activity === 'guided' ? (
           <CurriculumLab lesson={lesson} />
         ) : lesson.science.activity === 'grow' ? (
           <Grow />

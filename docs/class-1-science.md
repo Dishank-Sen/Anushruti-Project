@@ -1,6 +1,6 @@
 # Class 1 science discovery labs
 
-Twenty-four Class 1 Science lessons use the optional typed `science` metadata in `lib/lessons.ts`. The collection has 16 NCERT-mapped modules and eight enrichment adventures. See the [complete topic map](ncert-class-1-map.md). Other grades and maths content are unchanged.
+Twenty-eight Class 1 Science lessons use the optional typed `science` metadata in `lib/lessons.ts`. The collection has 20 NCERT-mapped modules and eight enrichment adventures. See the [complete topic map](ncert-class-1-map.md). Other grades and maths content are unchanged.
 
 The `ScienceLab` component uses button-operated activities: provide plant needs and reveal parts, sequence butterfly stages, identify space objects, rotate Earth to compare day/night, power a leaf food factory, sort living things, match body parts and pack for different weather. Models label simplified times, sizes and distances. Motion follows learner actions, stops on its own, and is disabled under reduced-motion preferences. Every activity supports keyboard input and visible text feedback without sound, speech, dragging or a timer. Start again resets only the current lab; existing lesson completion and quiz answers still use device-local demo progress. Lab exploration itself is temporary and does not award persistent lesson completion.
 
@@ -8,7 +8,7 @@ The content is a prototype for educator review, not a certified Class 1 syllabus
 
 ## Image provenance
 
-Twenty-four distinct lesson photographs and an original body illustration are bundled under `public/images/science/`, with photographs resized to at most 1200 pixels and converted to WebP (quality 85); no external image requests are needed to learn. Credits and original source links are shown in the UI. Licences below apply to the photographs independently of the code licence.
+Twenty-eight distinct lesson photographs and an original body illustration are bundled under `public/images/science/`, with photographs resized to at most 1200 pixels and converted to WebP (quality 85); no external image requests are needed to learn. Credits and original source links are shown in the UI. Licences below apply to the photographs independently of the code licence.
 
 | Local file     | Author / source                                                                                                                      | Reuse terms                                                        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
@@ -59,3 +59,14 @@ The following resized WebP files retain the indicated licences. CC BY-SA adaptat
 | appliances.webp | [Jacek Halicki](https://commons.wikimedia.org/wiki/File:2023_Czajnik_elektryczny_N%27OVEEN.jpg)                                          | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0)      |
 | safety.webp     | [Eyefive45](https://commons.wikimedia.org/wiki/File:Right_Hand_Palm.png)                                                                 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0)      |
 | fire.webp       | [Tripl3rdmc454](https://commons.wikimedia.org/wiki/File:Fire_Extinguisher_501.JPG)                                                       | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0)      |
+
+## Focused matching practice
+
+Four additional activities deepen food ingredients, water sources, public facilities and transport. Children select a card, then a destination; incorrect choices allow a retry, correct matches reveal explanations and a visual token, and completing the set earns a temporary celebration. Reset clears the board. No dragging or speech is required.
+
+| Local file | Photographer and source                                                                                                   | Licence                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| salad.webp | [Manjeshwari poet mysore](https://commons.wikimedia.org/wiki/File:Fruit_Salad_Or_Fruit_Bowl.jpg)                          | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| well.webp  | [Suyash.dwivedi](https://commons.wikimedia.org/wiki/File:Public_well_in_Surouli_Bujurg_Village,_Uttar_Pradesh,_India.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| bank.webp  | [DesiBoy101](https://commons.wikimedia.org/wiki/File:Bank_of_India,_Mumbai_main_branch_as_viewed_from_right_side.jpg)     | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| ferry.webp | [Dead.rabbit](https://commons.wikimedia.org/wiki/File:Passenger_Ferry_on_Padma_River.jpg)                                 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |

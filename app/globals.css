@@ -1927,3 +1927,101 @@ output.communication-output {
 .curriculum-complete {
   display: block;
 }
+.matching-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+  border: 0;
+  padding: 0;
+}
+.matching-card {
+  height: auto !important;
+  min-height: 142px !important;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 20px !important;
+  padding: 16px !important;
+  white-space: normal !important;
+}
+.matching-card > span {
+  font-size: 42px;
+  line-height: 1.3;
+}
+.matching-card strong {
+  font-size: 16px;
+}
+.matching-card.matched {
+  opacity: 1;
+  background: #edf4e3;
+  color: #375829;
+  border-color: #acc08c;
+}
+.matching-card small {
+  font-size: 12px;
+}
+.matching-bins {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 26px 0;
+}
+.matching-bin {
+  background: #eef1f8;
+  border: 2px dashed #bbc6d9;
+  border-radius: 20px;
+  padding: 14px;
+  min-height: 165px;
+}
+.matching-bin > button {
+  width: 100%;
+  height: auto;
+  min-height: 52px;
+  justify-content: space-between;
+  font-size: 16px;
+}
+.matching-bin > button:disabled {
+  opacity: 1;
+  color: #526078;
+}
+.matching-bin > button > span:first-child {
+  font-size: 26px;
+}
+.matched-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.matched-chip {
+  background: white;
+  border-radius: 12px;
+  padding: 8px;
+  font-size: 13px;
+  animation: science-reveal 0.4s ease-out;
+}
+.matching-progress {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+.matching-progress > span {
+  font-size: 13px;
+  color: #5c6a58;
+}
+@media (max-width: 600px) {
+  .matching-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .matching-bins {
+    grid-template-columns: 1fr;
+  }
+  .matching-bin {
+    min-height: 100px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .matched-chip {
+    animation: none !important;
+  }
+}

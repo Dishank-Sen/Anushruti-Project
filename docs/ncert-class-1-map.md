@@ -25,10 +25,21 @@ NCERT integrates environmental learning into language and mathematics in Grades 
 
 ## Scope and adaptations
 
-The two food rows for types and ingredients share one module. Physical coordination and game types share another. The map covers the Grade 1 topic rows; three screen scenarios per module do not replace the full teaching programme or certify competency. Adult-facilitated practice, local context and educator review remain necessary.
+The food introduction covers types and ingredients; a separate fruit-salad matching activity deepens ingredient recognition. Physical coordination and game types share another. The map covers the Grade 1 topic rows; three screen scenarios per module do not replace the full teaching programme or certify competency. Adult-facilitated practice, local context and educator review remain necessary.
 
 The eight earlier adventures are labelled Extra discoveries. In particular, photosynthesis, butterfly metamorphosis and space are enrichment, not presented as required Grade 1 NCERT chapters.
 
 All interactions work without audio, speech, physical performance or a timer. Hearing-dependent instructions are adapted to visual choices and trusted-adult support. No personal family details or abuse disclosures are collected. Body-safety learning is non-graphic, focuses on boundaries and seeking help, and never blames a child. Festival stories are presented as traditions held by particular communities, not universal beliefs or historical assertions.
 
 Safety content references: [NSPCC body boundaries](https://www.nspcc.org.uk/advice-for-families/pants-underwear-rule/), [US Fire Administration child fire safety](https://www.usfa.fema.gov/prevention/home-fires/at-risk-audiences/children/), [UNICEF road safety](https://www.unicef.org/parenting/safety/road-safety-tips), [FDA food storage](https://www.fda.gov/food/buy-store-serve-safe-food/refrigerator-thermometers-cold-facts-about-food-safety). These support the simple messages; the app is not endorsed by these organisations.
+
+## Additional practice within these topics
+
+These bring the collection to 20 mapped modules across the same topic areas, plus eight enrichment adventures.
+
+| Module                | Topic                            | Printed page |
+| --------------------- | -------------------------------- | ------------ |
+| Build a fruit salad   | Food ingredients                 | 51           |
+| Be a water detective  | Recognising water sources        | 54           |
+| A place for each job  | Public facilities and their uses | 57           |
+| Sort the travel fleet | Land, water and air transport    | 58           |
