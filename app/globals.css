@@ -1158,4 +1158,488 @@ button:disabled {
   }
 }
 
-output.notice,output.success-note,output.communication-output{display:block}
+output.notice,
+output.success-note,
+output.communication-output {
+  display: block;
+}
+/* Class 1 discovery labs */
+.science-welcome {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 28px;
+  margin: 24px 0;
+  background: #e9f3dd;
+  border-radius: 24px;
+}
+.science-welcome > span {
+  font-size: 54px;
+  white-space: nowrap;
+}
+.science-welcome h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  max-width: 600px;
+  line-height: 1.15;
+  margin: 6px 0 12px;
+}
+.lesson-visual:has(.science-card-photo) {
+  height: 240px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.science-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.science-photo {
+  margin: 28px 0;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #172c29;
+}
+.science-photo img {
+  display: block;
+  width: 100%;
+  height: 320px;
+  object-fit: contain;
+}
+.science-photo figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px;
+  background: #f0f2e8;
+  font-size: 13px;
+  color: #425948;
+}
+.science-photo a,
+.science-credits a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.science-lab {
+  background: #fffdf7;
+  border: 1px solid #e3e7d7;
+  border-radius: 26px;
+  padding: 30px;
+  margin: 24px 0 32px;
+  box-shadow: 0 10px 36px #284a1710;
+}
+.science-lab header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 26px;
+}
+.science-lab h2 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin-top: 8px;
+}
+.science-lab h3 {
+  font-size: 22px;
+  margin: 12px 0;
+}
+.science-lab button {
+  min-height: 46px;
+  white-space: normal;
+  cursor: pointer;
+}
+.science-lab button:focus-visible {
+  outline: 3px solid #8664c5;
+  outline-offset: 4px;
+}
+.science-lab p {
+  line-height: 1.6;
+}
+.science-choice-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.science-choice-row button {
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: 15px;
+}
+.science-feedback {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 18px;
+  background: #edf1e6;
+  color: #304c37;
+  font-size: 18px;
+  font-weight: 600;
+  min-height: 76px;
+}
+.science-feedback svg {
+  flex-shrink: 0;
+}
+.science-feedback.celebrate {
+  background: #e1efd0;
+  border: 1px solid #99c16d;
+  animation: science-reveal 0.5s ease-out;
+}
+.science-experiment {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 30px;
+  align-items: center;
+}
+.plant-scene {
+  background: linear-gradient(#e8f5f0 0 76%, #bd8f65 76%);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+}
+.plant-scene svg {
+  width: 100%;
+  display: block;
+}
+.scene-badge {
+  display: inline-block;
+  margin: 18px;
+  background: #fffaf0;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+.plant-weather {
+  height: 44px;
+  text-align: center;
+  font-size: 35px;
+}
+.plant-growth {
+  transform: translateY(125px) scaleY(0.5);
+  transition: transform 1.5s ease;
+}
+.grown .plant-growth {
+  transform: translateY(0) scaleY(1);
+}
+.plant-labels {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px 18px;
+}
+.experiment-controls > button {
+  margin-top: 20px;
+}
+.experiment-controls small {
+  display: block;
+  margin-top: 14px;
+  color: #627360;
+  line-height: 1.6;
+}
+.cycle-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+.cycle-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 210px;
+  border: 2px dashed #dce0ce;
+  border-radius: 22px;
+  background: #f2f1e8;
+  text-align: center;
+  padding: 14px;
+}
+.cycle-slot.revealed {
+  background: #e8f1d8;
+  border-style: solid;
+  border-color: #a4c47a;
+}
+.cycle-number {
+  font-size: 12px;
+  align-self: flex-start;
+  background: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+}
+.cycle-symbol {
+  font-size: 64px;
+  line-height: 1.5;
+}
+.revealed .cycle-symbol {
+  animation: science-reveal 0.5s ease-out;
+}
+.cycle-arrow {
+  position: absolute;
+  right: -22px;
+  top: 44%;
+  z-index: 1;
+  font-size: 28px;
+  color: #637c42;
+}
+.science-model-note {
+  font-size: 13px;
+  color: #697265;
+  margin: 18px 0;
+}
+.space-stage {
+  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 100%, #35496e, #121e39);
+  color: #f6f4e8;
+  padding: 30px 20px 16px;
+}
+.space-objects {
+  display: flex;
+  justify-content: space-around;
+  gap: 16px;
+  align-items: center;
+}
+.space-object {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  width: 30%;
+  border: 2px solid transparent;
+  border-radius: 22px;
+  padding: 18px 8px;
+  background: transparent;
+  transition:
+    transform 0.3s,
+    border-color 0.3s;
+}
+.space-object.selected {
+  border-color: #e9cb7b;
+  background: #ffffff0b;
+  transform: translateY(-6px);
+}
+.space-object img {
+  width: 150px;
+  height: 150px;
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.model-sun {
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  max-width: 100%;
+  font-size: 120px;
+  line-height: 1;
+  color: #ffd875;
+  text-shadow: 0 0 35px #ffb83880;
+}
+.space-stage > p {
+  font-size: 12px;
+  text-align: center;
+  color: #bdc9df;
+  margin-top: 20px;
+}
+.space-fact {
+  margin: 20px 0;
+  min-height: 95px;
+}
+.science-credits {
+  margin-top: 20px;
+  font-size: 12px;
+}
+.science-credits summary {
+  cursor: pointer;
+}
+.day-model {
+  background: #15233b;
+  border-radius: 24px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 12px;
+  min-height: 300px;
+}
+.day-sun {
+  font-size: 110px;
+  color: #ffd672;
+  line-height: 1;
+  text-shadow: 0 0 35px #ffd67260;
+}
+.sun-rays {
+  color: #fbd977;
+  font-size: 24px;
+}
+.turning-earth {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: #4babc4;
+  flex-shrink: 0;
+  box-shadow: 0 0 35px #6ab9ff20;
+}
+.earth-land {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 25% 30%, #9ec879 0 15%, transparent 16%),
+    radial-gradient(ellipse at 70% 70%, #9ec879 0 25%, transparent 26%);
+  transition: transform 1.1s ease-in-out;
+}
+.explorer-dot {
+  position: absolute;
+  top: 40%;
+  left: 6%;
+  color: white;
+  font-size: 28px;
+  text-shadow: 0 0 3px #000;
+  z-index: 2;
+}
+.earth-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent 49%, #071121bb 51%);
+  pointer-events: none;
+}
+.earth-caption {
+  position: absolute;
+  bottom: -34px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+}
+.day-caption {
+  text-align: center;
+  margin-top: 24px;
+}
+.day-caption strong {
+  font-size: 26px;
+}
+.day-question {
+  border-top: 1px solid #dde2d3;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.science-task {
+  padding-top: 14px;
+}
+@keyframes science-reveal {
+  from {
+    transform: translateY(8px) scale(0.95);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (max-width: 750px) {
+  .science-lab {
+    padding: 20px;
+  }
+  .science-experiment {
+    grid-template-columns: 1fr;
+  }
+  .cycle-track {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cycle-slot:nth-child(2) .cycle-arrow {
+    display: none;
+  }
+  .science-welcome {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .science-welcome > span {
+    font-size: 30px;
+  }
+  .science-photo figcaption {
+    flex-direction: column;
+  }
+  .space-stage {
+    padding: 20px 8px;
+  }
+  .space-objects {
+    gap: 4px;
+  }
+  .space-object {
+    padding: 12px 4px;
+    gap: 8px;
+  }
+  .space-object img,
+  .model-sun {
+    width: 90px;
+    height: 90px;
+  }
+  .model-sun {
+    font-size: 76px;
+  }
+  .day-sun {
+    font-size: 70px;
+  }
+  .sun-rays {
+    font-size: 16px;
+  }
+  .turning-earth {
+    width: 150px;
+    height: 150px;
+  }
+  .science-lab header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+@media (max-width: 420px) {
+  .day-model {
+    padding: 36px 8px;
+    gap: 4px;
+  }
+  .turning-earth {
+    width: 120px;
+    height: 120px;
+  }
+  .day-sun {
+    font-size: 52px;
+  }
+  .sun-rays {
+    font-size: 12px;
+  }
+  .cycle-symbol {
+    font-size: 52px;
+  }
+  .space-object img,
+  .model-sun {
+    width: 64px;
+    height: 64px;
+  }
+  .model-sun {
+    font-size: 56px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .science-lab * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.chrysalis-diagram {
+  width: 80px;
+  height: 96px;
+  display: inline-block;
+  vertical-align: middle;
+}

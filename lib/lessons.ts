@@ -5,10 +5,120 @@ export type Lesson = {
   title: string;
   description: string;
   minutes: number;
+  science?: {
+    topic: 'Biology' | 'Space';
+    activity: 'grow' | 'cycle' | 'space' | 'day';
+    image: 'sunflower' | 'butterfly' | 'earth' | 'moon';
+  };
   steps: { visual: string; title: string; text: string }[];
   question: { prompt: string; options: string[]; answer: number; hint: string };
 };
 export const lessons: Lesson[] = [
+  {
+    id: 'butterfly-life',
+    grade: 1,
+    subject: 'Science',
+    title: 'A butterfly begins',
+    description: 'An egg. A caterpillar. A wonderful change.',
+    minutes: 5,
+    science: { topic: 'Biology', activity: 'cycle', image: 'butterfly' },
+    steps: [
+      {
+        visual: '🥚',
+        title: 'A tiny egg',
+        text: 'A butterfly lays eggs on a plant.',
+      },
+      {
+        visual: '🐛',
+        title: 'A hungry caterpillar',
+        text: 'A caterpillar hatches from an egg. It eats and grows.',
+      },
+      {
+        visual: '◈',
+        title: 'Time to change',
+        text: 'The caterpillar becomes a pupa, called a chrysalis. Its body changes inside.',
+      },
+      {
+        visual: '🦋',
+        title: 'Wings unfold',
+        text: 'An adult butterfly comes out. Later, butterflies can lay eggs and the cycle begins again.',
+      },
+    ],
+    question: {
+      prompt: 'What hatches from a butterfly egg?',
+      options: ['A caterpillar', 'A bird', 'A flower'],
+      answer: 0,
+      hint: 'The caterpillar eats and grows before becoming a pupa.',
+    },
+  },
+  {
+    id: 'space-neighbours',
+    grade: 1,
+    subject: 'Science',
+    title: 'Hello, space neighbours!',
+    description: 'Meet our home, our star and our Moon.',
+    minutes: 5,
+    science: { topic: 'Space', activity: 'space', image: 'earth' },
+    steps: [
+      {
+        visual: '🌍',
+        title: 'Earth is our home',
+        text: 'Earth is a planet. We live on its land, with oceans all around.',
+      },
+      {
+        visual: '☀️',
+        title: 'The Sun is a star',
+        text: 'The Sun gives Earth light and warmth. Never look straight at the Sun.',
+      },
+      {
+        visual: '🌕',
+        title: 'Meet the Moon',
+        text: 'The Moon travels around Earth. It reflects light from the Sun. We can sometimes see it in the daytime too.',
+      },
+    ],
+    question: {
+      prompt: 'Which one makes its own light?',
+      options: ['Earth', 'The Moon', 'The Sun'],
+      answer: 2,
+      hint: 'The Sun is a star. Moonlight is sunlight reflected by the Moon.',
+    },
+  },
+  {
+    id: 'day-and-night',
+    grade: 1,
+    subject: 'Science',
+    title: 'Why does night come?',
+    description: 'Turn Earth and follow a little explorer.',
+    minutes: 4,
+    science: { topic: 'Space', activity: 'day', image: 'moon' },
+    steps: [
+      {
+        visual: '☀️ → 🌍',
+        title: 'The side facing the Sun',
+        text: 'Sunlight lights one side of Earth. It is daytime there.',
+      },
+      {
+        visual: '🌍 ↻',
+        title: 'Earth turns',
+        text: 'Earth slowly turns. Our place moves from the light side to the dark side.',
+      },
+      {
+        visual: '🌃',
+        title: 'The side facing away',
+        text: 'It is night on the side facing away from the Sun. Earth keeps turning and morning comes again.',
+      },
+    ],
+    question: {
+      prompt: 'It is night at our place when…',
+      options: [
+        'The Sun switches off',
+        'Our place faces away from the Sun',
+        'The Moon covers the Sun every night',
+      ],
+      answer: 1,
+      hint: 'The Sun keeps shining. Earth turns our place away from its light.',
+    },
+  },
   {
     id: 'count-to-five',
     grade: 1,
@@ -42,6 +152,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'plant-needs',
+    science: { topic: 'Biology', activity: 'grow', image: 'sunflower' },
     grade: 1,
     subject: 'Science',
     title: 'Help a plant grow',
@@ -324,3 +435,74 @@ export const lessons: Lesson[] = [
     },
   },
 ];
+
+export const scienceImages = {
+  sunflower: {
+    src: '/images/science/sunflower.webp',
+    alt: 'Close-up of a sunflower with yellow petals around a patterned centre',
+    credit: 'NathanScientific · CC0',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Close-up_sunflower_head,_New_Mexico,_U.S.jpg',
+  },
+  butterfly: {
+    src: '/images/science/butterfly.webp',
+    alt: 'An orange and black monarch butterfly resting on flowers',
+    credit: 'J. Corey Butler · Public domain',
+    source:
+      'https://commons.wikimedia.org/wiki/File:Monarch_butterfly_(Danaus_plexippus)_2005.jpg',
+  },
+  earth: {
+    src: '/images/science/earth.webp',
+    alt: 'Earth from space, showing blue oceans, land and white clouds',
+    credit: 'NASA / Apollo 17 crew · Public domain',
+    source:
+      'https://commons.wikimedia.org/wiki/File:The_Earth_seen_from_Apollo_17.jpg',
+  },
+  moon: {
+    src: '/images/science/moon.webp',
+    alt: 'The Moon with pale craters and darker areas',
+    credit: 'NASA / JPL / Galileo · Public domain',
+    source: 'https://commons.wikimedia.org/wiki/File:Full_moon.png',
+  },
+} as const;
+export const butterflyStages = [
+  { label: 'Egg', symbol: '🥚', text: 'A tiny egg rests on a plant.' },
+  {
+    label: 'Caterpillar',
+    symbol: '🐛',
+    text: 'The caterpillar eats leaves and grows.',
+  },
+  {
+    label: 'Chrysalis',
+    symbol: '🌿',
+    text: 'Inside the chrysalis, the body changes.',
+  },
+  {
+    label: 'Butterfly',
+    symbol: '🦋',
+    text: 'A butterfly emerges and unfolds its wings.',
+  },
+] as const;
+export const spaceObjects = [
+  {
+    label: 'Earth',
+    symbol: '🌍',
+    fact: 'Our home planet. Look for oceans, land and clouds.',
+    task: 'Find our home planet.',
+    image: 'earth',
+  },
+  {
+    label: 'Sun',
+    symbol: '☀️',
+    fact: 'Our nearest star makes light and warmth. Never look straight at it.',
+    task: 'Find the star that gives us light.',
+    image: null,
+  },
+  {
+    label: 'Moon',
+    symbol: '🌕',
+    fact: 'Our Moon reflects sunlight and travels around Earth.',
+    task: 'Find the object that travels around Earth.',
+    image: 'moon',
+  },
+] as const;
