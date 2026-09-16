@@ -1,0 +1,222 @@
+{
+  "leaf": {
+    "src": "/images/science/leaf.webp",
+    "alt": "Close-up of the veins and green surface of a leaf",
+    "credit": "Martin Vorel martinvorel.com · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Green_leaf_texture.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Green_leaf_texture.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Green leaf texture.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "living": {
+    "src": "/images/science/living.webp",
+    "alt": "A living oak tree growing in a grassy meadow",
+    "credit": "Alan Hughes · CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Meadow_and_Oak_Tree_-_geograph.org.uk_-_5171268.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/46/Meadow_and_Oak_Tree_-_geograph.org.uk_-_5171268.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Meadow and Oak Tree - geograph.org.uk - 5171268.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 2.0"
+  },
+  "bodyphoto": {
+    "src": "/images/science/bodyphoto.webp",
+    "alt": "Open palms showing fingers and skin creases",
+    "credit": "Eyefive45 · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Open_Palm_of_the_Left_Hand,_Fingers.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/24/Open_Palm_of_the_Left_Hand%2C_Fingers.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Open Palm of the Left Hand, Fingers.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "weather": {
+    "src": "/images/science/weather.webp",
+    "alt": "Raindrops on a window with a blurred rainy landscape beyond",
+    "credit": "Frank Vincentz · CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Rain_drops_on_window_02_ies.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Rain_drops_on_window_02_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Rain drops on window 02 ies.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 3.0"
+  },
+  "food": {
+    "src": "/images/science/food.webp",
+    "alt": "Fresh vegetables displayed at a market in Bangalore",
+    "credit": "Annapoornima koppad · CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:At_Malleswaram_vegetable_market,_Bangalore.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d0/At_Malleswaram_vegetable_market%2C_Bangalore.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:At Malleswaram vegetable market, Bangalore.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY 4.0"
+  },
+  "storage": {
+    "src": "/images/science/storage.webp",
+    "alt": "An open refrigerator with foods arranged on its shelves",
+    "credit": "W.carter · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Open_refrigerator_with_food_at_night.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Open_refrigerator_with_food_at_night.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Open refrigerator with food at night.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "hygiene": {
+    "src": "/images/science/hygiene.webp",
+    "alt": "Hands being washed with soap at a sink",
+    "credit": "Beat Ruest · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Washing_hands_with_soap_(1).jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/54/Washing_hands_with_soap_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Washing hands with soap (1).jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "water": {
+    "src": "/images/science/water.webp",
+    "alt": "The Spiti River flowing through a mountain valley",
+    "credit": "Timothy A. Gonsalves · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Spiti_River_Kaza_Himachal_Jun18_D72_7232.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Spiti_River_Kaza_Himachal_Jun18_D72_7232.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Spiti River Kaza Himachal Jun18 D72 7232.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "animals": {
+    "src": "/images/science/animals.webp",
+    "alt": "A cow standing in a grassy field",
+    "credit": "Kanimozhi Vennila · CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cow_in_Field_image.jpg",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/3/38/Cow_in_Field_image.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Cow in Field image.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC0"
+  },
+  "shelter": {
+    "src": "/images/science/shelter.webp",
+    "alt": "A red building brick with three holes",
+    "credit": "Andrewlister · Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Brick.jpg",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/0/01/Brick.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Brick.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "Public domain"
+  },
+  "family": {
+    "src": "/images/science/family.webp",
+    "alt": "A picnic basket for carrying a shared meal",
+    "credit": "Jeremy Noble · CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Picnic_basket_01.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Picnic_basket_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Picnic basket 01.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY 2.0"
+  },
+  "tools": {
+    "src": "/images/science/tools.webp",
+    "alt": "Small gardening tools arranged beside flowers",
+    "credit": "Beendy234 · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Gardening_tools.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Gardening_tools.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Gardening tools.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "festivals": {
+    "src": "/images/science/festivals.webp",
+    "alt": "A lit clay oil lamp used in Diwali celebrations",
+    "credit": "Slyronit · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Diwali_Diya_2.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/2/26/Diwali_Diya_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Diwali Diya 2.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "games": {
+    "src": "/images/science/games.webp",
+    "alt": "Chess pieces arranged on a wooden chessboard",
+    "credit": "Wilfredor · CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Chess_game_Staunton_No._6_perfil_view_8.jpg",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/40/Chess_game_Staunton_No._6_perfil_view_8.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Chess game Staunton No. 6 perfil view 8.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC0"
+  },
+  "facilities": {
+    "src": "/images/science/facilities.webp",
+    "alt": "Bookshelves and seating inside a public library",
+    "credit": "John Phelan · CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Princeton_Public_Library_interior,_Princeton_MA.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/82/Princeton_Public_Library_interior%2C_Princeton_MA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Princeton Public Library interior, Princeton MA.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY 4.0"
+  },
+  "transport": {
+    "src": "/images/science/transport.webp",
+    "alt": "A passenger train on railway tracks in India",
+    "credit": "Varunesh Chandra (Born in Sambalpur, Odisha, India) · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Passenger_Train_on_its_Way_to_Saharsa.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Passenger_Train_on_its_Way_to_Saharsa.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Passenger Train on its Way to Saharsa.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "road": {
+    "src": "/images/science/road.webp",
+    "alt": "A striped pedestrian crossing on a road in India",
+    "credit": "Vijayanrajapuram · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Zebra_crossing_line_kanhangad_01.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Zebra_crossing_line_kanhangad_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Zebra crossing line kanhangad 01.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "appliances": {
+    "src": "/images/science/appliances.webp",
+    "alt": "An electric kettle with a handle and water-level window",
+    "credit": "Jacek Halicki · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:2023_Czajnik_elektryczny_N%27OVEEN.jpg",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/5/55/2023_Czajnik_elektryczny_N%27OVEEN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:2023 Czajnik elektryczny N'OVEEN.jpg",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "safety": {
+    "src": "/images/science/safety.webp",
+    "alt": "An open right palm illustrating a stop gesture",
+    "credit": "Eyefive45 · CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Right_Hand_Palm.png",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Right_Hand_Palm.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Right Hand Palm.png",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 4.0"
+  },
+  "fire": {
+    "src": "/images/science/fire.webp",
+    "alt": "A fire extinguisher mounted on a wall for trained adults to use",
+    "credit": "Tripl3rdmc454 · CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Fire_Extinguisher_501.JPG",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Fire_Extinguisher_501.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "originalTitle": "File:Fire Extinguisher 501.JPG",
+    "changes": "Resized to at most 1200 pixels; converted to WebP at quality 85. Display may crop.",
+    "license": "CC BY-SA 3.0"
+  }
+}

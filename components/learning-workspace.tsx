@@ -53,6 +53,7 @@ export function LearningWorkspace({
   const [ready, setReady] = useState(false);
   const [storageWarning, setStorageWarning] = useState('');
   const [subject, setSubject] = useState('All');
+  const [sciencePath, setSciencePath] = useState('ncert');
   const [lessonId, setLessonId] = useState('');
   const [selected, setSelected] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
@@ -93,7 +94,18 @@ export function LearningWorkspace({
   }
   const lesson = lessons.find((l) => l.id === lessonId);
   const filtered = lessons.filter(
-    (l) => l.grade === grade && (subject === 'All' || l.subject === subject),
+    (l) =>
+      l.grade === grade &&
+      (subject === 'All' || l.subject === subject) &&
+      !(
+        grade === 1 &&
+        subject === 'Science' &&
+        (sciencePath === 'ncert'
+          ? !l.curriculum
+          : sciencePath === 'extras'
+            ? !!l.curriculum
+            : false)
+      ),
   );
   const step = lesson ? progress.steps[lesson.id] || 0 : 0;
   function moveStep(next: number) {
@@ -131,7 +143,12 @@ export function LearningWorkspace({
         </div>
         <div className="lesson-card-body">
           <span className="subject-tag">
-            {l.science?.topic || l.subject} · Class {l.grade}
+            {l.curriculum
+              ? 'NCERT topic'
+              : l.science
+                ? 'Extra · ' + l.science.topic
+                : l.subject}{' '}
+            · Class {l.grade}
           </span>
           <h3>{l.title}</h3>
           <p>{l.description}</p>
@@ -242,10 +259,70 @@ export function LearningWorkspace({
                     <span>🌿 + 🪐</span>
                     <div>
                       <p className="eyebrow">LITTLE SCIENTISTS · CLASS 1</p>
-                      <h2>From tiny leaves to a great big universe.</h2>
-                      <p>Eight adventures. Plenty of things to try.</p>
+                      <h2>Discover the world around you.</h2>
+                      <p>NCERT topic practice, plus extra discoveries.</p>
                     </div>
                   </div>
+                )}
+                {grade === 1 && s === 'Science' && (
+                  <>
+                    <fieldset
+                      className="science-paths"
+                      aria-label="Science learning path"
+                    >
+                      {[
+                        ['ncert', 'NCERT topics'],
+                        ['extras', 'Extra discoveries'],
+                        ['all', 'All science'],
+                      ].map(([value, label]) => (
+                        <button
+                          key={value}
+                          className={
+                            sciencePath === value ? 'primary' : 'secondary'
+                          }
+                          aria-pressed={sciencePath === value}
+                          onClick={() => setSciencePath(value)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </fieldset>
+                    <details className="curriculum-map">
+                      <summary>NCERT Class 1 topic list & lesson map</summary>
+                      <p>
+                        Class 1 environmental learning is integrated with
+                        language and maths. These are our activities mapped to
+                        NCERT topics, not official textbook chapters. Extra
+                        discoveries include space and photosynthesis.
+                      </p>
+                      <a
+                        href="https://ncert.nic.in/pdf/publication/otherpublications/Learning_Outcome_for_the_Foundational_Stage.pdf#page=53"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Read NCERT’s foundational-stage syllabus ↗
+                      </a>
+                      <ul>
+                        {lessons
+                          .filter((l) => l.curriculum)
+                          .map((l) => (
+                            <li key={l.id}>
+                              <a href={`/?view=lesson&id=${l.id}&grade=1`}>
+                                {l.curriculum!.label} → {l.title}
+                              </a>
+                              <small>
+                                NCERT printed p. {l.curriculum!.page}
+                              </small>
+                            </li>
+                          ))}
+                      </ul>
+                      <p>
+                        Educator review is still needed. Screen activities
+                        supplement real-world learning and do not certify
+                        physical or sensory competencies.
+                      </p>
+                    </details>
+                  </>
                 )}
                 <div className="lesson-grid">
                   {filtered.map((l) => card(l, view === 'activities'))}
@@ -284,7 +361,9 @@ export function LearningWorkspace({
             {lesson.science && lesson.grade === 1 && (
               <>
                 <ScienceLab key={lesson.id} lesson={lesson} />
-                <SciencePhoto image={lesson.science.image} />
+                {!lesson.guided && (
+                  <SciencePhoto image={lesson.science.image} />
+                )}
               </>
             )}
             {view === 'lesson' && (
@@ -478,7 +557,12 @@ export function LearningWorkspace({
                     <span>
                       {l.title}
                       <small>
-                        {l.science?.topic || l.subject} · Class {l.grade}
+                        {l.curriculum
+                          ? 'NCERT topic'
+                          : l.science
+                            ? 'Extra · ' + l.science.topic
+                            : l.subject}{' '}
+                        · Class {l.grade}
                       </small>
                     </span>
                     <span>Visit again →</span>

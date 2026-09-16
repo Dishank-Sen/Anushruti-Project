@@ -1,6 +1,7 @@
 'use client';
 /* oxlint-disable next/no-img-element, jsx-a11y/prefer-tag-over-role -- Local static photographs and a labelled inline SVG diagram. */
 import { useState } from 'react';
+import { CurriculumLab } from './curriculum-lab';
 import {
   LeafFactory,
   LivingSort,
@@ -33,6 +34,11 @@ export function SciencePhoto({ image }: { image: keyof typeof scienceImages }) {
         <a href={photo.source} target="_blank" rel="noreferrer">
           {photo.credit} ↗
         </a>
+        {'licenseUrl' in photo && (
+          <a href={photo.licenseUrl} target="_blank" rel="noreferrer">
+            Reuse licence ↗
+          </a>
+        )}
       </figcaption>
     </figure>
   );
@@ -55,7 +61,9 @@ export function ScienceLab({ lesson }: { lesson: Lesson }) {
         </Button>
       </header>
       <div key={round}>
-        {lesson.science.activity === 'grow' ? (
+        {lesson.science.activity === 'guided' ? (
+          <CurriculumLab lesson={lesson} />
+        ) : lesson.science.activity === 'grow' ? (
           <Grow />
         ) : lesson.science.activity === 'cycle' ? (
           <Cycle />

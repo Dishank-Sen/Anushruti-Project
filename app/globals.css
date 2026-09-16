@@ -1756,3 +1756,174 @@ output.communication-output {
     animation: none !important;
   }
 }
+/* NCERT topic path */
+.science-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.curriculum-map {
+  background: white;
+  padding: 18px 22px;
+  border: 1px solid #dde3eb;
+  border-radius: 18px;
+  margin-bottom: 24px;
+}
+.curriculum-map summary {
+  font-weight: 650;
+  cursor: pointer;
+}
+.curriculum-map p {
+  margin: 16px 0;
+  line-height: 1.6;
+  max-width: 900px;
+}
+.curriculum-map a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.curriculum-map ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+.curriculum-map small {
+  display: block;
+  color: #657185;
+  margin-top: 4px;
+}
+.curriculum-lab-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+.curriculum-scene {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #e7eddf;
+  min-height: 360px;
+}
+.curriculum-scene img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+}
+.curriculum-scene-label {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 14px;
+  border-radius: 12px;
+  background: #fffdf5ec;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.curriculum-sticker {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  font-size: 58px;
+  background: #fff9e9;
+  border-radius: 24px;
+  padding: 8px 18px;
+  animation: science-reveal 0.35s ease-out;
+}
+.curriculum-choices {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.curriculum-choices button {
+  height: auto;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.choice-letter {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #e3e7f4;
+  color: #344868;
+  margin-right: 7px;
+}
+.curriculum-prompt h3 {
+  margin-top: 10px;
+  font-size: 25px;
+  line-height: 1.3;
+}
+.curriculum-next {
+  margin-top: 18px;
+}
+.curriculum-complete {
+  color: #37622c;
+  background: #edf5df;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 16px;
+  font-weight: 600;
+}
+.science-photo figcaption {
+  flex-wrap: wrap;
+}
+.science-photo figcaption a {
+  font-size: 12px;
+}
+.science-photo figcaption a:first-of-type {
+  max-width: 75%;
+}
+@media (max-width: 800px) {
+  .curriculum-lab-layout {
+    grid-template-columns: 1fr;
+  }
+  .curriculum-scene,
+  .curriculum-scene img {
+    min-height: 220px;
+    height: 220px;
+  }
+  .curriculum-map ul {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .curriculum-sticker {
+    animation: none !important;
+  }
+}
+
+.curriculum-photo-credit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 4px;
+  font-size: 12px;
+  color: #52654e;
+}
+.curriculum-photo-credit a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.curriculum-choices button:disabled {
+  opacity: 1;
+}
+.curriculum-choices .curriculum-correct {
+  background: #e1efd0;
+  color: #254c25;
+  border-color: #8fad68;
+}
+.curriculum-complete {
+  display: block;
+}
