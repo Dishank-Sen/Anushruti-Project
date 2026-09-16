@@ -624,10 +624,10 @@ export function LearningWorkspace({
           </output>
           <section className="panel">
             <Hand />
-            <h2>More ways to practise, coming later</h2>
+            <h2>More ways to practise</h2>
             <p>
-              Sign-language stories and optional speech practice will be added
-              with educators. You will always be able to learn without speaking.
+              Sign-language stories will be added with educators. You will
+              always be able to learn without speaking.
             </p>
             <p className="content-note">
               These are picture-and-text cards, not sign-language instructions.

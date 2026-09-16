@@ -4,7 +4,7 @@
 
 `app/page.tsx` owns the learner shell. `components/learning-workspace.tsx` owns the lesson, activity, insights and team prototype views. `lib/lessons.ts` contains typed instructional content. `lib/progress.ts` validates and updates the versioned device-local progress record. Shared accessible primitives are in `components/ui/`; compose them instead of editing their internals.
 
-The MVP has no child identity, network analytics, microphone, camera, or external media dependency. Local storage is explicitly demo persistence. Treat it as untrusted: validate IDs, counters and values on load. Do not use it for authorization or authoritative completion.
+The MVP has no child identity, network analytics, camera, or external media dependency. The optional Voice Garden uses a microphone only after an explicit start action; its signal processing is entirely in memory on the device. Optional word recognition defaults to on-device processing; a separate explicit online-service opt-in allows the browser provider to receive audio. See [Voice Garden](voice-garden.md) for microphone lifecycle and measurement limits. Local storage is explicitly demo persistence. Treat it as untrusted: validate IDs, counters and values on load. Do not use it for authorization or authoritative completion.
 
 ## Planned production services
 

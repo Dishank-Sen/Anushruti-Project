@@ -2,6 +2,8 @@
 /* oxlint-disable react/react-compiler, next/no-html-link-for-pages -- Browser query hydration is intentional; full document links reset each demo view and read its local progress. React Compiler is not enabled. */
 import { useState, useEffect } from 'react';
 import { LearningWorkspace } from '@/components/learning-workspace';
+import { VoiceStudio } from '@/components/voice-studio';
+import { Mic } from 'lucide-react';
 import {
   ArrowRight,
   BookOpen,
@@ -32,6 +34,7 @@ const navigation = [
   { icon: Sparkles, label: 'Activities', view: 'activities' },
   { icon: Trophy, label: 'My progress', view: 'progress' },
   { icon: Hand, label: 'Communication', view: 'communication' },
+  { icon: Mic, label: 'Voice garden', view: 'voice' },
 ];
 export default function Page() {
   const [grade, setGrade] = useState(1);
@@ -117,7 +120,8 @@ export default function Page() {
             <span>Your learning garden</span>
           </div>
           <span className="sound-free">
-            <Hand size={17} /> No sound needed
+            <Hand size={17} />{' '}
+            {view === 'voice' ? 'No listening needed' : 'No sound needed'}
           </span>
         </header>
         <main id="main">
@@ -140,7 +144,11 @@ export default function Page() {
                   </label>
                 </div>
               )}
-              <LearningWorkspace view={view} grade={grade} />
+              {view === 'voice' ? (
+                <VoiceStudio grade={grade} />
+              ) : (
+                <LearningWorkspace view={view} grade={grade} />
+              )}
             </>
           ) : (
             <>
