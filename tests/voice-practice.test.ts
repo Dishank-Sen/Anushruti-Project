@@ -25,7 +25,8 @@ void test('room calibration rejects a steady periodic fan after learning it', ()
   const fan = gate.update({ ...voice, db: -44, hz: 110 }, 2320);
   assert.equal(fan.speech, false);
   assert.equal(fan.hz, null);
-  const speaking = gate.update({ ...voice, db: -30, hz: 220 }, 2400);
+  gate.update({ ...voice, db: -30, hz: 220 }, 2400);
+  const speaking = gate.update({ ...voice, db: -30, hz: 220 }, 2560);
   assert.equal(speaking.speech, true);
   assert.ok(speaking.hz);
 });
@@ -34,14 +35,16 @@ void test('manual margin recovers quieter speech without admitting baseline nois
   gate.manual(-55, 6);
   assert.equal(gate.update({ ...voice, db: -51 }, 1000).speech, false);
   gate.manual(-55, 3);
-  assert.equal(gate.update({ ...voice, db: -51 }, 1100).speech, true);
-  assert.equal(gate.update({ ...voice, db: -55 }, 1200).speech, false);
+  gate.update({ ...voice, db: -51 }, 1100);
+  assert.equal(gate.update({ ...voice, db: -51 }, 1260).speech, true);
+  assert.equal(gate.update({ ...voice, db: -55 }, 1340).speech, false);
 });
 void test('brief gap can hold the display but never invents voiced pitch or advances practice', () => {
   const gate = new NoiseGate();
   gate.manual(-65, 6);
   gate.update(voice, 1000);
-  const gap = gate.update({ ...voice, db: -70, hz: null }, 1080);
+  gate.update(voice, 1160);
+  const gap = gate.update({ ...voice, db: -70, hz: null }, 1240);
   assert.equal(gap.held, true);
   assert.equal(gap.speech, false);
   assert.equal(gap.hz, null);
@@ -68,14 +71,15 @@ void test('silence never consumes the active voice budget; matched sound does', 
   assert.equal(round.done, true);
   assert.ok(round.matched >= 3);
 });
-void test('pitch exercises wait for pitch; word exercises accept consonant energy', () => {
+void test('pitch exercises wait for pitch; word exercises never reward energy alone', () => {
   const consonant = { ...signal, hz: null };
   assert.equal(
     advanceRound(freshRound(), consonant, 0.1, 'steady', 0, voice).progress,
     0,
   );
-  assert.ok(
-    advanceRound(freshRound(), consonant, 0.1, 'words', 0, voice).progress > 0,
+  assert.equal(
+    advanceRound(freshRound(), consonant, 0.1, 'words', 0, voice).progress,
+    0,
   );
 });
 void test('speak-and-pause requires alternating voice and rests, not just silence', () => {
