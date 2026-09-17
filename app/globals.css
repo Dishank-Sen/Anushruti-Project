@@ -730,6 +730,54 @@ h3 {
   font-size: 16px;
   color: #647087;
 }
+/* Subject → chapter → module navigation (visual-first) */
+.subject-symbol > span {
+  letter-spacing: 0;
+}
+.subject-symbol {
+  padding: 0 12px;
+}
+.subject .subject-symbol > span:first-child {
+  font-size: 52px;
+}
+.sequence-step {
+  font-size: 22px;
+  font-weight: 800;
+  color: #a26010;
+}
+.science .sequence-step {
+  color: #31745f;
+}
+.subject .card-bottom {
+  margin-top: 16px;
+}
+.mini-progress {
+  font-weight: bold;
+  color: #2a7a57;
+}
+.module-tile {
+  position: relative;
+}
+.module-step {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #4657c4;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  box-shadow: 0 3px 8px #24345833;
+}
+@media (max-width: 767px) {
+  .subject .subject-symbol > span:first-child {
+    font-size: 44px;
+  }
+}
 .content-note {
   font-size: 14px;
   color: #647087;
