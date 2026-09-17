@@ -1,5 +1,5 @@
 'use client';
-/* oxlint-disable react/react-compiler, next/no-html-link-for-pages -- Intentional post-hydration browser storage load and full document demo navigation. React Compiler is not enabled. */
+/* oxlint-disable react/react-compiler, next/no-html-link-for-pages, next/no-img-element -- Intentional post-hydration browser storage load and full document demo navigation. React Compiler is not enabled. */
 import { useEffect, useState } from 'react';
 import { useLearningTools } from '@/hooks/use-learning-tools';
 import {
@@ -104,7 +104,18 @@ export function LearningWorkspace({
   }
   const lesson = lessons.find((l) => l.id === lessonId);
   const filtered = lessons.filter(
-    (l) => l.grade === grade && (subject === 'All' || l.subject === subject),
+    (l) =>
+      l.grade === grade &&
+      (subject === 'All' || l.subject === subject) &&
+      !(
+        grade === 1 &&
+        subject === 'Science' &&
+        (sciencePath === 'ncert'
+          ? !l.curriculum
+          : sciencePath === 'extras'
+            ? !!l.curriculum
+            : false)
+      ),
   );
   const step = lesson ? progress.steps[lesson.id] || 0 : 0;
   const browseSubject = subjectIsChapterList(subject) ? subject : null;
@@ -141,7 +152,16 @@ export function LearningWorkspace({
         href={`/?view=${activity ? 'activity' : 'lesson'}&id=${l.id}&grade=${l.grade}`}
       >
         <div className="lesson-visual" aria-hidden="true">
-          {l.steps[0].visual}
+          {l.science ? (
+            <img
+              className="science-card-photo"
+              src={scienceImages[l.science.image].src}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            l.steps[0].visual
+          )}
         </div>
         <div className="lesson-card-body">
           <span className="subject-tag">
@@ -383,6 +403,14 @@ export function LearningWorkspace({
                 {view === 'activity' ? 'Picture challenge' : 'Visual lesson'}
               </span>
             </div>
+            {lesson.science && lesson.grade === 1 && (
+              <>
+                <ScienceLab key={lesson.id} lesson={lesson} />
+                {!lesson.guided && (
+                  <SciencePhoto image={lesson.science.image} />
+                )}
+              </>
+            )}
             {view === 'lesson' && (
               <>
                 <div className="lesson-layout">
@@ -574,7 +602,12 @@ export function LearningWorkspace({
                     <span>
                       {l.title}
                       <small>
-                        {l.subject} · Class {l.grade}
+                        {l.curriculum
+                          ? 'NCERT topic'
+                          : l.science
+                            ? 'Extra · ' + l.science.topic
+                            : l.subject}{' '}
+                        · Class {l.grade}
                       </small>
                     </span>
                     <span>Visit again →</span>
