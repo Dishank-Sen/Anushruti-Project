@@ -13,8 +13,14 @@ import {
   Play,
   RotateCcw,
 } from 'lucide-react';
-import { lessons, type Lesson, scienceImages } from '@/lib/lessons';
-import { ScienceLab, SciencePhoto } from '@/components/science-lab';
+import {
+  lessons,
+  SUBJECT_ORDER,
+  SUBJECT_META,
+  subjectChapterOrder,
+  CHAPTER_ORDER,
+  type Lesson,
+} from '@/lib/lessons';
 import {
   emptyProgress,
   parseProgress,
@@ -42,6 +48,9 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
+function subjectIsChapterList(value: string): value is 'Maths' | 'Science' {
+  return value === 'Maths' || value === 'Science';
+}
 export function LearningWorkspace({
   view,
   grade,
@@ -53,7 +62,7 @@ export function LearningWorkspace({
   const [ready, setReady] = useState(false);
   const [storageWarning, setStorageWarning] = useState('');
   const [subject, setSubject] = useState('All');
-  const [sciencePath, setSciencePath] = useState('ncert');
+  const [chapterName, setChapterName] = useState('');
   const [lessonId, setLessonId] = useState('');
   const [selected, setSelected] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
@@ -70,6 +79,7 @@ export function LearningWorkspace({
           : 'All',
     );
     setLessonId(q.get('id') || '');
+    setChapterName(q.get('chapter') || '');
     setReady(true);
   }, []);
   function localStorageSafe() {
@@ -108,6 +118,18 @@ export function LearningWorkspace({
       ),
   );
   const step = lesson ? progress.steps[lesson.id] || 0 : 0;
+  const browseSubject = subjectIsChapterList(subject) ? subject : null;
+  const browseChapters = browseSubject ? subjectChapterOrder(browseSubject) : [];
+  const browseChapter =
+    browseSubject && browseChapters.includes(chapterName) ? chapterName : '';
+  function chapterLessons(s: string, c: string): Lesson[] {
+    return lessons.filter(
+      (l) => l.grade === grade && l.subject === s && l.chapter === c,
+    );
+  }
+  function chapterIndex(c: string): number {
+    return CHAPTER_ORDER.indexOf(c) + 1;
+  }
   function moveStep(next: number) {
     if (!lesson) return;
     save({ ...progress, steps: { ...progress.steps, [lesson.id]: next } });
@@ -143,12 +165,8 @@ export function LearningWorkspace({
         </div>
         <div className="lesson-card-body">
           <span className="subject-tag">
-            {l.curriculum
-              ? 'NCERT topic'
-              : l.science
-                ? 'Extra · ' + l.science.topic
-                : l.subject}{' '}
-            · Class {l.grade}
+            {l.subject} · Class {l.grade}
+            {l.chapter ? ` · ${l.chapter}` : ''}
           </span>
           <h3>{l.title}</h3>
           <p>{l.description}</p>
@@ -229,111 +247,136 @@ export function LearningWorkspace({
   return (
     <div className="workspace">
       {storageWarning && <output className="notice">{storageWarning}</output>}
-      {(view === 'lessons' || view === 'activities') && (
+      {view === 'lessons' &&
+        (browseChapter ? (
+          <>
+            <a
+              className="back-link"
+              href={`/?view=lessons&grade=${grade}&subject=${browseSubject}`}
+            >
+              <ArrowLeft size={17} /> Chapters
+            </a>
+            <div className="page-heading">
+              <div>
+                <p className="eyebrow">
+                  {browseSubject} · CLASS {grade}
+                </p>
+                <h1>{browseChapter}</h1>
+                <p>Do the modules in order.</p>
+              </div>
+            </div>
+            <div className="lesson-grid">
+              {chapterLessons(browseSubject!, browseChapter).map((m, i) => (
+                <div className="module-tile" key={m.id}>
+                  <span className="module-step" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  {card(m)}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : browseSubject ? (
+          <>
+            <a className="back-link" href={`/?view=lessons&grade=${grade}`}>
+              <ArrowLeft size={17} /> Subjects
+            </a>
+            <div className="page-heading">
+              <div>
+                <p className="eyebrow">
+                  {browseSubject} · CLASS {grade}
+                </p>
+                <h1>{browseSubject}</h1>
+                <p>Pick a chapter to begin.</p>
+              </div>
+            </div>
+            <div className="subject-grid">
+              {browseChapters.map((chapter) => (
+                <a
+                  className="lesson-card subject"
+                  key={chapter}
+                  aria-label={`${chapter} modules`}
+                  href={`/?view=lessons&grade=${grade}&subject=${browseSubject}&chapter=${encodeURIComponent(chapter)}`}
+                >
+                  <div className="subject-symbol">
+                    <span aria-hidden="true">📖</span>
+                    <span aria-hidden="true" className="sequence-step">
+                      {String(chapterIndex(chapter)).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className="lesson-card-body">
+                    <span className="subject-tag">{browseSubject}</span>
+                    <h3>{chapter}</h3>
+                    <p>
+                      {chapterLessons(browseSubject, chapter).length} modules
+                    </p>
+                    <div className="card-bottom">
+                      <span>Start here</span>
+                      <ArrowRight />
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="page-heading">
+              <div>
+                <p className="eyebrow">CLASS {grade}</p>
+                <h1>Pick your subject</h1>
+              </div>
+            </div>
+            <div className="subject-grid">
+              {SUBJECT_ORDER.map((s) => {
+                const total = lessons.filter(
+                  (l) => l.grade === grade && l.subject === s,
+                );
+                const count = total.filter((l) =>
+                  progress.completed.includes(l.id),
+                ).length;
+                return (
+                  <a
+                    className={`lesson-card subject ${s.toLowerCase()}`}
+                    key={s}
+                    aria-label={`${s} modules`}
+                    href={`/?view=lessons&grade=${grade}&subject=${s}`}
+                  >
+                    <div className="subject-symbol">
+                      <span aria-hidden="true">{SUBJECT_META[s].icon}</span>
+                    </div>
+                    <div className="lesson-card-body">
+                      <span className="subject-tag">{s}</span>
+                      <h3>{s}</h3>
+                      <p>{SUBJECT_META[s].blurb}</p>
+                      <div className="card-bottom">
+                        <span>
+                          {total.length}{' '}
+                          {total.length === 1 ? 'module' : 'modules'}
+                        </span>
+                        <span className="mini-progress">{count}/{total.length}</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </>
+        ))}
+      {view === 'activities' && (
         <>
           <div className="page-heading">
             <div>
-              <p className="eyebrow">CLASS {grade} · YOUR PACE, YOUR WAY</p>
-              <h1>
-                {view === 'lessons'
-                  ? 'Little lessons. Big discoveries.'
-                  : 'Let’s learn by playing.'}
-              </h1>
-              <p>
-                {view === 'lessons'
-                  ? 'Pick a lesson. Look, explore and try.'
-                  : 'Choose a picture challenge. Try as many times as you like.'}
-              </p>
+              <p className="eyebrow">CLASS {grade} · LET’S PLAY</p>
+              <h1>Let’s learn by playing.</h1>
+              <p>Choose a picture challenge. Try as many times as you like.</p>
             </div>
           </div>
-          <Tabs value={subject} onValueChange={(v) => setSubject(String(v))}>
-            <TabsList className="subject-tabs" aria-label="Subject">
-              <TabsTrigger value="All">All subjects</TabsTrigger>
-              <TabsTrigger value="Maths">Maths</TabsTrigger>
-              <TabsTrigger value="Science">Science</TabsTrigger>
-            </TabsList>
-            {['All', 'Maths', 'Science'].map((s) => (
-              <TabsContent key={s} value={s}>
-                {grade === 1 && s === 'Science' && (
-                  <div className="science-welcome">
-                    <span>🌿 + 🪐</span>
-                    <div>
-                      <p className="eyebrow">LITTLE SCIENTISTS · CLASS 1</p>
-                      <h2>Discover the world around you.</h2>
-                      <p>NCERT topic practice, plus extra discoveries.</p>
-                    </div>
-                  </div>
-                )}
-                {grade === 1 && s === 'Science' && (
-                  <>
-                    <fieldset
-                      className="science-paths"
-                      aria-label="Science learning path"
-                    >
-                      {[
-                        ['ncert', 'NCERT topics'],
-                        ['extras', 'Extra discoveries'],
-                        ['all', 'All science'],
-                      ].map(([value, label]) => (
-                        <button
-                          key={value}
-                          className={
-                            sciencePath === value ? 'primary' : 'secondary'
-                          }
-                          aria-pressed={sciencePath === value}
-                          onClick={() => setSciencePath(value)}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </fieldset>
-                    <details className="curriculum-map">
-                      <summary>NCERT Class 1 topic list & lesson map</summary>
-                      <p>
-                        Class 1 environmental learning is integrated with
-                        language and maths. These are our activities mapped to
-                        NCERT topics, not official textbook chapters. Extra
-                        discoveries include space and photosynthesis.
-                      </p>
-                      <a
-                        href="https://ncert.nic.in/pdf/publication/otherpublications/Learning_Outcome_for_the_Foundational_Stage.pdf#page=53"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Read NCERT’s foundational-stage syllabus ↗
-                      </a>
-                      <ul>
-                        {lessons
-                          .filter((l) => l.curriculum)
-                          .map((l) => (
-                            <li key={l.id}>
-                              <a href={`/?view=lesson&id=${l.id}&grade=1`}>
-                                {l.curriculum!.label} → {l.title}
-                              </a>
-                              <small>
-                                NCERT printed p. {l.curriculum!.page}
-                              </small>
-                            </li>
-                          ))}
-                      </ul>
-                      <p>
-                        Educator review is still needed. Screen activities
-                        supplement real-world learning and do not certify
-                        physical or sensory competencies.
-                      </p>
-                    </details>
-                  </>
-                )}
-                <div className="lesson-grid">
-                  {filtered.map((l) => card(l, view === 'activities'))}
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-          <p className="content-note">
-            A small collection of sample lessons. More adventures will grow
-            here.
-          </p>
+          <div className="lesson-grid">
+            {filtered
+              .filter((l) => l.subject === 'Maths')
+              .map((l) => card(l, true))}
+          </div>
         </>
       )}
       {(view === 'lesson' || view === 'activity') &&
@@ -349,7 +392,9 @@ export function LearningWorkspace({
             <div className="page-heading">
               <div>
                 <p className="eyebrow">
-                  {lesson.subject} · CLASS {lesson.grade}
+                  {lesson.subject}
+                  {lesson.chapter ? ` · ${lesson.chapter}` : ''} · CLASS{' '}
+                  {lesson.grade}
                 </p>
                 <h1>{lesson.title}</h1>
                 <p>{lesson.description}</p>
