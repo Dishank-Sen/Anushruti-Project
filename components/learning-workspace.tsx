@@ -15,12 +15,14 @@ import {
 } from 'lucide-react';
 import {
   lessons,
+  scienceImages,
   SUBJECT_ORDER,
   SUBJECT_META,
   subjectChapterOrder,
   CHAPTER_ORDER,
   type Lesson,
 } from '@/lib/lessons';
+import { ScienceLab, SciencePhoto } from '@/components/science-lab';
 import {
   emptyProgress,
   parseProgress,
@@ -48,8 +50,8 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-function subjectIsChapterList(value: string): value is 'Maths' | 'Science' {
-  return value === 'Maths' || value === 'Science';
+function subjectIsChapterList(value: string): value is 'Maths' {
+  return value === 'Maths';
 }
 export function LearningWorkspace({
   view,
@@ -62,6 +64,7 @@ export function LearningWorkspace({
   const [ready, setReady] = useState(false);
   const [storageWarning, setStorageWarning] = useState('');
   const [subject, setSubject] = useState('All');
+  const [sciencePath, setSciencePath] = useState('ncert');
   const [chapterName, setChapterName] = useState('');
   const [lessonId, setLessonId] = useState('');
   const [selected, setSelected] = useState<number | null>(null);
@@ -317,6 +320,90 @@ export function LearningWorkspace({
                   </div>
                 </a>
               ))}
+            </div>
+          </>
+        ) : subject === 'Science' ? (
+          <>
+            <a className="back-link" href={`/?view=lessons&grade=${grade}`}>
+              <ArrowLeft size={17} /> Subjects
+            </a>
+            <div className="page-heading">
+              <div>
+                <p className="eyebrow">
+                  SCIENCE · CLASS {grade}
+                </p>
+                <h1>Science Discoveries</h1>
+                <p>Explore NCERT topics and extra science adventures.</p>
+              </div>
+            </div>
+            {grade === 1 && (
+              <>
+                <div className="science-welcome">
+                  <span>🌿 + 🪐</span>
+                  <div>
+                    <p className="eyebrow">LITTLE SCIENTISTS · CLASS 1</p>
+                    <h2>Discover the world around you.</h2>
+                    <p>NCERT topic practice, plus extra discoveries.</p>
+                  </div>
+                </div>
+                <fieldset
+                  className="science-paths"
+                  aria-label="Science learning path"
+                >
+                  {[
+                    ['ncert', 'NCERT topics'],
+                    ['extras', 'Extra discoveries'],
+                    ['all', 'All science'],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      className={
+                        sciencePath === value ? 'primary' : 'secondary'
+                      }
+                      aria-pressed={sciencePath === value}
+                      onClick={() => setSciencePath(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </fieldset>
+                <details className="curriculum-map">
+                  <summary>NCERT Class 1 topic list &amp; lesson map</summary>
+                  <p>
+                    Class 1 environmental learning is integrated with language
+                    and maths. These are our activities mapped to NCERT topics,
+                    not official textbook chapters. Extra discoveries include
+                    space and photosynthesis.
+                  </p>
+                  <a
+                    href="https://ncert.nic.in/pdf/publication/otherpublications/Learning_Outcome_for_the_Foundational_Stage.pdf#page=53"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read NCERT’s foundational-stage syllabus ↗
+                  </a>
+                  <ul>
+                    {lessons
+                      .filter((l) => l.curriculum)
+                      .map((l) => (
+                        <li key={l.id}>
+                          <a href={`/?view=lesson&id=${l.id}&grade=1`}>
+                            {l.curriculum!.label} → {l.title}
+                          </a>
+                          <small>NCERT printed p. {l.curriculum!.page}</small>
+                        </li>
+                      ))}
+                  </ul>
+                  <p>
+                    Educator review is still needed. Screen activities supplement
+                    real-world learning and do not certify physical or sensory
+                    competencies.
+                  </p>
+                </details>
+              </>
+            )}
+            <div className="lesson-grid">
+              {filtered.map((l) => card(l))}
             </div>
           </>
         ) : (
