@@ -41,17 +41,17 @@ export const chapter08: MathsChapter = {
       toolkitType: 'place-value-blocks',
       steps: [
         {
-          visual: '🪵🪵 (2 tens) = 20',
+          visual: '🪵🪵 = 20',
           title: 'Two tens',
           text: 'Two bundles of ten make twenty.',
         },
         {
-          visual: '🪵🪵 (2 tens) + 🥢🥢🥢 (3 ones) = 23',
+          visual: '🪵🪵 + 🥢🥢🥢 = 23',
           title: 'Twenty-three',
           text: 'Two tens and 3 ones make 23.',
         },
         {
-          visual: '🪵🪵🪵 (3 tens) = 30',
+          visual: '🪵🪵🪵 = 30',
           title: 'Three tens',
           text: 'Three bundles of ten make thirty.',
         },
@@ -117,12 +117,12 @@ export const chapter08: MathsChapter = {
       toolkitType: 'place-value-blocks',
       steps: [
         {
-          visual: '📿 (3 strings of 10)',
+          visual: '📿 📿 📿 = 30',
           title: 'Three strings of ten',
           text: 'Three strings hold 10 beads each: 30.',
         },
         {
-          visual: '⚪ ⚪ ⚪ ⚪ (4 loose beads)',
+          visual: '⚪ ⚪ ⚪ ⚪ = 4',
           title: 'Four loose beads',
           text: 'Four shiny beads are added at the end.',
         },

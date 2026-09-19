@@ -17,6 +17,41 @@ import { TenFrame } from './TenFrame';
 import { CoinTray } from './CoinTray';
 import { HintLadder } from './HintLadder';
 import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
+import { HandSignVisual } from '../isl/HandSignVisual.tsx';
+
+function getStepSignKey(stepTitle: string, stepText: string, stepVisual: string, chapter?: MathsChapter): string | null {
+  // Check if step text or title contains any vocab word from chapter.islVocab
+  if (chapter?.islVocab) {
+    for (const v of chapter.islVocab) {
+      const regex = new RegExp(`\\b${v.word}\\b`, 'i');
+      if (regex.test(stepTitle) || regex.test(stepText)) {
+        return v.word;
+      }
+    }
+  }
+
+  // Check for common foundational keywords in title, text, or visual
+  const combined = `${stepTitle} ${stepText} ${stepVisual}`;
+  const keywords = [
+    'INSIDE', 'OUTSIDE', 'TOP', 'BOTTOM', 'ROUND', 'LONG', 'ROLL', 'SLIDE',
+    'BIG', 'SMALL', 'ADD', 'PLUS', 'MORE', 'LESS', 'COUNT', 'CAT', 'BOOK',
+    'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE',
+  ];
+  for (const kw of keywords) {
+    const regex = new RegExp(`\\b${kw}\\b`, 'i');
+    if (regex.test(combined)) {
+      return kw;
+    }
+  }
+
+  // Check for single numbers 1 to 5
+  const numMatch = combined.match(/\b([1-5])\b/);
+  if (numMatch) {
+    return numMatch[1];
+  }
+
+  return null;
+}
 
 interface MathsLessonPlayerProps {
   lesson: MathsLesson;
@@ -145,12 +180,41 @@ export function MathsLessonPlayer({
           </div>
         </div>
 
-        {/* Big Visual Display */}
-        <div className="py-8 px-4 rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)] text-center select-none min-h-[140px] flex items-center justify-center">
-          <div className="text-4xl sm:text-5xl font-mono tracking-wide">
-            {activeStep.visual}
-          </div>
-        </div>
+        {/* Multimodal Pedagogy Stage: Visual Scene + Real ISL Hand Sign */}
+        {(() => {
+          const activeSignKey = getStepSignKey(activeStep.title, activeStep.text, activeStep.visual, chapter);
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+              {/* Main Visual Display */}
+              <div
+                className={`${
+                  activeSignKey ? 'md:col-span-8' : 'md:col-span-12'
+                } py-6 px-4 rounded-3xl bg-[var(--bg)] border-2 border-[var(--line)] flex flex-col items-center justify-center text-center select-none min-h-[160px]`}
+              >
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-2">
+                  👁️ Visual Model
+                </span>
+                <div className="text-4xl sm:text-5xl font-mono tracking-wide py-2">
+                  {activeStep.visual}
+                </div>
+              </div>
+
+              {/* Real Hand Sign Demonstration for this Step */}
+              {activeSignKey && (
+                <div className="md:col-span-4 p-4 rounded-3xl bg-[var(--surface)] border-2 border-[#c2d2fc] flex flex-col items-center justify-center text-center shadow-xs">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--maths)] mb-2">
+                    🤟 Real Sign: {activeSignKey}
+                  </span>
+                  <HandSignVisual
+                    signKey={activeSignKey}
+                    size={160}
+                    showFingerspellingStrip={false}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Caption Strip: Strictly <= 12 words with optional Fitzgerald Key colors */}
         <div className="p-4 rounded-2xl bg-[var(--surface)] border-2 border-[#d8e2fd] text-center">

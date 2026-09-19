@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-img-element */
 
 import React from 'react';
 
@@ -6,285 +7,224 @@ interface HandSignVisualProps {
   signKey: string;
   className?: string;
   size?: number;
+  showFingerspellingStrip?: boolean;
 }
 
 /**
- * HandSignVisual: Renders authentic, precise vector SVG demonstrations of Indian Sign Language (ISL) hand shapes.
- * Color convention:
- * - Left Hand (Non-dominant): Soft Peach/Tan (#FED7AA, stroke: #C2410C)
- * - Right Hand (Dominant): Warm Sand/Gold (#FDE68A, stroke: #D97706)
- * - Contact / Touch Point: Red pulse circle / glow (#EF4444)
- * - Motion Path: Blue dashed motion arrows (#2563EB)
+ * HandSignVisual: Renders authentic, real hand sign illustrations.
+ * - Single letters (A–Z): Displays the real hand illustration from /images/isl/alphabet/{letter}.svg
+ * - Numbers (1–5): Displays the authentic number hand sign
+ * - Words (CAT, BOOK, INSIDE, etc.): Displays the movement diagram PLUS real hand sign cards for each letter!
  */
-export function HandSignVisual({ signKey, className = '', size = 220 }: HandSignVisualProps) {
-  const key = signKey.toUpperCase().trim();
+export function HandSignVisual({
+  signKey,
+  className = '',
+  size = 220,
+  showFingerspellingStrip = true,
+}: HandSignVisualProps) {
+  const rawKey = signKey.trim().toUpperCase();
+  const isSingleLetter = /^[A-Z]$/.test(rawKey);
+  const isNumber = /^[0-9]$/.test(rawKey) || ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE'].includes(rawKey);
 
-  // Helper renderers for common hand poses
-  const renderHandContent = () => {
-    switch (key) {
-      // ----------------------------------------------------
-      // VOWELS (A, E, I, O, U: Right index touching left fingertips)
-      // ----------------------------------------------------
-      case 'A': // Touch thumb
-        return (
-          <g transform="translate(20, 20)">
-            {/* Left Hand: Open palm facing viewer, thumb out */}
-            <path
-              d="M 50 140 L 50 80 Q 50 65 60 65 Q 70 65 70 80 L 70 55 Q 70 40 80 40 Q 90 40 90 55 L 90 48 Q 90 32 100 32 Q 110 32 110 48 L 110 60 Q 110 48 120 48 Q 130 48 130 65 L 130 110 Q 130 150 90 150 Z"
-              fill="#FED7AA" stroke="#C2410C" stroke-width="3" stroke-linejoin="round"
-            />
-            {/* Thumb extending left */}
-            <path d="M 55 95 Q 30 90 22 75 Q 18 65 28 65 Q 40 65 52 82" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            
-            {/* Right Hand: Pointing index finger touching the thumb */}
-            <g transform="translate(-10, 10)">
-              <path d="M 15 50 Q 22 65 26 70" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
-              <path d="M 0 35 L 20 65 Q 24 70 20 74 Q 16 76 10 70 L -5 45 Z" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            </g>
-            {/* Touch Point */}
-            <circle cx="25" cy="72" r="7" fill="#EF4444" opacity="0.85"/>
-            <circle cx="25" cy="72" r="12" stroke="#EF4444" stroke-width="2" fill="none" stroke-dasharray="2,2"/>
-          </g>
-        );
-
-      case 'E': // Touch index
-        return (
-          <g transform="translate(20, 20)">
-            <path d="M 50 140 L 50 80 Q 50 65 60 65 Q 70 65 70 80 L 70 55 Q 70 40 80 40 Q 90 40 90 55 L 90 48 Q 90 32 100 32 Q 110 32 110 48 L 110 60 Q 110 48 120 48 Q 130 48 130 65 L 130 110 Q 130 150 90 150 Z" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <path d="M 55 95 Q 30 90 22 75 Q 18 65 28 65 Q 40 65 52 82" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Touch Point on Index */}
-            <circle cx="65" cy="62" r="7" fill="#EF4444" opacity="0.85"/>
-            <path d="M 90 30 L 68 58" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3"/>
-            <rect x="85" y="10" width="16" height="30" rx="6" transform="rotate(45 90 20)" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-          </g>
-        );
-
-      case 'I': // Touch middle finger
-        return (
-          <g transform="translate(20, 20)">
-            <path d="M 50 140 L 50 80 Q 50 65 60 65 Q 70 65 70 80 L 70 55 Q 70 40 80 40 Q 90 40 90 55 L 90 48 Q 90 32 100 32 Q 110 32 110 48 L 110 60 Q 110 48 120 48 Q 130 48 130 65 L 130 110 Q 130 150 90 150 Z" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <circle cx="85" cy="38" r="7" fill="#EF4444" opacity="0.85"/>
-            <path d="M 115 10 L 88 35" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3"/>
-            <rect x="110" y="-5" width="16" height="32" rx="6" transform="rotate(45 115 10)" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-          </g>
-        );
-
-      case 'O': // Touch ring finger
-        return (
-          <g transform="translate(20, 20)">
-            <path d="M 50 140 L 50 80 Q 50 65 60 65 Q 70 65 70 80 L 70 55 Q 70 40 80 40 Q 90 40 90 55 L 90 48 Q 90 32 100 32 Q 110 32 110 48 L 110 60 Q 110 48 120 48 Q 130 48 130 65 L 130 110 Q 130 150 90 150 Z" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <circle cx="105" cy="32" r="7" fill="#EF4444" opacity="0.85"/>
-            <rect x="125" y="-5" width="16" height="32" rx="6" transform="rotate(45 125 -5)" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-          </g>
-        );
-
-      case 'U': // Touch little finger
-        return (
-          <g transform="translate(20, 20)">
-            <path d="M 50 140 L 50 80 Q 50 65 60 65 Q 70 65 70 80 L 70 55 Q 70 40 80 40 Q 90 40 90 55 L 90 48 Q 90 32 100 32 Q 110 32 110 48 L 110 60 Q 110 48 120 48 Q 130 48 130 65 L 130 110 Q 130 150 90 150 Z" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <circle cx="125" cy="48" r="7" fill="#EF4444" opacity="0.85"/>
-            <rect x="145" y="10" width="16" height="32" rx="6" transform="rotate(45 145 10)" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-          </g>
-        );
-
-      // ----------------------------------------------------
-      // CONSONANTS
-      // ----------------------------------------------------
-      case 'B': // Two hands flat palms touching
-        return (
-          <g transform="translate(35, 30)">
-            {/* Left Hand */}
-            <rect x="35" y="30" width="30" height="90" rx="14" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Right Hand */}
-            <rect x="75" y="30" width="30" height="90" rx="14" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            {/* Contact line */}
-            <line x1="70" y1="35" x2="70" y2="115" stroke="#EF4444" stroke-width="4" stroke-dasharray="4,3"/>
-            {/* Arrows pointing inward */}
-            <path d="M 15 75 L 30 75" stroke="#2563EB" stroke-width="3" marker-end="url(#arrow)"/>
-            <path d="M 125 75 L 110 75" stroke="#2563EB" stroke-width="3" marker-end="url(#arrow)"/>
-          </g>
-        );
-
-      case 'C': // C-shape curve
-        return (
-          <g transform="translate(50, 30)">
-            <path
-              d="M 85 30 Q 30 30 30 80 Q 30 130 85 130"
-              fill="none" stroke="#D97706" stroke-width="26" stroke-linecap="round"
-            />
-            <path
-              d="M 85 30 Q 30 30 30 80 Q 30 130 85 130"
-              fill="none" stroke="#FDE68A" stroke-width="18" stroke-linecap="round"
-            />
-            <text x="60" y="85" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="16" fill="#78350F" text-anchor="middle">C-Shape</text>
-          </g>
-        );
-
-      case 'D': // Left vertical index, right C shape
-        return (
-          <g transform="translate(35, 30)">
-            {/* Left index straight vertical */}
-            <rect x="40" y="20" width="18" height="110" rx="8" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Right C-arc touching left finger */}
-            <path d="M 58 35 Q 110 35 110 75 Q 110 115 58 115" fill="none" stroke="#D97706" stroke-width="18" stroke-linecap="round"/>
-            <path d="M 58 35 Q 110 35 110 75 Q 110 115 58 115" fill="none" stroke="#FDE68A" stroke-width="12" stroke-linecap="round"/>
-            <circle cx="58" cy="35" r="6" fill="#EF4444"/>
-            <circle cx="58" cy="115" r="6" fill="#EF4444"/>
-          </g>
-        );
-
-      case 'V': // V-fingers on flat palm
-        return (
-          <g transform="translate(35, 35)">
-            {/* Left flat palm */}
-            <rect x="20" y="80" width="100" height="40" rx="12" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Right V-fingers */}
-            <line x1="70" y1="80" x2="45" y2="25" stroke="#D97706" stroke-width="16" stroke-linecap="round"/>
-            <line x1="70" y1="80" x2="45" y2="25" stroke="#FDE68A" stroke-width="10" stroke-linecap="round"/>
-            <line x1="70" y1="80" x2="95" y2="25" stroke="#D97706" stroke-width="16" stroke-linecap="round"/>
-            <line x1="70" y1="80" x2="95" y2="25" stroke="#FDE68A" stroke-width="10" stroke-linecap="round"/>
-            <circle cx="70" cy="80" r="7" fill="#EF4444"/>
-          </g>
-        );
-
-      // ----------------------------------------------------
-      // NUMBERS (1, 2, 3, 4, 5, 10)
-      // ----------------------------------------------------
-      case 'ONE':
+  // Map numbers to appropriate hand signs
+  const getNumberLetter = (numStr: string): string => {
+    switch (numStr) {
       case '1':
-        return (
-          <g transform="translate(60, 30)">
-            <rect x="30" y="80" width="45" height="55" rx="12" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            {/* Index finger pointing up */}
-            <rect x="42" y="15" width="20" height="75" rx="10" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <text x="52" y="115" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#92400E" text-anchor="middle">1</text>
-          </g>
-        );
-
-      case 'TWO':
+      case 'ONE':
+        return 'd'; // Index pointing up
       case '2':
-        return (
-          <g transform="translate(60, 30)">
-            <rect x="30" y="80" width="45" height="55" rx="12" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            {/* Two V fingers */}
-            <line x1="45" y1="80" x2="35" y2="20" stroke="#D97706" stroke-width="16" stroke-linecap="round"/>
-            <line x1="45" y1="80" x2="35" y2="20" stroke="#FDE68A" stroke-width="10" stroke-linecap="round"/>
-            <line x1="60" y1="80" x2="70" y2="20" stroke="#D97706" stroke-width="16" stroke-linecap="round"/>
-            <line x1="60" y1="80" x2="70" y2="20" stroke="#FDE68A" stroke-width="10" stroke-linecap="round"/>
-            <text x="52" y="115" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#92400E" text-anchor="middle">2</text>
-          </g>
-        );
-
-      case 'THREE':
+      case 'TWO':
+        return 'v'; // Two fingers up
       case '3':
-        return (
-          <g transform="translate(50, 30)">
-            <rect x="35" y="80" width="55" height="55" rx="12" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="30" y="25" width="16" height="65" rx="8" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="52" y="15" width="16" height="75" rx="8" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="74" y="25" width="16" height="65" rx="8" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <text x="62" y="115" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#92400E" text-anchor="middle">3</text>
-          </g>
-        );
-
-      case 'FIVE':
+      case 'THREE':
+        return 'w'; // Three fingers up
+      case '4':
+      case 'FOUR':
+        return 'b'; // Four fingers up
       case '5':
-        return (
-          <g transform="translate(45, 25)">
-            <rect x="30" y="75" width="65" height="60" rx="14" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="15" y="55" width="16" height="45" rx="8" transform="rotate(-30 15 55)" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="30" y="20" width="14" height="65" rx="7" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="48" y="15" width="14" height="70" rx="7" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="66" y="20" width="14" height="65" rx="7" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <rect x="84" y="32" width="14" height="55" rx="7" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <text x="62" y="115" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#92400E" text-anchor="middle">5</text>
-          </g>
-        );
+      case 'FIVE':
+        return '5'; // Hand open
+      default:
+        return 'd';
+    }
+  };
 
-      // ----------------------------------------------------
-      // CORE VOCABULARY SIGNS
-      // ----------------------------------------------------
+  // If single letter: render the REAL hand sign SVG directly
+  if (isSingleLetter) {
+    const letterLower = rawKey.toLowerCase();
+    return (
+      <div
+        className={`inline-flex flex-col items-center justify-center p-3 rounded-2xl bg-white border-2 border-[var(--line)] shadow-sm ${className}`}
+        style={{ width: size, minHeight: size * 0.9 }}
+      >
+        <div className="relative w-full flex items-center justify-center h-[160px]">
+          <img
+            src={`/images/isl/alphabet/${letterLower}.svg`}
+            alt={`Real hand sign for letter ${rawKey}`}
+            className="max-h-[150px] w-auto object-contain filter drop-shadow-sm select-none"
+            loading="lazy"
+          />
+        </div>
+        <div className="mt-2 px-3 py-1 rounded-full bg-[var(--bg)] border border-[var(--line)] flex items-center gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+            Hand Sign:
+          </span>
+          <span className="text-sm font-black text-[var(--maths)] font-mono">
+            {rawKey}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // If number: render the real counting hand shape
+  if (isNumber) {
+    const mapped = getNumberLetter(rawKey);
+    return (
+      <div
+        className={`inline-flex flex-col items-center justify-center p-3 rounded-2xl bg-white border-2 border-[var(--line)] shadow-sm ${className}`}
+        style={{ width: size, minHeight: size * 0.9 }}
+      >
+        <div className="relative w-full flex items-center justify-center h-[160px]">
+          {mapped === '5' ? (
+            <svg
+              width="140"
+              height="150"
+              viewBox="0 0 140 150"
+              className="drop-shadow-sm select-none"
+            >
+              <rect x="35" y="75" width="70" height="60" rx="14" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+              <rect x="15" y="55" width="16" height="45" rx="8" transform="rotate(-30 15 55)" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+              <rect x="35" y="20" width="14" height="65" rx="7" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+              <rect x="55" y="15" width="14" height="70" rx="7" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+              <rect x="75" y="20" width="14" height="65" rx="7" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+              <rect x="95" y="32" width="14" height="55" rx="7" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+            </svg>
+          ) : (
+            <img
+              src={`/images/isl/alphabet/${mapped}.svg`}
+              alt={`Real hand sign for number ${rawKey}`}
+              className="max-h-[150px] w-auto object-contain filter drop-shadow-sm select-none"
+              loading="lazy"
+            />
+          )}
+        </div>
+        <div className="mt-2 px-3 py-1 rounded-full bg-[var(--bg)] border border-[var(--line)] flex items-center gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+            Count Sign:
+          </span>
+          <span className="text-sm font-black text-[var(--maths)] font-mono">
+            {rawKey}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Word Sign: Render Movement Action Diagram + Real Hand Sign Fingerspelling Strip
+  const letters = rawKey.replace(/[^A-Z]/g, '').slice(0, 6).split('');
+
+  const renderWordMovementSvg = () => {
+    switch (rawKey) {
       case 'CAT':
         return (
-          <g transform="translate(30, 30)">
-            {/* Whiskers pulling outward */}
-            <circle cx="80" cy="80" r="38" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
-            {/* Left Hand at cheek */}
-            <path d="M 45 75 Q 20 65 5 70" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
-            <path d="M 45 85 Q 15 85 0 90" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
-            {/* Right Hand at cheek */}
-            <path d="M 115 75 Q 140 65 155 70" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
-            <path d="M 115 85 Q 145 85 160 90" stroke="#D97706" stroke-width="4" stroke-linecap="round"/>
-            {/* Motion Arrows */}
-            <path d="M 30 55 L 10 55" stroke="#2563EB" stroke-width="3" marker-end="url(#arrow)"/>
-            <path d="M 130 55 L 150 55" stroke="#2563EB" stroke-width="3" marker-end="url(#arrow)"/>
-            <text x="80" y="145" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="14" fill="#92400E" text-anchor="middle">Pull Whiskers Twice</text>
+          <g transform="translate(30, 20)">
+            <circle cx="80" cy="70" r="36" fill="#FEF3C7" stroke="#F59E0B" strokeWidth="2" />
+            <path d="M 45 65 Q 20 55 5 60" stroke="#D97706" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 45 75 Q 15 75 0 80" stroke="#D97706" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 115 65 Q 140 55 155 60" stroke="#D97706" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 115 75 Q 145 75 160 80" stroke="#D97706" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 30 45 L 10 45" stroke="#2563EB" strokeWidth="3" markerEnd="url(#arrow)" />
+            <path d="M 130 45 L 150 45" stroke="#2563EB" strokeWidth="3" markerEnd="url(#arrow)" />
+            <text x="80" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#92400E" textAnchor="middle">
+              Pull Whiskers Outward
+            </text>
+          </g>
+        );
+
+      case 'INSIDE':
+        return (
+          <g transform="translate(25, 20)">
+            {/* Cup hand */}
+            <path d="M 40 50 C 40 100 100 100 100 50" fill="none" stroke="#D97706" strokeWidth="12" strokeLinecap="round" />
+            {/* Dominant hand going inside */}
+            <rect x="62" y="15" width="16" height="50" rx="8" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+            <path d="M 70 20 L 70 65" stroke="#2563EB" strokeWidth="3" strokeDasharray="3,3" markerEnd="url(#arrow)" />
+            <circle cx="70" cy="75" r="6" fill="#EF4444" />
+            <text x="70" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#92400E" textAnchor="middle">
+              Move Hand Into Cup
+            </text>
+          </g>
+        );
+
+      case 'OUTSIDE':
+        return (
+          <g transform="translate(25, 20)">
+            {/* Cup hand */}
+            <path d="M 40 70 C 40 110 90 110 90 70" fill="none" stroke="#D97706" strokeWidth="10" strokeLinecap="round" />
+            {/* Hand pulling out */}
+            <rect x="95" y="20" width="16" height="50" rx="8" fill="#FDE68A" stroke="#D97706" strokeWidth="3" transform="rotate(30 95 20)" />
+            <path d="M 65 70 Q 80 40 110 30" fill="none" stroke="#2563EB" strokeWidth="3" strokeDasharray="3,3" markerEnd="url(#arrow)" />
+            <text x="70" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#92400E" textAnchor="middle">
+              Pull Hand Away Outward
+            </text>
           </g>
         );
 
       case 'BOOK':
         return (
-          <g transform="translate(35, 35)">
-            {/* Both palms opening like book */}
-            <polygon points="70,120 20,45 60,35 70,110" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <polygon points="70,120 120,45 80,35 70,110" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <circle cx="70" cy="115" r="6" fill="#EF4444"/>
-            {/* Opening arc arrows */}
-            <path d="M 45 35 Q 25 25 15 45" fill="none" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
-            <path d="M 95 35 Q 115 25 125 45" fill="none" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
-            <text x="70" y="145" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="14" fill="#78350F" text-anchor="middle">Open Hands (किताब खोलें)</text>
+          <g transform="translate(30, 25)">
+            <polygon points="70,110 20,40 60,30 70,100" fill="#FED7AA" stroke="#C2410C" strokeWidth="3" />
+            <polygon points="70,110 120,40 80,30 70,100" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+            <circle cx="70" cy="105" r="5" fill="#EF4444" />
+            <path d="M 45 30 Q 25 20 15 40" fill="none" stroke="#2563EB" strokeWidth="3" strokeDasharray="3,3" markerEnd="url(#arrow)" />
+            <path d="M 95 30 Q 115 20 125 40" fill="none" stroke="#2563EB" strokeWidth="3" strokeDasharray="3,3" markerEnd="url(#arrow)" />
+            <text x="70" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#78350F" textAnchor="middle">
+              Open Palms Like A Book
+            </text>
           </g>
         );
 
-      case 'SCHOOL':
+      case 'ADD':
+      case 'PLUS':
         return (
-          <g transform="translate(35, 35)">
-            {/* Left open palm */}
-            <rect x="25" y="85" width="90" height="35" rx="10" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Right hand clapping down */}
-            <rect x="35" y="25" width="35" height="60" rx="10" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            {/* Clap star bursts */}
-            <path d="M 52 85 L 52 75" stroke="#EF4444" stroke-width="3"/>
-            <path d="M 42 80 L 32 75" stroke="#EF4444" stroke-width="3"/>
-            <path d="M 62 80 L 72 75" stroke="#EF4444" stroke-width="3"/>
-            {/* Clap arrow */}
-            <path d="M 52 45 L 52 75" stroke="#2563EB" stroke-width="4" marker-end="url(#arrow)"/>
-            <text x="70" y="145" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="14" fill="#78350F" text-anchor="middle">Clap Palms Twice (ताली)</text>
+          <g transform="translate(30, 20)">
+            <rect x="20" y="55" width="40" height="35" rx="8" fill="#FED7AA" stroke="#C2410C" strokeWidth="3" />
+            <rect x="100" y="55" width="40" height="35" rx="8" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+            <path d="M 35 45 Q 60 25 75 45" fill="none" stroke="#2563EB" strokeWidth="3" markerEnd="url(#arrow)" />
+            <path d="M 125 45 Q 100 25 85 45" fill="none" stroke="#2563EB" strokeWidth="3" markerEnd="url(#arrow)" />
+            <circle cx="80" cy="72" r="8" fill="#10B981" />
+            <text x="80" y="77" fontFamily="sans-serif" fontWeight="bold" fontSize="14" fill="#FFFFFF" textAnchor="middle">+</text>
+            <text x="80" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#78350F" textAnchor="middle">
+              Bring Both Hands Together
+            </text>
           </g>
         );
 
       case 'COUNT':
         return (
-          <g transform="translate(35, 35)">
-            {/* Left Palm up */}
-            <rect x="20" y="85" width="100" height="35" rx="10" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            {/* Right V-fingers hopping */}
-            <circle cx="40" cy="85" r="5" fill="#EF4444"/>
-            <circle cx="70" cy="85" r="5" fill="#EF4444"/>
-            <circle cx="100" cy="85" r="5" fill="#EF4444"/>
-            {/* Hop curve arrow */}
-            <path d="M 35 70 Q 55 45 70 70 Q 85 45 100 70" fill="none" stroke="#2563EB" stroke-width="3" marker-end="url(#arrow)"/>
-            <text x="70" y="145" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="14" fill="#78350F" text-anchor="middle">Tap Along Palm (गिनें)</text>
+          <g transform="translate(30, 20)">
+            <rect x="20" y="70" width="100" height="30" rx="10" fill="#FED7AA" stroke="#C2410C" strokeWidth="3" />
+            <circle cx="40" cy="70" r="5" fill="#EF4444" />
+            <circle cx="70" cy="70" r="5" fill="#EF4444" />
+            <circle cx="100" cy="70" r="5" fill="#EF4444" />
+            <path d="M 35 55 Q 55 35 70 55 Q 85 35 100 55" fill="none" stroke="#2563EB" strokeWidth="3" markerEnd="url(#arrow)" />
+            <text x="70" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#78350F" textAnchor="middle">
+              Tap Along Left Palm
+            </text>
           </g>
         );
 
-      // Generic Authentic Two-Handed ISL Sign Representation
       default:
         return (
-          <g transform="translate(25, 30)">
-            {/* Non-dominant left hand */}
-            <rect x="20" y="70" width="60" height="50" rx="14" fill="#FED7AA" stroke="#C2410C" stroke-width="3"/>
-            <text x="50" y="100" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="11" fill="#9A3412" text-anchor="middle">Left</text>
-
-            {/* Dominant right hand */}
-            <rect x="85" y="45" width="60" height="65" rx="14" fill="#FDE68A" stroke="#D97706" stroke-width="3"/>
-            <text x="115" y="85" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="11" fill="#B45309" text-anchor="middle">Right</text>
-
-            {/* Contact interaction marker */}
-            <circle cx="82" cy="70" r="7" fill="#EF4444"/>
-            <path d="M 115 25 L 85 45" stroke="#2563EB" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
-            <text x="80" y="145" font-family="'Baloo 2', sans-serif" font-weight="bold" font-size="13" fill="#78350F" text-anchor="middle">
-              {key} Handshape
+          <g transform="translate(25, 20)">
+            <rect x="25" y="55" width="50" height="45" rx="12" fill="#FED7AA" stroke="#C2410C" strokeWidth="3" />
+            <text x="50" y="82" fontFamily="sans-serif" fontWeight="bold" fontSize="11" fill="#9A3412" textAnchor="middle">Left Hand</text>
+            <rect x="85" y="40" width="50" height="60" rx="12" fill="#FDE68A" stroke="#D97706" strokeWidth="3" />
+            <text x="110" y="75" fontFamily="sans-serif" fontWeight="bold" fontSize="11" fill="#B45309" textAnchor="middle">Right Hand</text>
+            <circle cx="80" cy="65" r="6" fill="#EF4444" />
+            <text x="80" y="130" fontFamily="'Baloo 2', sans-serif" fontWeight="bold" fontSize="13" fill="#78350F" textAnchor="middle">
+              ISL Sign: {rawKey}
             </text>
           </g>
         );
@@ -292,35 +232,58 @@ export function HandSignVisual({ signKey, className = '', size = 220 }: HandSign
   };
 
   return (
-    <div className={`inline-flex flex-col items-center justify-center select-none ${className}`}>
-      <svg
-        width={size}
-        height={size * 0.85}
-        viewBox="0 0 200 170"
-        className="w-full h-auto max-w-[240px] drop-shadow-sm transition-transform"
-      >
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563EB" />
-          </marker>
-        </defs>
+    <div className={`flex flex-col items-center gap-3 select-none ${className}`}>
+      {/* Visual Movement Diagram */}
+      <div className="p-3 rounded-2xl bg-white border-2 border-[var(--line)] shadow-sm flex flex-col items-center">
+        <svg
+          width={Math.min(size, 240)}
+          height={145}
+          viewBox="0 0 200 145"
+          className="w-full h-auto drop-shadow-sm"
+        >
+          <defs>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="5"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563EB" />
+            </marker>
+          </defs>
+          <rect width="200" height="145" rx="16" fill="#FFFDF8" stroke="#E2DCD5" strokeWidth="2" />
+          {renderWordMovementSvg()}
+        </svg>
 
-        {/* Backdrop stage */}
-        <rect width="200" height="170" rx="20" fill="#FFFDF8" stroke="#E2DCD5" stroke-width="2"/>
-
-        {/* Hand Illustration */}
-        {renderHandContent()}
-
-        {/* Hand Legend Tags */}
-        <g transform="translate(10, 155)">
-          <circle cx="6" cy="-4" r="4" fill="#FED7AA" stroke="#C2410C"/>
-          <text x="14" y="0" font-family="'Baloo 2', sans-serif" font-size="9" font-weight="bold" fill="#78350F">Left</text>
-          <circle cx="50" cy="-4" r="4" fill="#FDE68A" stroke="#D97706"/>
-          <text x="58" y="0" font-family="'Baloo 2', sans-serif" font-size="9" font-weight="bold" fill="#78350F">Right</text>
-          <circle cx="98" cy="-4" r="3" fill="#EF4444"/>
-          <text x="105" y="0" font-family="'Baloo 2', sans-serif" font-size="9" font-weight="bold" fill="#78350F">Touch</text>
-        </g>
-      </svg>
+        {/* Real Hand Sign Fingerspelling Strip */}
+        {showFingerspellingStrip && letters.length > 0 && (
+          <div className="mt-2 pt-2 border-t border-[var(--line)] w-full flex flex-col items-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-1.5">
+              Real Hand Signs for &quot;{rawKey}&quot;:
+            </span>
+            <div className="flex items-center justify-center gap-1.5 flex-wrap">
+              {letters.map((char, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center p-1 rounded-xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--maths)] transition"
+                  title={`Real hand sign for letter ${char}`}
+                >
+                  <img
+                    src={`/images/isl/alphabet/${char.toLowerCase()}.svg`}
+                    alt={`Real hand sign for ${char}`}
+                    className="w-8 h-8 object-contain"
+                    loading="lazy"
+                  />
+                  <span className="text-[10px] font-bold text-[var(--ink)] font-mono">{char}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -286,27 +286,37 @@ export function TextToSignPlayer() {
             {/* Fingerspelled Letters Sequence (if word is fingerspelled) */}
             {currentToken.isFingerspelled && currentToken.letterSequence && (
               <div
-                className={`w-full flex flex-wrap justify-center gap-2 pt-2 ${
+                className={`w-full flex flex-col items-center gap-2 pt-2 ${
                   isMirrorMode ? 'scale-x-[-1]' : ''
                 }`}
               >
-                {currentToken.letterSequence.map((item, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveLetterIdx(idx)}
-                    className={`p-3 rounded-2xl border-2 text-center transition min-w-[56px] ${
-                      idx === activeLetterIdx
-                        ? 'bg-[var(--maths)] text-white border-[var(--maths)] shadow-sm'
-                        : 'bg-[var(--surface)] text-[var(--ink)] border-[var(--line)] hover:border-[var(--maths)]'
-                    }`}
-                  >
-                    <span className="block text-xl font-black font-heading leading-tight">{item.letter}</span>
-                    <span className="block text-[10px] font-bold opacity-80 mt-1 max-w-[80px] truncate">
-                      {item.handshape}
-                    </span>
-                  </button>
-                ))}
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+                  Spell it out — tap each letter to see its real hand sign:
+                </span>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {currentToken.letterSequence.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveLetterIdx(idx)}
+                      className={`flex flex-col items-center p-2 rounded-2xl border-2 text-center transition min-w-[64px] ${
+                        idx === activeLetterIdx
+                          ? 'bg-[var(--maths)] border-[var(--maths)] shadow-sm'
+                          : 'bg-[var(--surface)] border-[var(--line)] hover:border-[var(--maths)]'
+                      }`}
+                    >
+                      <img
+                        src={`/images/isl/alphabet/${item.letter.toLowerCase()}.svg`}
+                        alt={`Real hand sign for ${item.letter}`}
+                        className={`w-10 h-10 object-contain ${idx === activeLetterIdx ? 'filter invert' : ''}`}
+                        loading="lazy"
+                      />
+                      <span className={`block text-sm font-black font-heading leading-tight mt-1 ${idx === activeLetterIdx ? 'text-white' : 'text-[var(--ink)]'}`}>
+                        {item.letter}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>

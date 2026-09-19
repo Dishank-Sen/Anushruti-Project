@@ -41,17 +41,17 @@ export const chapter06: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🧺 (7 carrots)',
+          visual: '🥕 🥕 🥕 🥕 🥕 🥕 🥕 = 7',
           title: 'First basket',
           text: 'First basket holds 7 orange carrots.',
         },
         {
-          visual: '🧺 (5 carrots)',
+          visual: '🥕 🥕 🥕 🥕 🥕 = 5',
           title: 'Second basket',
           text: 'Second basket holds 5 crunchy carrots.',
         },
         {
-          visual: '🧺 (7) + 🥕🥕🥕 (3) = 10\n+ 🥕🥕 (2) = 12',
+          visual: '7 🥕 + 5 🥕 = 12 🥕',
           title: 'Make 10 first',
           text: '7 plus 3 makes 10, plus 2 more makes 12.',
         },
@@ -117,12 +117,12 @@ export const chapter06: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🧺 (8 tomatoes)',
+          visual: '🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 = 8',
           title: 'Basket A has eight',
           text: 'Basket A has 8 red juicy tomatoes.',
         },
         {
-          visual: '🧺 (5 tomatoes)',
+          visual: '🍅 🍅 🍅 🍅 🍅 = 5',
           title: 'Basket B has five',
           text: 'Basket B has 5 red juicy tomatoes.',
         },
@@ -155,12 +155,12 @@ export const chapter06: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 (10)',
+          visual: '🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 🥔 = 10',
           title: 'Morning harvest',
           text: 'Ten potatoes are dug up in the morning.',
         },
         {
-          visual: '🥔 🥔 🥔 🥔 🥔 🥔 🥔 (7)',
+          visual: '🥔 🥔 🥔 🥔 🥔 🥔 🥔 = 7',
           title: 'Evening harvest',
           text: 'Seven more potatoes are collected before sunset.',
         },

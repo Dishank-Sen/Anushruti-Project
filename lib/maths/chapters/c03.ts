@@ -143,7 +143,7 @@ export const chapter03: MathsChapter = {
           text: 'One bird matches one finger up.',
         },
         {
-          visual: '🐦 🐦 🐦 = 🖐️ (3)',
+          visual: '🐦 🐦 🐦 = 3',
           title: 'Three birds',
           text: 'Three birds match three fingers.',
         },
@@ -186,7 +186,7 @@ export const chapter03: MathsChapter = {
           text: 'Friends eat mangoes until one remains.',
         },
         {
-          visual: '🧺 (empty)',
+          visual: '🧺 📭',
           title: 'All gone',
           text: 'The last mango is eaten. None are left.',
         },
@@ -219,7 +219,7 @@ export const chapter03: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🥭 🥭 🥭 🥭 🥭 🥭 (6)',
+          visual: '🥭 🥭 🥭 🥭 🥭 🥭 = 6',
           title: 'Six fresh mangoes',
           text: 'There are 6 yellow mangoes on the wooden plate.',
         },

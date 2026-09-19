@@ -214,7 +214,7 @@ export const chapter01: MathsChapter = {
           text: 'Mittens is not inside the cardboard box.',
         },
         {
-          visual: '🪑 🐱 (under)',
+          visual: '🪑 ⬇️ 🐱',
           title: 'Look underneath',
           text: 'Look right under the wooden chair.',
         },

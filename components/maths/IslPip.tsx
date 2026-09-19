@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Hand, X, Info } from 'lucide-react';
 import type { IslVocabItem } from '@/lib/maths/types';
+import { HandSignVisual } from '../isl/HandSignVisual';
 
 interface IslPipProps {
   vocab: IslVocabItem[];
@@ -52,11 +53,11 @@ export function IslPip({ vocab }: IslPipProps) {
                   <Hand size={18} />
                 </span>
                 <h4 className="font-bold text-base m-0 text-[var(--ink)]">
-                  ISL Sign: <span className="text-[var(--maths)]">{currentItem.word}</span>
+                  Real ISL Sign: <span className="text-[var(--maths)]">{currentItem.word}</span>
                 </h4>
               </div>
               <p className="text-xs text-[var(--ink-soft)] mt-1 mb-0">
-                Indian Sign Language visual reference (no speech required)
+                Visual hand sign demonstration and movement reference
               </p>
             </div>
             <button
@@ -69,29 +70,37 @@ export function IslPip({ vocab }: IslPipProps) {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-3.5 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block mb-1">
-                Handshape
-              </span>
-              <p className="text-sm font-medium m-0 text-[var(--ink)]">
-                {currentItem.handShape}
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+            {/* Real Hand Sign Visual */}
+            <div className="md:col-span-5 flex justify-center">
+              <HandSignVisual signKey={currentItem.word} size={200} />
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block mb-1">
-                Movement
-              </span>
-              <p className="text-sm font-medium m-0 text-[var(--ink)]">
-                {currentItem.movement}
-              </p>
-            </div>
-          </div>
+            {/* Handshape & Movement Guide */}
+            <div className="md:col-span-7 space-y-3">
+              <div className="p-3 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block mb-1">
+                  Handshape
+                </span>
+                <p className="text-sm font-medium m-0 text-[var(--ink)]">
+                  {currentItem.handShape}
+                </p>
+              </div>
 
-          <div className="mt-3 flex items-start gap-2 p-3 rounded-2xl bg-[var(--maths-tint)]/60 text-[var(--ink)] text-xs">
-            <Info size={16} className="text-[var(--maths)] shrink-0 mt-0.5" />
-            <span>{currentItem.description}</span>
+              <div className="p-3 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block mb-1">
+                  Movement
+                </span>
+                <p className="text-sm font-medium m-0 text-[var(--ink)]">
+                  {currentItem.movement}
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2 p-3 rounded-2xl bg-[var(--maths-tint)]/60 text-[var(--ink)] text-xs">
+                <Info size={16} className="text-[var(--maths)] shrink-0 mt-0.5" />
+                <span>{currentItem.description}</span>
+              </div>
+            </div>
           </div>
         </section>
       )}
