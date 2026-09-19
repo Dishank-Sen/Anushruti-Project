@@ -95,7 +95,7 @@ export const chapter07: MathsChapter = {
           text: 'The wooden study desk is 6 handspans long.',
         },
         {
-          visual: '🖐️ (span)',
+          visual: '🖐️ 📏',
           title: 'Keep hand flat',
           text: 'Stretch thumb and pinky wide to measure.',
         },
@@ -123,12 +123,12 @@ export const chapter07: MathsChapter = {
       toolkitType: 'measure-units',
       steps: [
         {
-          visual: '🪑 🖐️ 🖐️ 🖐️ 🖐️ 🖐️ 🖐️ (6)',
+          visual: '🪑 🖐️ 🖐️ 🖐️ 🖐️ 🖐️ 🖐️ = 6',
           title: 'Table measurement',
           text: 'Lina measures her desk: 6 handspans.',
         },
         {
-          visual: '✏️ 🖐️ 🖐️ (2)',
+          visual: '✏️ 🖐️ 🖐️ = 2',
           title: 'Pencil box',
           text: 'Her pencil box measures 2 handspans.',
         },
@@ -161,12 +161,12 @@ export const chapter07: MathsChapter = {
       toolkitType: 'measure-units',
       steps: [
         {
-          visual: '🚪 ...... 🚶 (8 paces total)',
+          visual: '🚪 ...... 🚶 = 8',
           title: 'Total distance',
           text: 'The classroom door is 8 paces away.',
         },
         {
-          visual: '🚶 🚶 🚶 🚶 🚶 (5 paces walked)',
+          visual: '🚶 🚶 🚶 🚶 🚶 = 5',
           title: 'Steps taken',
           text: 'A student walks 5 paces forward.',
         },

@@ -123,12 +123,12 @@ export const chapter02: MathsChapter = {
       toolkitType: 'shape-spotter',
       steps: [
         {
-          visual: '🪙 ➡️ (flat)',
+          visual: '🪙 ➡️ 🛝',
           title: 'Flat face slides',
           text: 'Place a coin flat and it slides smoothly.',
         },
         {
-          visual: '🪙 🔄 (standing edge)',
+          visual: '🪙 🔄 ⚽',
           title: 'Curved edge rolls',
           text: 'Turn a coin on edge and it rolls.',
         },
@@ -171,7 +171,7 @@ export const chapter02: MathsChapter = {
           text: 'Round balls roll off and tumble down.',
         },
         {
-          visual: '📦 📦 📦 (tall tower)',
+          visual: '📦 📦 📦 🏰',
           title: 'Sturdy tower',
           text: 'Flat surfaces make a steady, tall tower.',
         },

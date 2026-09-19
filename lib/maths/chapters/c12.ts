@@ -122,12 +122,12 @@ export const chapter12: MathsChapter = {
       toolkitType: 'coin-tray',
       steps: [
         {
-          visual: '🧼 (Eraser: ₹2)',
+          visual: '🧼 = ₹2',
           title: 'Eraser cost',
           text: 'A soft rubber eraser costs ₹2.',
         },
         {
-          visual: '✏️ (Sharpener: ₹3)',
+          visual: '✏️ = ₹3',
           title: 'Sharpener cost',
           text: 'A blue plastic sharpener costs ₹3.',
         },
@@ -160,12 +160,12 @@ export const chapter12: MathsChapter = {
       toolkitType: 'coin-tray',
       steps: [
         {
-          visual: '🪙 ₹10 (given to shopkeeper)',
+          visual: '🪙 = ₹10',
           title: 'Handing money',
           text: 'You hand a shiny ₹10 coin across the counter.',
         },
         {
-          visual: '📏 (Ruler costs ₹6)',
+          visual: '📏 = ₹6',
           title: 'Item cost',
           text: 'The wooden ruler costs six rupees.',
         },

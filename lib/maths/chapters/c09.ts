@@ -89,7 +89,7 @@ export const chapter09: MathsChapter = {
           text: 'Four triangle petals branch to each direction.',
         },
         {
-          visual: '🪔 (diya at center)',
+          visual: '🪔 = 1',
           title: 'Diya in center',
           text: 'One glowing lamp sits in the middle.',
         },
@@ -117,12 +117,12 @@ export const chapter09: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🌸 🌸 🌸 🌸 (4 inner petals)',
+          visual: '🌸 🌸 🌸 🌸 = 4',
           title: 'Inner petal ring',
           text: 'The inner flower ring has 4 pink petals.',
         },
         {
-          visual: '🌼 🌼 🌼 🌼 🌼 🌼 (6 outer petals)',
+          visual: '🌼 🌼 🌼 🌼 🌼 🌼 = 6',
           title: 'Outer petal ring',
           text: 'The outer flower ring has 6 golden petals.',
         },
@@ -155,12 +155,12 @@ export const chapter09: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 (10)',
+          visual: '🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 = 10',
           title: 'Verandah diyas',
           text: 'Ten glowing diyas line the verandah steps.',
         },
         {
-          visual: '🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 (8)',
+          visual: '🪔 🪔 🪔 🪔 🪔 🪔 🪔 🪔 = 8',
           title: 'Courtyard diyas',
           text: 'Eight bright diyas shine in the open courtyard.',
         },

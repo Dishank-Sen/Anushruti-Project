@@ -41,12 +41,12 @@ export const chapter05: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🐸 🐸 (2)',
+          visual: '🐸 🐸 = 2',
           title: 'Two on the leaf',
           text: 'Two green frogs sit on the lily pad.',
         },
         {
-          visual: '🐸 🐸  +  🐸 (1) 💨',
+          visual: '🐸 🐸 + 🐸 = 3',
           title: 'One more jumps in',
           text: 'One more frog jumps onto the leaf.',
         },
@@ -79,12 +79,12 @@ export const chapter05: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🐦 🐦 🐦 🐦 (4)',
+          visual: '🐦 🐦 🐦 🐦 = 4',
           title: 'Four on branch',
           text: 'Four singing birds rest on the branch.',
         },
         {
-          visual: '🐦 🐦 🐦  ... 🐦 💨',
+          visual: '🐦 🐦 🐦 ... 🐦 💨',
           title: 'One flies away',
           text: 'One bird spreads wings and flies away.',
         },
@@ -117,12 +117,12 @@ export const chapter05: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🦆 🦆 🦆 (3)',
+          visual: '🦆 🦆 🦆 = 3',
           title: 'Three ducks swimming',
           text: 'Three yellow ducks paddle in the blue pond.',
         },
         {
-          visual: '🦆 🦆 🦆  +  🦆 🦆 🦆 (3)',
+          visual: '🦆 🦆 🦆 + 🦆 🦆 🦆 = 6',
           title: 'Three more swim in',
           text: 'Three more ducks swim across to join them.',
         },
@@ -155,12 +155,12 @@ export const chapter05: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🎈 🎈 🎈 🎈 🎈 🎈 🎈 (7)',
+          visual: '🎈 🎈 🎈 🎈 🎈 🎈 🎈 = 7',
           title: 'Seven bright balloons',
           text: 'A child holds seven colourful floating balloons.',
         },
         {
-          visual: '🎈 🎈 🎈 🎈  ... 🎈 🎈 🎈 💨',
+          visual: '🎈 🎈 🎈 🎈 ... 🎈 🎈 🎈 💨',
           title: 'Three float away',
           text: 'Three balloons slip loose into the sky.',
         },

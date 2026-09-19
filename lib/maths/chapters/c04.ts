@@ -79,17 +79,17 @@ export const chapter04: MathsChapter = {
       toolkitType: 'place-value-blocks',
       steps: [
         {
-          visual: '🪵 (bundle of 10) + 🥢 = 11',
+          visual: '🪵 + 🥢 = 11',
           title: 'Eleven',
           text: 'One bundle of ten and one stick makes 11.',
         },
         {
-          visual: '🪵 (bundle of 10) + 🥢🥢 = 12',
+          visual: '🪵 + 🥢🥢 = 12',
           title: 'Twelve',
           text: 'Ten and two loose sticks make 12.',
         },
         {
-          visual: '🪵 (bundle of 10) + 🥢🥢🥢🥢🥢 = 15',
+          visual: '🪵 + 🥢🥢🥢🥢🥢 = 15',
           title: 'Fifteen',
           text: 'Ten and five loose sticks make 15.',
         },
@@ -117,12 +117,12 @@ export const chapter04: MathsChapter = {
       toolkitType: 'ten-frame',
       steps: [
         {
-          visual: '🔵 🔵 🔵 🔵 🔵\n🔵 🔵 🔲 🔲 🔲 (7 dots)',
+          visual: '🔵 🔵 🔵 🔵 🔵\n🔵 🔵 🔲 🔲 🔲 = 7',
           title: 'Seven dots placed',
           text: 'Seven blue dots are inside the ten frame.',
         },
         {
-          visual: '🔲 🔲 🔲 (3 empty boxes)',
+          visual: '🔲 🔲 🔲 = 3',
           title: 'Count empty boxes',
           text: 'Three boxes are still empty and waiting.',
         },
@@ -155,12 +155,12 @@ export const chapter04: MathsChapter = {
       toolkitType: 'place-value-blocks',
       steps: [
         {
-          visual: '🪵 (1 bundle of 10)',
+          visual: '🪵 = 10',
           title: 'One bundle of ten',
           text: 'A tied bundle holds exactly 10 sticks.',
         },
         {
-          visual: '🥢 🥢 🥢 🥢 🥢 🥢 (6 ones)',
+          visual: '🥢 🥢 🥢 🥢 🥢 🥢 = 6',
           title: 'Six loose sticks',
           text: 'Six loose sticks lie beside the bundle.',
         },

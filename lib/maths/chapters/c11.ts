@@ -41,17 +41,17 @@ export const chapter11: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🎠 (2 children)',
+          visual: '🎠 = 2',
           title: 'One swing',
           text: 'One swing carries 2 happy children.',
         },
         {
-          visual: '🎠 🎠 (2 + 2 = 4)',
+          visual: '🎠 🎠 = 4',
           title: 'Two swings',
           text: '2 swings carry 2 and 2. That makes 4.',
         },
         {
-          visual: '🎠 🎠 🎠 (2 + 2 + 2 = 6)',
+          visual: '🎠 🎠 🎠 = 6',
           title: 'Three swings',
           text: '3 swings carry 2, 2, and 2. That makes 6.',
         },
@@ -79,17 +79,17 @@ export const chapter11: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🍽️ (3 jalebis)',
+          visual: '🍽️ = 3',
           title: 'Plate one',
           text: 'One shiny plate holds 3 golden jalebis.',
         },
         {
-          visual: '🍽️ 🍽️ (3 + 3 = 6)',
+          visual: '🍽️ 🍽️ = 6',
           title: 'Two plates',
           text: 'Two plates hold 3 and 3. That is 6.',
         },
         {
-          visual: '🍽️ 🍽️ 🍽️ (3 + 3 + 3 = 9)',
+          visual: '🍽️ 🍽️ 🍽️ = 9',
           title: 'Three plates',
           text: 'Three plates hold 9 sweet jalebis altogether.',
         },
@@ -117,12 +117,12 @@ export const chapter11: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🚲 (2 wheels)',
+          visual: '🚲 = 2',
           title: 'One bicycle',
           text: 'One bicycle rolls on 2 round wheels.',
         },
         {
-          visual: '🚲 🚲 🚲 (3 bicycles)',
+          visual: '🚲 🚲 🚲 = 6',
           title: 'Three bicycles parked',
           text: 'Three bicycles stand parked by the school gate.',
         },
@@ -155,12 +155,12 @@ export const chapter11: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🌸 (5 petals)',
+          visual: '🌸 = 5',
           title: 'One flower',
           text: 'One jasmine flower has 5 delicate petals.',
         },
         {
-          visual: '🌸 🌸 🌸 🌸 (4 flowers)',
+          visual: '🌸 🌸 🌸 🌸 = 20',
           title: 'Four flowers in vase',
           text: 'Four fresh flowers bloom in the ceramic vase.',
         },

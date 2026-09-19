@@ -79,12 +79,12 @@ export const chapter06: MathsChapter = {
       toolkitType: 'tally-pictograph',
       steps: [
         {
-          visual: '🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 (10)',
+          visual: '🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 🍅 = 10',
           title: 'Ten round tomatoes',
           text: 'One full crate holds ten ripe tomatoes.',
         },
         {
-          visual: '🍅 🍅 🍅 🍅 (4 more)',
+          visual: '🍅 🍅 🍅 🍅 = 4',
           title: 'Four extra tomatoes',
           text: 'Four more tomatoes sit on the wooden scale.',
         },

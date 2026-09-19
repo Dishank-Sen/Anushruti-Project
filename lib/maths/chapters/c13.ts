@@ -46,7 +46,7 @@ export const chapter13: MathsChapter = {
           text: 'Toy cars and soft bears are scattered together.',
         },
         {
-          visual: '🚗 🚗 🚗 (3 cars)\n🧸 🧸 (2 bears)',
+          visual: '🚗 🚗 🚗\n🧸 🧸',
           title: 'Sorted piles',
           text: 'Place cars in one box and bears in another.',
         },
@@ -79,17 +79,17 @@ export const chapter13: MathsChapter = {
       toolkitType: 'tally-pictograph',
       steps: [
         {
-          visual: '🚗 🚗 🚗 🚗 (4)',
+          visual: '🚗 🚗 🚗 🚗 = 4',
           title: 'Four cars',
           text: 'Four friends love playing with red cars.',
         },
         {
-          visual: '🪀 🪀 🪀 🪀 🪀 (5)',
+          visual: '🪀 🪀 🪀 🪀 🪀 = 5',
           title: 'Five yo-yos',
           text: 'Five children spin colourful plastic yo-yos.',
         },
         {
-          visual: '🧸 🧸 (2)',
+          visual: '🧸 🧸 = 2',
           title: 'Two bears',
           text: 'Two children cuddle brown stuffed bears.',
         },
@@ -117,12 +117,12 @@ export const chapter13: MathsChapter = {
       toolkitType: 'compare-sets',
       steps: [
         {
-          visual: '🧱 🧱 🧱 🧱 🧱 🧱 🧱 🧱 (8)',
+          visual: '🧱 🧱 🧱 🧱 🧱 🧱 🧱 🧱 = 8',
           title: 'Eight wooden blocks',
           text: 'Eight wooden blocks sit in a tall stack.',
         },
         {
-          visual: '🪀 🪀 🪀 (3 spinning tops)',
+          visual: '🪀 🪀 🪀 = 3',
           title: 'Three spinning tops',
           text: 'Three bright spinning tops spin on the carpet.',
         },
@@ -155,12 +155,12 @@ export const chapter13: MathsChapter = {
       toolkitType: 'tap-to-build-equation',
       steps: [
         {
-          visual: '🚗 🚗 🚗 🚗 (4 cars)',
+          visual: '🚗 🚗 🚗 🚗 = 4',
           title: 'Four cars',
           text: 'Four toy cars are lined up ready.',
         },
         {
-          visual: '🧸 🧸 🧸 🧸 🧸 🧸 (6 bears)',
+          visual: '🧸 🧸 🧸 🧸 🧸 🧸 = 6',
           title: 'Six soft bears',
           text: 'Six stuffed bears sit around the tea table.',
         },

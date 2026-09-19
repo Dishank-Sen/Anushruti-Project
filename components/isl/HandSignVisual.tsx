@@ -21,6 +21,8 @@ const SIGN_ACTIONS: Record<string, string> = {
   SMALL: 'Bring hands or index/thumb close together 🤏',
   ADD: 'Bring both hands together to combine sets ➕',
   PLUS: 'Bring both hands together to combine sets ➕',
+  'TAKE AWAY': 'Sweep flat hand away to show removing items ➖',
+  SUBTRACT: 'Sweep flat hand away to show removing items ➖',
   MORE: 'Tap flat fingertips together repeatedly ➕',
   LESS: 'Lower flat hand downward to show smaller amount 📉',
   COUNT: 'Tap index finger along open palm one by one 🔢',

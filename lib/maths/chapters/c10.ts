@@ -84,17 +84,17 @@ export const chapter10: MathsChapter = {
       toolkitType: 'duration-race',
       steps: [
         {
-          visual: '🪥 ⏳ (2 mins)',
+          visual: '🪥 ⏳ 2 min',
           title: 'Brushing teeth',
           text: 'Brushing teeth takes only 2 short minutes.',
         },
         {
-          visual: '🚌 ⏱️ (30 mins)',
+          visual: '🚌 ⏱️ 30 min',
           title: 'School bus ride',
           text: 'The bus ride across town takes longer.',
         },
         {
-          visual: '👁️ ⚡ (1 second)',
+          visual: '👁️ ⚡ 1 sec',
           title: 'Blinking an eye',
           text: 'A blink happens in one quick flash.',
         },
@@ -127,7 +127,7 @@ export const chapter10: MathsChapter = {
           text: 'Pack bag, read book, then play outside.',
         },
         {
-          visual: '🍽️ (lunch) ➡️ 🌙 (sleep)',
+          visual: '🍽️ ☀️ ➡️ 🛌 🌙',
           title: 'Afternoon to night',
           text: 'Lunch happens before the stars appear.',
         },
@@ -160,17 +160,17 @@ export const chapter10: MathsChapter = {
       toolkitType: 'duration-race',
       steps: [
         {
-          visual: '👏 ⚡ (1 second)',
+          visual: '👏 ⚡ 1 sec',
           title: 'Single hand clap',
           text: 'Clapping hands takes just one second.',
         },
         {
-          visual: '👕 ⏳ (2 minutes)',
+          visual: '👕 ⏳ 2 min',
           title: 'Putting on shirt',
           text: 'Buttoning a school shirt takes two minutes.',
         },
         {
-          visual: '🛌 🌙 (8 hours)',
+          visual: '🛌 🌙 8 hr',
           title: 'Night sleep',
           text: 'A full night sleep takes many hours.',
         },

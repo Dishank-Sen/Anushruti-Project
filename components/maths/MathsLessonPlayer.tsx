@@ -9,7 +9,7 @@ import {
   Sparkles,
   Star,
 } from 'lucide-react';
-import type { MathsLesson, MathsChapter } from '@/lib/maths/types';
+import type { MathsLesson, MathsChapter, LessonStep } from '@/lib/maths/types';
 import type { ProgressData } from '@/lib/progress';
 import { IslPip } from './IslPip';
 import { TapToCount } from './TapToCount';
@@ -19,35 +19,73 @@ import { HintLadder } from './HintLadder';
 import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
 import { HandSignVisual } from '../isl/HandSignVisual.tsx';
 
-function getStepSignKey(stepTitle: string, stepText: string, stepVisual: string, chapter?: MathsChapter): string | null {
-  // Check if step text or title contains any vocab word from chapter.islVocab
-  if (chapter?.islVocab) {
-    for (const v of chapter.islVocab) {
-      const regex = new RegExp(`\\b${v.word}\\b`, 'i');
-      if (regex.test(stepTitle) || regex.test(stepText)) {
-        return v.word;
-      }
+function getStepSignKey(step: LessonStep, _chapter?: MathsChapter): string | null {
+  // 1. Explicit step sign override ALWAYS wins
+  if (step.islSign) return step.islSign;
+
+  // 2. Look for equation outcomes in visual first (e.g. "= 3", "= 2", "= 1", "= 4", "= 5")
+  const eqMatch = step.visual.match(/=\s*([1-5])\b/);
+  if (eqMatch) {
+    return eqMatch[1];
+  }
+
+  // 3. Look for addition count in visual: e.g. "🐸 🐸  +  🐸" or "2 + 1" -> sum is 3
+  const addExprMatch = step.visual.match(/\b([1-5])\s*\+\s*([1-5])\b/);
+  if (addExprMatch) {
+    const sum = parseInt(addExprMatch[1], 10) + parseInt(addExprMatch[2], 10);
+    if (sum >= 1 && sum <= 5) return String(sum);
+  }
+
+  // Count emojis in visual if it's an addition equation like "🐸 🐸 + 🐸"
+  if (step.visual.includes('+')) {
+    const emojis = step.visual.match(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu);
+    if (emojis && emojis.length >= 1 && emojis.length <= 5) {
+      return String(emojis.length);
     }
   }
 
-  // Check for common foundational keywords in title, text, or visual
-  const combined = `${stepTitle} ${stepText} ${stepVisual}`;
-  const keywords = [
-    'INSIDE', 'OUTSIDE', 'TOP', 'BOTTOM', 'ROUND', 'LONG', 'ROLL', 'SLIDE',
-    'BIG', 'SMALL', 'ADD', 'PLUS', 'MORE', 'LESS', 'COUNT', 'CAT', 'BOOK',
-    'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE',
+  // 4. Check step title for number words (e.g. "Two on the leaf" -> 2, "Three altogether" -> 3)
+  const titleNum = step.title.match(/\b(one|two|three|four|five|[1-5])\b/i);
+  if (titleNum) {
+    const n = titleNum[1].toLowerCase();
+    const map: Record<string, string> = { one: '1', two: '2', three: '3', four: '4', five: '5' };
+    return map[n] || n;
+  }
+
+  // 5. Count emojis in visual if between 1 and 5 countable emojis
+  const countEmojis = step.visual.match(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu);
+  if (countEmojis && countEmojis.length >= 1 && countEmojis.length <= 5 && !step.visual.includes('-')) {
+    const allSame = countEmojis.every((e: string) => e === countEmojis[0]);
+    if (allSame) {
+      return String(countEmojis.length);
+    }
+  }
+
+  // 6. Check chapter-specific SPATIAL or SHAPE concepts ONLY:
+  // These are legitimate foundational ISL concepts (Chapters 1 & 2)
+  const spatialAndShapes = [
+    'INSIDE', 'OUTSIDE', 'TOP', 'BOTTOM', 'NEAR', 'FAR', 'BIG', 'SMALL',
+    'ROUND', 'LONG', 'ROLL', 'SLIDE',
   ];
-  for (const kw of keywords) {
+  for (const kw of spatialAndShapes) {
     const regex = new RegExp(`\\b${kw}\\b`, 'i');
-    if (regex.test(combined)) {
+    if (regex.test(step.title) || regex.test(step.text)) {
       return kw;
     }
   }
 
-  // Check for single numbers 1 to 5
-  const numMatch = combined.match(/\b([1-5])\b/);
-  if (numMatch) {
-    return numMatch[1];
+  // 7. Check operation concepts in titles ONLY: ADD, TAKE AWAY
+  if (/\b(add|plus|addition)\b/i.test(step.title)) {
+    return 'ADD';
+  }
+  if (/\b(subtract|take away|minus)\b/i.test(step.title)) {
+    return 'TAKE AWAY';
+  }
+
+  // 8. Explicit numbers 1-5 in step text if talking about count
+  const textNum = step.text.match(/\b([1-5])\b/);
+  if (textNum) {
+    return textNum[1];
   }
 
   return null;
@@ -182,7 +220,7 @@ export function MathsLessonPlayer({
 
         {/* Multimodal Pedagogy Stage: Visual Scene + Real ISL Hand Sign */}
         {(() => {
-          const activeSignKey = getStepSignKey(activeStep.title, activeStep.text, activeStep.visual, chapter);
+          const activeSignKey = getStepSignKey(activeStep, chapter);
           return (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
               {/* Main Visual Display */}
