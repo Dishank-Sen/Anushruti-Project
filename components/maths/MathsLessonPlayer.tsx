@@ -188,7 +188,7 @@ export function MathsLessonPlayer({
               {/* Main Visual Display */}
               <div
                 className={`${
-                  activeSignKey ? 'md:col-span-8' : 'md:col-span-12'
+                  activeSignKey ? 'md:col-span-7' : 'md:col-span-12'
                 } py-6 px-4 rounded-3xl bg-[var(--bg)] border-2 border-[var(--line)] flex flex-col items-center justify-center text-center select-none min-h-[160px]`}
               >
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-2">
@@ -201,14 +201,14 @@ export function MathsLessonPlayer({
 
               {/* Real Hand Sign Demonstration for this Step */}
               {activeSignKey && (
-                <div className="md:col-span-4 p-4 rounded-3xl bg-[var(--surface)] border-2 border-[#c2d2fc] flex flex-col items-center justify-center text-center shadow-xs">
+                <div className="md:col-span-5 p-4 rounded-3xl bg-[var(--surface)] border-2 border-[#c2d2fc] flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--maths)] mb-2">
                     🤟 Real Sign: {activeSignKey}
                   </span>
                   <HandSignVisual
                     signKey={activeSignKey}
                     size={160}
-                    showFingerspellingStrip={false}
+                    showFingerspellingStrip={true}
                   />
                 </div>
               )}
