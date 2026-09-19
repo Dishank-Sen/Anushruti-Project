@@ -22,6 +22,15 @@ import {
   CHAPTER_ORDER,
   type Lesson,
 } from '@/lib/lessons';
+import {
+  ALL_MATHS_CHAPTERS,
+  getMathsChapter,
+  getMathsLesson,
+  getAllMathsLessons,
+} from '@/lib/maths';
+import { ChapterTrail } from '@/components/maths/ChapterTrail';
+import { MathsLessonPlayer } from '@/components/maths/MathsLessonPlayer';
+import { IslPip } from '@/components/maths/IslPip';
 import { ScienceLab, SciencePhoto } from '@/components/science-lab';
 import {
   emptyProgress,
@@ -105,6 +114,11 @@ export function LearningWorkspace({
       );
     }
   }
+  const mathsLesson = getMathsLesson(lessonId);
+  const mathsChapter = mathsLesson ? getMathsChapter(mathsLesson.chapterId) : undefined;
+  const selectedMathsChapter = ALL_MATHS_CHAPTERS.find(
+    (c) => c.id === chapterName || c.title.toLowerCase() === chapterName.toLowerCase(),
+  );
   const lesson = lessons.find((l) => l.id === lessonId);
   const filtered = lessons.filter(
     (l) =>
@@ -251,7 +265,80 @@ export function LearningWorkspace({
     <div className="workspace">
       {storageWarning && <output className="notice">{storageWarning}</output>}
       {view === 'lessons' &&
-        (browseChapter ? (
+        (grade === 1 && subject === 'Maths' ? (
+          selectedMathsChapter ? (
+            <>
+              <a
+                className="back-link"
+                href={`/?view=lessons&grade=1&subject=Maths`}
+              >
+                <ArrowLeft size={17} /> All 13 Chapters
+              </a>
+              <div className="page-heading">
+                <div>
+                  <p className="eyebrow">
+                    CHAPTER {String(selectedMathsChapter.number).padStart(2, '0')} · CLASS 1 MATHS
+                  </p>
+                  <h1>{selectedMathsChapter.title}</h1>
+                  {selectedMathsChapter.hindiTitle && (
+                    <p className="text-[var(--maths)] font-bold text-lg">{selectedMathsChapter.hindiTitle}</p>
+                  )}
+                  <p>{selectedMathsChapter.blurb}</p>
+                </div>
+              </div>
+
+              {selectedMathsChapter.islVocab && (
+                <IslPip vocab={selectedMathsChapter.islVocab} />
+              )}
+
+              <div className="lesson-grid">
+                {selectedMathsChapter.lessons.map((m, i) => (
+                  <div className="module-tile" key={m.id}>
+                    <span className="module-step" aria-hidden="true">
+                      {i + 1}
+                    </span>
+                    <a
+                      className="lesson-card maths"
+                      href={`/?view=lesson&id=${m.id}&grade=1&subject=Maths&chapter=${selectedMathsChapter.id}`}
+                    >
+                      <div className="lesson-visual" aria-hidden="true">
+                        {m.steps[0].visual}
+                      </div>
+                      <div className="lesson-card-body">
+                        <span className="subject-tag">
+                          Maths · Class 1 · {selectedMathsChapter.title}
+                        </span>
+                        <h3>{m.title}</h3>
+                        <p>{m.description}</p>
+                        <div className="card-bottom">
+                          <span>{m.minutes} min · {m.steps.length} visual steps</span>
+                          {progress.completed.includes(m.id) ? (
+                            <CheckCircle aria-label="Completed" />
+                          ) : (
+                            <ArrowRight />
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <ChapterTrail
+              grade={1}
+              progress={progress}
+              onSelectChapter={(ch) => {
+                const u = new URL(location.href);
+                u.searchParams.set('view', 'lessons');
+                u.searchParams.set('subject', 'Maths');
+                u.searchParams.set('grade', '1');
+                u.searchParams.set('chapter', ch.id);
+                location.href = u.toString();
+              }}
+            />
+          )
+        ) : browseChapter ? (
           <>
             <a
               className="back-link"
@@ -416,12 +503,13 @@ export function LearningWorkspace({
             </div>
             <div className="subject-grid">
               {SUBJECT_ORDER.map((s) => {
-                const total = lessons.filter(
-                  (l) => l.grade === grade && l.subject === s,
-                );
-                const count = total.filter((l) =>
-                  progress.completed.includes(l.id),
-                ).length;
+                const isClass1Maths = grade === 1 && s === 'Maths';
+                const totalCount = isClass1Maths
+                  ? getAllMathsLessons().length
+                  : lessons.filter((l) => l.grade === grade && l.subject === s).length;
+                const count = isClass1Maths
+                  ? getAllMathsLessons().filter((l) => progress.completed.includes(l.id)).length
+                  : lessons.filter((l) => l.grade === grade && l.subject === s && progress.completed.includes(l.id)).length;
                 return (
                   <a
                     className={`lesson-card subject ${s.toLowerCase()}`}
@@ -435,13 +523,13 @@ export function LearningWorkspace({
                     <div className="lesson-card-body">
                       <span className="subject-tag">{s}</span>
                       <h3>{s}</h3>
-                      <p>{SUBJECT_META[s].blurb}</p>
+                      <p>{isClass1Maths ? '13 NCERT chapters, shapes & counting.' : SUBJECT_META[s].blurb}</p>
                       <div className="card-bottom">
                         <span>
-                          {total.length}{' '}
-                          {total.length === 1 ? 'module' : 'modules'}
+                          {isClass1Maths ? '13 Chapters · ' : ''}
+                          {totalCount} {totalCount === 1 ? 'module' : 'modules'}
                         </span>
-                        <span className="mini-progress">{count}/{total.length}</span>
+                        <span className="mini-progress">{count}/{totalCount}</span>
                       </div>
                     </div>
                   </a>
@@ -467,7 +555,23 @@ export function LearningWorkspace({
         </>
       )}
       {(view === 'lesson' || view === 'activity') &&
-        (lesson ? (
+        (mathsLesson ? (
+          <MathsLessonPlayer
+            lesson={mathsLesson}
+            chapter={mathsChapter}
+            progress={progress}
+            onSaveProgress={save}
+            onBack={() => {
+              const url = new URL(location.href);
+              url.searchParams.set('view', 'lessons');
+              url.searchParams.set('subject', 'Maths');
+              url.searchParams.set('grade', String(grade));
+              if (mathsChapter) url.searchParams.set('chapter', mathsChapter.id);
+              url.searchParams.delete('id');
+              location.href = url.toString();
+            }}
+          />
+        ) : lesson ? (
           <>
             <a
               className="back-link"

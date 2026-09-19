@@ -1,0 +1,217 @@
+import type { MathsChapter } from '../types.ts';
+
+export const chapter03: MathsChapter = {
+  id: 'maths-c03',
+  number: 3,
+  title: 'Mango Treat',
+  hindiTitle: 'आम की दावत',
+  blurb: 'Count fruits, fingers, and happy birds from 1 to 9.',
+  icon: '🥭',
+  themeColor: '#FFA502',
+  status: 'ready',
+  ncertPage: 17,
+  islVocab: [
+    {
+      word: 'One',
+      hindiWord: 'एक',
+      handShape: 'Index finger pointing straight up',
+      movement: 'Held steady in front of chest',
+      description: 'Single index finger extended.',
+    },
+    {
+      word: 'Five',
+      hindiWord: 'पाँच',
+      handShape: 'All five fingers spread wide',
+      movement: 'Held with palm facing forward',
+      description: 'Open hand showing all five digits.',
+    },
+    {
+      word: 'Nine',
+      hindiWord: 'नौ',
+      handShape: 'One open hand of five plus four fingers',
+      movement: 'Clear visual demonstration of 5 + 4',
+      description: 'Showing nine fingers total.',
+    },
+    {
+      word: 'Count',
+      hindiWord: 'गिनना',
+      handShape: 'Thumb touches fingertips sequentially',
+      movement: 'Taps each finger one after another',
+      description: 'Sign indicates sequential one-by-one counting.',
+    },
+  ],
+  lessons: [
+    {
+      id: 'mango-treat-story',
+      chapterId: 'maths-c03',
+      grade: 1,
+      title: 'The mango treat',
+      description: 'Count the birds as they join around the mango.',
+      minutes: 4,
+      toolkitType: 'tap-to-count',
+      steps: [
+        {
+          visual: '🐿️ 🥭',
+          title: 'One squirrel',
+          text: 'One squirrel finds a sweet yellow mango.',
+        },
+        {
+          visual: '🐦 + 🐦 = 2',
+          title: 'One bird joins',
+          text: 'One bird joins. Now 2 friends share the treat.',
+        },
+        {
+          visual: '🐦 🐦 🐦 = 3',
+          title: 'One more bird',
+          text: 'Another bird arrives. Now there are 3 birds.',
+        },
+        {
+          visual: '🐦 🐦 🐦 🐦 🐦 = 5',
+          title: 'Five friends',
+          text: 'More friends come. Now 5 animals enjoy the mango.',
+        },
+        {
+          visual: '🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 = 9',
+          title: 'Nine at last',
+          text: 'Nine friends gather happily together.',
+        },
+      ],
+      question: {
+        prompt: 'At the end, how many friends shared the mango? 🥭',
+        options: ['5 friends', '9 friends', '3 friends'],
+        answer: 1,
+        hint: 'Count the birds on the tree branches.',
+        hintLadder: {
+          hint1: 'They arrived one by one until nine gathered.',
+          hint2: 'Count each friend up to 9.',
+          hint3WorkedOut: 'Correct: 9 friends shared the mango.',
+        },
+      },
+      teacherNote: 'Use seeds or counters to physically replicate the story on desks.',
+    },
+    {
+      id: 'mango-one-more',
+      chapterId: 'maths-c03',
+      grade: 1,
+      title: 'One more',
+      description: 'See what happens when one more friend arrives.',
+      minutes: 4,
+      toolkitType: 'number-strip',
+      steps: [
+        {
+          visual: '🐦 = 1',
+          title: 'One bird',
+          text: 'One bird eats a ripe mango.',
+        },
+        {
+          visual: '🐦 + 🐦 = 2',
+          title: 'One more joins',
+          text: 'One more joins. 1 and 1 make 2.',
+        },
+        {
+          visual: '🐦 🐦 + 🐦 = 3',
+          title: 'Two plus one',
+          text: 'Two birds, plus one more, make 3.',
+        },
+        {
+          visual: '🐦 🐦 🐦 🐦 + 🐦 = 5',
+          title: 'Four plus one',
+          text: 'Four birds, plus one more, make 5.',
+        },
+      ],
+      question: {
+        prompt: 'One more than 5 is…',
+        options: ['4', '6', '8'],
+        answer: 1,
+        hint: 'Think of the number that comes right after 5.',
+        hintLadder: {
+          hint1: 'Hop forward one step on the number line.',
+          hint2: '1, 2, 3, 4, 5, 6.',
+          hint3WorkedOut: 'Correct: One more than 5 is 6.',
+        },
+      },
+      teacherNote: 'Show the number track on the floor so learners can hop forward one step.',
+    },
+    {
+      id: 'birds-and-fingers',
+      chapterId: 'maths-c03',
+      grade: 1,
+      title: 'Birds and fingers',
+      description: 'Match groups of birds to finger patterns.',
+      minutes: 4,
+      toolkitType: 'match-pairs',
+      steps: [
+        {
+          visual: '🐦 = ☝️',
+          title: 'One bird, one finger',
+          text: 'One bird matches one finger up.',
+        },
+        {
+          visual: '🐦 🐦 🐦 = 🖐️ (3)',
+          title: 'Three birds',
+          text: 'Three birds match three fingers.',
+        },
+        {
+          visual: '🐦 🐦 🐦 🐦 🐦 = 🖐️',
+          title: 'Five birds',
+          text: 'Five birds match a whole open hand.',
+        },
+      ],
+      question: {
+        prompt: 'Which hand matches 5 happy birds? 🐦🐦🐦🐦🐦',
+        options: ['🖐️ Open hand of 5', '☝️ One finger', '✌️ Two fingers'],
+        answer: 0,
+        hint: 'Count all 5 fingers on your open hand.',
+        hintLadder: {
+          hint1: 'Hold up one full hand.',
+          hint2: 'A whole hand has five fingers.',
+          hint3WorkedOut: 'Correct: 🖐️ Open hand of 5.',
+        },
+      },
+      teacherNote: 'Practice quick finger flash: teacher shows fingers, students tap the number.',
+    },
+    {
+      id: 'zero-concept',
+      chapterId: 'maths-c03',
+      grade: 1,
+      title: 'The empty basket (Zero)',
+      description: 'Discover what zero means when all mangoes are eaten.',
+      minutes: 4,
+      toolkitType: 'tap-to-count',
+      steps: [
+        {
+          visual: '🧺 🥭 🥭 🥭',
+          title: 'Three in basket',
+          text: 'Three juicy mangoes sit in the basket.',
+        },
+        {
+          visual: '🧺 🥭',
+          title: 'One left',
+          text: 'Friends eat mangoes until one remains.',
+        },
+        {
+          visual: '🧺 (empty)',
+          title: 'All gone',
+          text: 'The last mango is eaten. None are left.',
+        },
+        {
+          visual: '0 = None',
+          title: 'Zero',
+          text: 'Zero means nothing left in the basket.',
+        },
+      ],
+      question: {
+        prompt: 'When all mangoes are eaten from the basket, how many remain? 🧺',
+        options: ['0 (Zero)', '1', '5'],
+        answer: 0,
+        hint: 'The basket is completely empty.',
+        hintLadder: {
+          hint1: 'Count how many mangoes you see in the empty basket.',
+          hint2: 'None left means zero.',
+          hint3WorkedOut: 'Correct: 0 (Zero).',
+        },
+      },
+      teacherNote: 'Use an empty cup or bowl to illustrate zero as an amount.',
+    },
+  ],
+};
