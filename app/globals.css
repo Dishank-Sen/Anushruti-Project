@@ -133,29 +133,88 @@ body {
   }
 }
 :root {
-  --background: #f7f9fc;
-  --foreground: #202e45;
-  --primary: #3f51c5;
-  --primary-foreground: #fff;
-  --muted: #e9edf5;
-  --muted-foreground: #56617a;
-  --sidebar: #fff;
-  --sidebar-foreground: #34415b;
-  --sidebar-accent: #edf0ff;
-  --sidebar-accent-foreground: #3f51c5;
-  --sidebar-border: #e7eaf1;
-  --border: #e1e6ef;
-  --ring: #4255bd;
-  --radius: 1rem;
-  --font-geist-sans: 'Trebuchet MS';
+  /* Warm paper design tokens (Block 6) */
+  --bg: #FFFBF3;
+  --surface: #FFFFFF;
+  --ink: #1E2A44;
+  --ink-soft: #4A5670;
+  --line: #E6DFD0;
+  --maths: #2F55D4;
+  --maths-tint: #E4EAFD;
+  --science: #1B7F5C;
+  --science-tint: #DDF3EA;
+  --comm: #C4442D;
+  --comm-tint: #FBE4DE;
+  --voice: #7A3FC4;
+  --voice-tint: #EDE3FA;
+  --gold: #F5B301;
+  --gold-tint: #FFF1C2;
+  --ok: #167A42;
+  --ok-tint: #DDF4E6;
+  --retry: #B45309;
+  --retry-tint: #FFEBC8;
+  --focus: #1E2A44;
+
+  /* App font scale */
+  --font-scale: 1;
+
+  /* Mapped Shadcn / UI tokens */
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--maths);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--maths-tint);
+  --secondary-foreground: var(--ink);
+  --muted: #F2EDE4;
+  --muted-foreground: var(--ink-soft);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-accent: var(--maths-tint);
+  --sidebar-accent-foreground: var(--maths);
+  --sidebar-border: var(--line);
+  --border: var(--line);
+  --ring: var(--focus);
+  --radius: 1.25rem;
+  --font-heading: 'Baloo 2', 'Trebuchet MS', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+  --font-geist-sans: var(--font-body);
   --font-geist-mono: monospace;
 }
+
+[data-theme='high-contrast'] {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --ink: #000000;
+  --ink-soft: #111111;
+  --line: #000000;
+  --maths: #002DB3;
+  --maths-tint: #E4EAFD;
+  --science: #005F38;
+  --science-tint: #DDF3EA;
+  --comm: #9E2612;
+  --comm-tint: #FBE4DE;
+  --voice: #58249B;
+  --voice-tint: #EDE3FA;
+  --gold: #B37D00;
+  --gold-tint: #FFF1C2;
+  --ok: #0D5C30;
+  --ok-tint: #DDF4E6;
+  --retry: #8C3D00;
+  --retry-tint: #FFEBC8;
+  --focus: #000000;
+  --border: #000000;
+}
+
 body {
   margin: 0;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
-  color: var(--foreground);
-  background: var(--background);
-  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  font-size: calc(16px * var(--font-scale, 1));
 }
 button,
 a,
@@ -334,15 +393,18 @@ main {
   font-weight: bold;
   margin-bottom: 8px;
 }
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--ink);
+  font-weight: 700;
+}
 h1 {
-  font-size: 30px;
-  line-height: 1.3;
-  letter-spacing: -1px;
-  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.25;
   margin: 0 0 9px;
 }
 h1 span {
-  font-size: 27px;
+  font-size: 0.9em;
 }
 p {
   line-height: 1.65;
