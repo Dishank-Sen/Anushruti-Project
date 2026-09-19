@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg12" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF9C3"/>
+      <stop offset="100%" stop-color="#FDE047"/>
+    </linearGradient>
+    <filter id="shadow12" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="400" height="200" rx="16" fill="url(#bg12)"/>
+
+  <!-- ₹1 Coin -->
+  <g filter="url(#shadow12)" transform="translate(50, 65)">
+    <circle cx="32" cy="32" r="30" fill="#E2E8F0" stroke="#94A3B8" stroke-width="3"/>
+    <text x="32" y="38" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="20" fill="#334155" text-anchor="middle">₹1</text>
+  </g>
+
+  <!-- ₹2 Coin -->
+  <g filter="url(#shadow12)" transform="translate(130, 60)">
+    <circle cx="35" cy="35" r="33" fill="#CBD5E1" stroke="#64748B" stroke-width="3"/>
+    <text x="35" y="42" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#1E293B" text-anchor="middle">₹2</text>
+  </g>
+
+  <!-- ₹5 Coin -->
+  <g filter="url(#shadow12)" transform="translate(215, 60)">
+    <circle cx="35" cy="35" r="33" fill="#FBBF24" stroke="#D97706" stroke-width="3.5"/>
+    <text x="35" y="42" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="22" fill="#78350F" text-anchor="middle">₹5</text>
+  </g>
+
+  <!-- ₹10 Coin (Bi-metallic) -->
+  <g filter="url(#shadow12)" transform="translate(300, 55)">
+    <circle cx="38" cy="38" r="36" fill="#F59E0B" stroke="#B45309" stroke-width="3.5"/>
+    <circle cx="38" cy="38" r="24" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+    <text x="38" y="45" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="20" fill="#78350F" text-anchor="middle">₹10</text>
+  </g>
+
+  <text x="200" y="165" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="18" fill="#854D0E" text-anchor="middle">Indian Rupee Coins (सिक्के)</text>
+</svg>

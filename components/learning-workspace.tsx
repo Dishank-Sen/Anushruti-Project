@@ -15,12 +15,23 @@ import {
 } from 'lucide-react';
 import {
   lessons,
+  scienceImages,
   SUBJECT_ORDER,
   SUBJECT_META,
   subjectChapterOrder,
   CHAPTER_ORDER,
   type Lesson,
 } from '@/lib/lessons';
+import {
+  ALL_MATHS_CHAPTERS,
+  getMathsChapter,
+  getMathsLesson,
+  getAllMathsLessons,
+} from '@/lib/maths';
+import { ChapterTrail } from '@/components/maths/ChapterTrail';
+import { MathsLessonPlayer } from '@/components/maths/MathsLessonPlayer';
+import { IslPip } from '@/components/maths/IslPip';
+import { ScienceLab, SciencePhoto } from '@/components/science-lab';
 import {
   emptyProgress,
   parseProgress,
@@ -48,8 +59,8 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
-function subjectIsChapterList(value: string): value is 'Maths' | 'Science' {
-  return value === 'Maths' || value === 'Science';
+function subjectIsChapterList(value: string): value is 'Maths' {
+  return value === 'Maths';
 }
 export function LearningWorkspace({
   view,
@@ -62,6 +73,7 @@ export function LearningWorkspace({
   const [ready, setReady] = useState(false);
   const [storageWarning, setStorageWarning] = useState('');
   const [subject, setSubject] = useState('All');
+  const [sciencePath, setSciencePath] = useState('ncert');
   const [chapterName, setChapterName] = useState('');
   const [lessonId, setLessonId] = useState('');
   const [selected, setSelected] = useState<number | null>(null);
@@ -102,6 +114,11 @@ export function LearningWorkspace({
       );
     }
   }
+  const mathsLesson = getMathsLesson(lessonId);
+  const mathsChapter = mathsLesson ? getMathsChapter(mathsLesson.chapterId) : undefined;
+  const selectedMathsChapter = ALL_MATHS_CHAPTERS.find(
+    (c) => c.id === chapterName || c.title.toLowerCase() === chapterName.toLowerCase(),
+  );
   const lesson = lessons.find((l) => l.id === lessonId);
   const filtered = lessons.filter(
     (l) =>
@@ -248,7 +265,77 @@ export function LearningWorkspace({
     <div className="workspace">
       {storageWarning && <output className="notice">{storageWarning}</output>}
       {view === 'lessons' &&
-        (browseChapter ? (
+        (grade === 1 && subject === 'Maths' ? (
+          selectedMathsChapter ? (
+            <>
+              <a
+                className="back-link"
+                href={`/?view=lessons&grade=1&subject=Maths`}
+              >
+                <ArrowLeft size={17} /> All 13 Chapters
+              </a>
+              <div className="page-heading">
+                <div>
+                  <p className="eyebrow">
+                    CHAPTER {String(selectedMathsChapter.number).padStart(2, '0')} · CLASS 1 MATHS
+                  </p>
+                  <h1>{selectedMathsChapter.title}</h1>
+                  <p>{selectedMathsChapter.blurb}</p>
+                </div>
+              </div>
+
+              {selectedMathsChapter.islVocab && (
+                <IslPip vocab={selectedMathsChapter.islVocab} />
+              )}
+
+              <div className="lesson-grid">
+                {selectedMathsChapter.lessons.map((m, i) => (
+                  <div className="module-tile" key={m.id}>
+                    <span className="module-step" aria-hidden="true">
+                      {i + 1}
+                    </span>
+                    <a
+                      className="lesson-card maths"
+                      href={`/?view=lesson&id=${m.id}&grade=1&subject=Maths&chapter=${selectedMathsChapter.id}`}
+                    >
+                      <div className="lesson-visual" aria-hidden="true">
+                        {m.steps[0].visual}
+                      </div>
+                      <div className="lesson-card-body">
+                        <span className="subject-tag">
+                          Maths · Class 1 · {selectedMathsChapter.title}
+                        </span>
+                        <h3>{m.title}</h3>
+                        <p>{m.description}</p>
+                        <div className="card-bottom">
+                          <span>{m.minutes} min · {m.steps.length} visual steps</span>
+                          {progress.completed.includes(m.id) ? (
+                            <CheckCircle aria-label="Completed" />
+                          ) : (
+                            <ArrowRight />
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <ChapterTrail
+              grade={1}
+              progress={progress}
+              onSelectChapter={(ch) => {
+                const u = new URL(location.href);
+                u.searchParams.set('view', 'lessons');
+                u.searchParams.set('subject', 'Maths');
+                u.searchParams.set('grade', '1');
+                u.searchParams.set('chapter', ch.id);
+                location.href = u.toString();
+              }}
+            />
+          )
+        ) : browseChapter ? (
           <>
             <a
               className="back-link"
@@ -319,6 +406,90 @@ export function LearningWorkspace({
               ))}
             </div>
           </>
+        ) : subject === 'Science' ? (
+          <>
+            <a className="back-link" href={`/?view=lessons&grade=${grade}`}>
+              <ArrowLeft size={17} /> Subjects
+            </a>
+            <div className="page-heading">
+              <div>
+                <p className="eyebrow">
+                  SCIENCE · CLASS {grade}
+                </p>
+                <h1>Science Discoveries</h1>
+                <p>Explore NCERT topics and extra science adventures.</p>
+              </div>
+            </div>
+            {grade === 1 && (
+              <>
+                <div className="science-welcome">
+                  <span>🌿 + 🪐</span>
+                  <div>
+                    <p className="eyebrow">LITTLE SCIENTISTS · CLASS 1</p>
+                    <h2>Discover the world around you.</h2>
+                    <p>NCERT topic practice, plus extra discoveries.</p>
+                  </div>
+                </div>
+                <fieldset
+                  className="science-paths"
+                  aria-label="Science learning path"
+                >
+                  {[
+                    ['ncert', 'NCERT topics'],
+                    ['extras', 'Extra discoveries'],
+                    ['all', 'All science'],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      className={
+                        sciencePath === value ? 'primary' : 'secondary'
+                      }
+                      aria-pressed={sciencePath === value}
+                      onClick={() => setSciencePath(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </fieldset>
+                <details className="curriculum-map">
+                  <summary>NCERT Class 1 topic list &amp; lesson map</summary>
+                  <p>
+                    Class 1 environmental learning is integrated with language
+                    and maths. These are our activities mapped to NCERT topics,
+                    not official textbook chapters. Extra discoveries include
+                    space and photosynthesis.
+                  </p>
+                  <a
+                    href="https://ncert.nic.in/pdf/publication/otherpublications/Learning_Outcome_for_the_Foundational_Stage.pdf#page=53"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read NCERT’s foundational-stage syllabus ↗
+                  </a>
+                  <ul>
+                    {lessons
+                      .filter((l) => l.curriculum)
+                      .map((l) => (
+                        <li key={l.id}>
+                          <a href={`/?view=lesson&id=${l.id}&grade=1`}>
+                            {l.curriculum!.label} → {l.title}
+                          </a>
+                          <small>NCERT printed p. {l.curriculum!.page}</small>
+                        </li>
+                      ))}
+                  </ul>
+                  <p>
+                    Educator review is still needed. Screen activities supplement
+                    real-world learning and do not certify physical or sensory
+                    competencies.
+                  </p>
+                </details>
+              </>
+            )}
+            <div className="lesson-grid">
+              {filtered.map((l) => card(l))}
+            </div>
+          </>
         ) : (
           <>
             <div className="page-heading">
@@ -329,12 +500,13 @@ export function LearningWorkspace({
             </div>
             <div className="subject-grid">
               {SUBJECT_ORDER.map((s) => {
-                const total = lessons.filter(
-                  (l) => l.grade === grade && l.subject === s,
-                );
-                const count = total.filter((l) =>
-                  progress.completed.includes(l.id),
-                ).length;
+                const isClass1Maths = grade === 1 && s === 'Maths';
+                const totalCount = isClass1Maths
+                  ? getAllMathsLessons().length
+                  : lessons.filter((l) => l.grade === grade && l.subject === s).length;
+                const count = isClass1Maths
+                  ? getAllMathsLessons().filter((l) => progress.completed.includes(l.id)).length
+                  : lessons.filter((l) => l.grade === grade && l.subject === s && progress.completed.includes(l.id)).length;
                 return (
                   <a
                     className={`lesson-card subject ${s.toLowerCase()}`}
@@ -348,13 +520,13 @@ export function LearningWorkspace({
                     <div className="lesson-card-body">
                       <span className="subject-tag">{s}</span>
                       <h3>{s}</h3>
-                      <p>{SUBJECT_META[s].blurb}</p>
+                      <p>{isClass1Maths ? '13 NCERT chapters, shapes & counting.' : SUBJECT_META[s].blurb}</p>
                       <div className="card-bottom">
                         <span>
-                          {total.length}{' '}
-                          {total.length === 1 ? 'module' : 'modules'}
+                          {isClass1Maths ? '13 Chapters · ' : ''}
+                          {totalCount} {totalCount === 1 ? 'module' : 'modules'}
                         </span>
-                        <span className="mini-progress">{count}/{total.length}</span>
+                        <span className="mini-progress">{count}/{totalCount}</span>
                       </div>
                     </div>
                   </a>
@@ -380,7 +552,23 @@ export function LearningWorkspace({
         </>
       )}
       {(view === 'lesson' || view === 'activity') &&
-        (lesson ? (
+        (mathsLesson ? (
+          <MathsLessonPlayer
+            lesson={mathsLesson}
+            chapter={mathsChapter}
+            progress={progress}
+            onSaveProgress={save}
+            onBack={() => {
+              const url = new URL(location.href);
+              url.searchParams.set('view', 'lessons');
+              url.searchParams.set('subject', 'Maths');
+              url.searchParams.set('grade', String(grade));
+              if (mathsChapter) url.searchParams.set('chapter', mathsChapter.id);
+              url.searchParams.delete('id');
+              location.href = url.toString();
+            }}
+          />
+        ) : lesson ? (
           <>
             <a
               className="back-link"
