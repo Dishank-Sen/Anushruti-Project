@@ -35,9 +35,6 @@ export function IslPip({ vocab }: IslPipProps) {
             aria-label={`View Indian Sign Language sign for ${item.word}`}
           >
             <span>{item.word}</span>
-            {item.hindiWord && (
-              <span className="text-xs opacity-75 font-normal">({item.hindiWord})</span>
-            )}
           </button>
         ))}
       </div>
@@ -56,11 +53,6 @@ export function IslPip({ vocab }: IslPipProps) {
                 </span>
                 <h4 className="font-bold text-base m-0 text-[var(--ink)]">
                   ISL Sign: <span className="text-[var(--maths)]">{currentItem.word}</span>
-                  {currentItem.hindiWord && (
-                    <span className="text-sm font-normal text-[var(--ink-soft)] ml-2">
-                      ({currentItem.hindiWord})
-                    </span>
-                  )}
                 </h4>
               </div>
               <p className="text-xs text-[var(--ink-soft)] mt-1 mb-0">

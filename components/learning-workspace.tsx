@@ -280,9 +280,6 @@ export function LearningWorkspace({
                     CHAPTER {String(selectedMathsChapter.number).padStart(2, '0')} · CLASS 1 MATHS
                   </p>
                   <h1>{selectedMathsChapter.title}</h1>
-                  {selectedMathsChapter.hindiTitle && (
-                    <p className="text-[var(--maths)] font-bold text-lg">{selectedMathsChapter.hindiTitle}</p>
-                  )}
                   <p>{selectedMathsChapter.blurb}</p>
                 </div>
               </div>

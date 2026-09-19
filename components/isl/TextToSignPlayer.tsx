@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-img-element */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
@@ -12,7 +13,8 @@ import {
   FlipHorizontal,
   Sliders,
   Type,
-  BookOpen
+  BookOpen,
+  X,
 } from 'lucide-react';
 import { convertSentenceToISL, type IslSignToken } from '../../lib/isl-converter.ts';
 import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
@@ -43,6 +45,7 @@ export function TextToSignPlayer() {
   const [isMirrorMode, setIsMirrorMode] = useState(false);
   const [isLooping, setIsLooping] = useState(true);
   const [showGrammar, setShowGrammar] = useState(true);
+  const [showChartModal, setShowChartModal] = useState(false);
 
   // Sub-letter scrubber for fingerspelled words
   const [activeLetterIdx, setActiveLetterIdx] = useState(0);
@@ -98,7 +101,7 @@ export function TextToSignPlayer() {
           </span>
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] flex items-center gap-1">
-              <Sparkles size={14} /> ISL Sign Studio · सांकेतिक भाषा प्रयोगशाला
+              <Sparkles size={14} /> ISL Sign Studio · Visual Language Player
             </span>
             <h1 className="text-2xl sm:text-3xl font-bold font-heading text-[var(--ink)] m-0">
               Sentence to Sign Language
@@ -108,6 +111,15 @@ export function TextToSignPlayer() {
 
         {/* Quick Toggles */}
         <div className="flex items-center gap-2 self-start sm:self-center">
+          <button
+            type="button"
+            onClick={() => setShowChartModal(!showChartModal)}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold border-2 bg-[var(--surface)] border-[var(--line)] text-[var(--ink)] hover:border-[var(--maths)] transition flex items-center gap-1.5"
+            title="View full two-handed manual alphabet reference chart"
+          >
+            <BookOpen size={14} />
+            <span>Alphabet Chart</span>
+          </button>
           <button
             type="button"
             onClick={() => setShowGrammar(!showGrammar)}
@@ -225,11 +237,6 @@ export function TextToSignPlayer() {
               <span className="text-3xl sm:text-5xl font-extrabold font-heading text-[var(--ink)] tracking-wide block">
                 {currentToken.gloss}
               </span>
-              {currentToken.hindiTerm && (
-                <span className="text-base sm:text-lg font-bold text-[var(--maths)] mt-1 block">
-                  {currentToken.hindiTerm}
-                </span>
-              )}
             </div>
 
             {/* Hand Sign Visual Demonstration */}
@@ -250,7 +257,7 @@ export function TextToSignPlayer() {
             >
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block">
-                  Handshape (हाथ का आकार):
+                  Handshape:
                 </span>
                 <p className="text-base font-bold text-[var(--ink)] m-0 mt-0.5">
                   {currentToken.handshape}
@@ -259,7 +266,7 @@ export function TextToSignPlayer() {
 
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block">
-                  Movement (गतिविधि):
+                  Movement:
                 </span>
                 <p className="text-sm text-[var(--ink-soft)] m-0 mt-0.5">
                   {currentToken.movement}
@@ -268,7 +275,7 @@ export function TextToSignPlayer() {
 
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] block">
-                  Spatial Location (स्थान):
+                  Spatial Location:
                 </span>
                 <p className="text-xs text-[var(--ink-soft)] m-0 mt-0.5">
                   {currentToken.location}
@@ -409,6 +416,45 @@ export function TextToSignPlayer() {
         <div className="p-8 rounded-3xl bg-[var(--surface)] border-2 border-[var(--line)] text-center text-[var(--ink-soft)]">
           <BookOpen className="mx-auto mb-2 opacity-50" size={32} />
           <p className="font-bold">Enter a sentence above to see the ISL sign translation.</p>
+        </div>
+      )}
+
+      {/* Authentic Two-Handed Alphabet Chart Modal */}
+      {showChartModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[var(--surface)] rounded-3xl border-2 border-[var(--line)] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+              <div>
+                <h3 className="text-xl font-bold font-heading text-[var(--ink)] m-0 flex items-center gap-2">
+                  <Hand className="text-[var(--maths)]" size={22} />
+                  Authentic Two-Handed Alphabet Reference
+                </h3>
+                <p className="text-xs text-[var(--ink-soft)] m-0 mt-0.5">
+                  Standard bimanual fingerspelling alphabet (A to Z) based on ISLRTC standards.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowChartModal(false)}
+                className="p-2 rounded-xl text-[var(--ink-soft)] hover:text-[var(--ink)] hover:bg-[var(--bg)] transition"
+                aria-label="Close chart"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden border-2 border-[var(--line)] bg-white p-2 flex justify-center">
+              <img
+                src="/images/isl/two_handed_alphabet_chart.png"
+                alt="Two-Handed Fingerspelling Manual Alphabet A to Z"
+                className="max-h-[65vh] w-auto object-contain rounded-xl"
+              />
+            </div>
+
+            <p className="text-[11px] text-[var(--ink-soft)] text-center m-0">
+              Reference: Standard two-handed manual alphabet (Cowplopmorris / Wikimedia Commons · CC BY-SA 3.0)
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -69,7 +69,7 @@ export function ChapterTrail({
               {/* Top Row: Cover Image, Number, Icon, Status */}
               <div>
                 {chapter.coverImage && (
-                  <div className="w-full h-36 rounded-2xl overflow-hidden mb-4 bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shadow-xs">
+                  <div className="w-full h-44 rounded-2xl overflow-hidden mb-5 bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shadow-xs">
                     <img
                       src={chapter.coverImage}
                       alt=""
@@ -113,13 +113,6 @@ export function ChapterTrail({
                     </span>
                   )}
                 </div>
-
-                {/* Hindi Title */}
-                {chapter.hindiTitle && (
-                  <p className="text-xs text-[var(--maths)] font-semibold mb-1">
-                    {chapter.hindiTitle}
-                  </p>
-                )}
 
                 {/* Blurb */}
                 <p className="text-sm text-[var(--ink-soft)] leading-relaxed m-0">

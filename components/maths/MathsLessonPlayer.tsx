@@ -174,12 +174,12 @@ export function MathsLessonPlayer({
         )}
 
         {/* Stepper Navigation Buttons */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-4 border-t border-[var(--line)]">
           <button
             type="button"
             disabled={currentStep === 0}
             onClick={() => goToStep(currentStep - 1)}
-            className="btn-tactile btn-tactile-surface text-sm py-2 px-5 min-h-[48px] disabled:opacity-40 disabled:pointer-events-none"
+            className="btn-tactile btn-tactile-surface text-sm py-2.5 px-6 min-h-[48px] disabled:opacity-40 disabled:pointer-events-none"
           >
             <ArrowLeft size={16} /> Previous
           </button>
@@ -187,25 +187,20 @@ export function MathsLessonPlayer({
             type="button"
             disabled={currentStep === lesson.steps.length - 1}
             onClick={() => goToStep(currentStep + 1)}
-            className="btn-tactile btn-tactile-maths text-sm py-2 px-5 min-h-[48px] disabled:opacity-40 disabled:pointer-events-none"
+            className="btn-tactile btn-tactile-maths text-sm py-2.5 px-6 min-h-[48px] disabled:opacity-40 disabled:pointer-events-none"
           >
             Next Step <ArrowRight size={16} />
           </button>
         </div>
       </div>
 
-      {/* ISL Vocabulary Bar */}
-      {chapter && chapter.islVocab && (
-        <IslPip vocab={chapter.islVocab} />
-      )}
-
       {/* Question / Activity Area */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[var(--surface)] border-2 border-[var(--line)] shadow-sm space-y-6">
+      <div className="p-6 sm:p-10 rounded-3xl bg-[var(--surface)] border-2 border-[var(--line)] shadow-sm space-y-6">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] flex items-center gap-1.5 mb-1">
-            <Sparkles size={16} /> Your Turn · No Timer
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--maths)] flex items-center gap-1.5 mb-1.5">
+            <Sparkles size={16} /> Problem Solving · Step-by-Step
           </span>
-          <h2 className="text-xl sm:text-2xl font-bold font-heading text-[var(--ink)] m-0">
+          <h2 className="text-xl sm:text-3xl font-bold font-heading text-[var(--ink)] m-0 leading-snug">
             {lesson.question.prompt}
           </h2>
         </div>
@@ -306,6 +301,11 @@ export function MathsLessonPlayer({
           fallbackHint={lesson.question.hint}
           onHintRevealed={(lvl) => setHintLevelUsed((prev) => Math.max(prev, lvl))}
         />
+
+        {/* ISL Sign Reference */}
+        {chapter?.islVocab && chapter.islVocab.length > 0 && (
+          <IslPip vocab={chapter.islVocab} />
+        )}
       </div>
 
       {/* Teacher / Parent Note (if adult mode active or present) */}

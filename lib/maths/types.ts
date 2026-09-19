@@ -2,7 +2,6 @@ export type ChapterStatus = 'ready' | 'partial' | 'coming-soon';
 
 export type IslVocabItem = {
   word: string;
-  hindiWord?: string;
   handShape: string;
   movement: string;
   description: string;
@@ -68,7 +67,6 @@ export type MathsChapter = {
   id: string;
   number: number;
   title: string;
-  hindiTitle?: string;
   blurb: string;
   icon: string;
   coverImage?: string;

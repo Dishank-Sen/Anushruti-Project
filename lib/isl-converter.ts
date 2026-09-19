@@ -3,7 +3,7 @@
  * Standardized according to ISLRTC (Indian Sign Language Research and Training Centre).
  * 
  * Rules:
- * 1. Tokenizes and normalizes written English / Hindi.
+ * 1. Tokenizes and normalizes written English.
  * 2. Filters out grammatical particles not present in ISL (the, is, an, a, are, was, were).
  * 3. Maps recognized words to verified ISL Lexical Signs.
  * 4. Fallback: Breaks unmapped words into standard ISL Two-Handed Fingerspelling.
@@ -13,7 +13,6 @@ export interface IslHandshapeData {
   handshape: string;
   movement: string;
   location: string;
-  hindiTerm?: string;
   svgHandGlyph?: string;
 }
 
@@ -26,7 +25,6 @@ export interface IslSignToken {
   handshape: string;
   movement: string;
   location: string;
-  hindiTerm?: string;
 }
 
 // Authentic ISLRTC Two-Handed Manual Alphabet
@@ -65,127 +63,106 @@ export const ISL_CORE_LEXICON: Record<string, IslHandshapeData> = {
     handshape: 'Open 3-finger claws at cheeks',
     movement: 'Pull hands sideways twice imitating cat whiskers',
     location: 'Cheeks / Face',
-    hindiTerm: 'बिल्ली',
   },
   DOG: {
     handshape: 'Open flat hand patted on side',
     movement: 'Pat thigh or hip twice calling a dog',
     location: 'Thigh / Side',
-    hindiTerm: 'कुत्ता',
   },
   BIRD: {
     handshape: 'Thumb and index pinch at mouth',
     movement: 'Open and close index and thumb imitating beak chirping',
     location: 'Mouth / Lips',
-    hindiTerm: 'चिड़िया',
   },
   FROG: {
     handshape: 'V-fingers bent under chin',
     movement: 'Flick V-fingers outward imitating jumping legs',
     location: 'Under chin',
-    hindiTerm: 'मेंढक',
   },
   APPLE: {
     handshape: 'Curled claw hand',
     movement: 'Twist knuckles gently against cheek twice',
     location: 'Cheek',
-    hindiTerm: 'सेब',
   },
   MANGO: {
     handshape: 'Cupped hand holding round fruit',
     movement: 'Bring cupped hand to mouth as if taking a juicy bite',
     location: 'Mouth / Chin',
-    hindiTerm: 'आम',
   },
   BOOK: {
     handshape: 'Both flat palms together',
     movement: 'Open palms outward keeping little finger edges touching like a book opening',
     location: 'Chest level',
-    hindiTerm: 'किताब',
   },
   SCHOOL: {
     handshape: 'Both open flat hands',
     movement: 'Clap dominant palm down onto non-dominant palm twice',
     location: 'Chest level',
-    hindiTerm: 'विद्यालय',
   },
   COUNT: {
     handshape: 'Left flat palm up, right V-fingers',
     movement: 'Tap right V-fingers along left palm from base to fingertips',
     location: 'Left palm',
-    hindiTerm: 'गिनना',
   },
   ADD: {
     handshape: 'Both open 5-hands spread apart',
     movement: 'Bring both hands together into joined flattened O-shapes',
     location: 'Neutral chest space',
-    hindiTerm: 'जोड़ना',
   },
   ONE: {
     handshape: 'Index finger pointing straight up, palm forward',
     movement: 'Hold still with decisive forward emphasis',
     location: 'Shoulder level',
-    hindiTerm: 'एक (१)',
   },
   TWO: {
     handshape: 'Index and middle fingers extended in V-shape',
     movement: 'Hold still with palm forward',
     location: 'Shoulder level',
-    hindiTerm: 'दो (२)',
   },
   THREE: {
     handshape: 'Thumb, index, and middle finger extended',
     movement: 'Hold still with palm forward',
     location: 'Shoulder level',
-    hindiTerm: 'तीन (३)',
   },
   FOUR: {
     handshape: 'Four fingers up, thumb folded across palm',
     movement: 'Hold still with palm forward',
     location: 'Shoulder level',
-    hindiTerm: 'चार (४)',
   },
   FIVE: {
     handshape: 'All five fingers spread open, palm forward',
     movement: 'Hold still or gentle side wave',
     location: 'Shoulder level',
-    hindiTerm: 'पाँच (५)',
   },
   TEN: {
     handshape: 'Both open 5-hands facing forward',
     movement: 'Show all 10 fingers with slight forward pulse',
     location: 'Chest level',
-    hindiTerm: 'दस (१०)',
   },
   BIG: {
     handshape: 'Both open curved hands facing each other',
     movement: 'Expand hands outward with wide puff of breath',
     location: 'Chest level outwards',
-    hindiTerm: 'बड़ा',
   },
   SMALL: {
     handshape: 'Both flat palms facing inward',
     movement: 'Bring palms close together without touching',
     location: 'Chest level',
-    hindiTerm: 'छोटा',
   },
   INSIDE: {
     handshape: 'Left curved cup hand; right flat fingers tucked inside',
     movement: 'Dip right hand straight into left cupped palm',
     location: 'Chest space',
-    hindiTerm: 'अंदर',
   },
   OUTSIDE: {
     handshape: 'Right hand starts inside left cup',
     movement: 'Pull right hand upward and out away from body',
     location: 'Chest space',
-    hindiTerm: 'बाहर',
   },
   MONEY: {
     handshape: 'Thumb rubbing across index and middle fingertips',
     movement: 'Rub thumb tips twice in counting motion',
     location: 'In front of chest',
-    hindiTerm: 'पैसे',
   },
 };
 
@@ -215,7 +192,6 @@ export function convertSentenceToISL(sentence: string): IslSignToken[] {
         handshape: entry.handshape,
         movement: entry.movement,
         location: entry.location,
-        hindiTerm: entry.hindiTerm,
       };
     }
 
@@ -231,7 +207,6 @@ export function convertSentenceToISL(sentence: string): IslSignToken[] {
         handshape: entry.handshape,
         movement: `${entry.movement} (repeat twice for plural)`,
         location: entry.location,
-        hindiTerm: entry.hindiTerm,
       };
     }
 
@@ -252,7 +227,6 @@ export function convertSentenceToISL(sentence: string): IslSignToken[] {
       handshape: `ISL Two-Handed Fingerspelling (${word})`,
       movement: 'Spell each letter sequentially using standard two-handed manual alphabet',
       location: 'Chest level in front of signer',
-      hindiTerm: 'अंगुली-वर्तनी',
     };
   });
 }
