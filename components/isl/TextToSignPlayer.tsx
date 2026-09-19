@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { convertSentenceToISL, type IslSignToken } from '../../lib/isl-converter.ts';
 import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
+import { HandSignVisual } from './HandSignVisual.tsx';
 
 const SAMPLE_SENTENCES = [
   'Cat has three apples',
@@ -230,6 +231,16 @@ export function TextToSignPlayer() {
                 </span>
               )}
             </div>
+
+            {/* Hand Sign Visual Demonstration */}
+            <HandSignVisual
+              signKey={
+                currentToken.isFingerspelled && currentToken.letterSequence
+                  ? (currentToken.letterSequence[activeLetterIdx]?.letter ?? currentToken.displayWord)
+                  : currentToken.displayWord
+              }
+              size={220}
+            />
 
             {/* Handshape Description Card */}
             <div
