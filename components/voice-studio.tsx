@@ -27,6 +27,8 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
 import { useVoiceInput } from '@/hooks/use-voice-input';
+import { useStableCue } from '@/hooks/use-stable-cue';
+import { LevelSmoother, meterPosition } from '@/lib/voice/feedback';
 import { useWordRecognition } from '@/hooks/use-word-recognition';
 import {
   calibrate,
@@ -84,7 +86,8 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
   const [manualLevel, setManualLevel] = useState(-28);
   const [manualFloor, setManualFloor] = useState(-60);
   const [sensitivity, setSensitivity] = useState(6);
-  const [online, setOnline] = useState(false);
+  const [displayDb, setDisplayDb] = useState(-90);
+  const smoother = useRef(new LevelSmoother());
   const [demo, setDemo] = useState(false);
   const [demoResult, setDemoResult] = useState(false);
   const [notice, setNotice] = useState('');
@@ -112,11 +115,14 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     calibration.current = false;
     setDemo(false);
     setFrame(silent);
+    smoother.current.reset();
+    setDisplayDb(-90);
     setPhase('idle');
     setReference(null);
   }
   function consume(sample: VoiceFrame, time: number) {
     setFrame(sample);
+    setDisplayDb(smoother.current.update(sample.db, time));
     const dt = lastTime.current
       ? Math.min((time - lastTime.current) / 1000, 0.15)
       : 0;
@@ -145,7 +151,14 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     }
     const running = active.current;
     if (!running || !reference) return;
-    const next = advanceRound(running, sample, dt, module, level, reference);
+    const next = advanceRound(
+      running,
+      sample,
+      dt,
+      module === 'words' && demo ? 'steady' : module,
+      level,
+      reference,
+    );
     active.current = next;
     setRound(next);
     const chartValue = sample.speech
@@ -158,7 +171,12 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     setPoints((previous) =>
       [...previous, { x: next.progress, y: chartValue }].slice(-180),
     );
-    const collected = practiceStars(next, module, level);
+    const collected =
+      module === 'words'
+        ? next.done
+          ? 1
+          : 0
+        : practiceStars(next, module, level);
     if (collected > earned.current) {
       const gained = collected - earned.current;
       if (!demo) setTotal((n) => n + gained);
@@ -179,11 +197,14 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     consumer.current = consume;
   });
   useEffect(() => () => clearDemo(), []);
-  const mic = useVoiceInput(consume, stopped);
+  const mic = useVoiceInput(consume, stopped, (audio, rate, speech) => {
+    if (!calibration.current) recognition.acceptAudio(audio, rate, speech);
+  });
   const live = mic.state === 'live';
   useEffect(() => {
     if (
       module === 'words' &&
+      phase === 'practice' &&
       live &&
       !wordRewarded.current &&
       recognition.finalText &&
@@ -191,9 +212,13 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     ) {
       wordRewarded.current = true;
       setMatchedWord(true);
+      setStars(1);
+      setRound({ ...freshRound(), progress: 1, done: true });
+      active.current = null;
+      setPhase('done');
       setTotal((n) => n + 1);
     }
-  }, [recognition.finalText, word, module, live]);
+  }, [recognition.finalText, word, module, live, phase]);
   function resetPractice() {
     active.current = null;
     setRound(freshRound());
@@ -202,7 +227,7 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     setStars(0);
     wordRewarded.current = false;
     setMatchedWord(false);
-    recognition.clear();
+    recognition.clear(false);
     setNotice('');
   }
   async function startMic() {
@@ -230,9 +255,15 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     setReference({ db: manualLevel, hz: manualPitch });
     setPhase('ready');
     setManualOpen(false);
+    recognition.clear(false);
   }
   function startRound() {
-    if (!live || !reference) return;
+    if (
+      !live ||
+      !reference ||
+      (module === 'words' && recognition.state !== 'listening')
+    )
+      return;
     resetPractice();
     lastTime.current = 0;
     active.current = freshRound();
@@ -287,7 +318,7 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
   const pitchDelta =
     frame.hz && reference ? semitones(frame.hz, reference.hz) - target : 0;
   const levelDelta = reference
-    ? frame.db - reference.db - (module === 'volume' ? target : 0)
+    ? displayDb - reference.db - (module === 'volume' ? target : 0)
     : 0;
   let cue = 'Ready to try?',
     symbol = '✦',
@@ -296,7 +327,7 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
     cue = 'Stay quiet · learning room noise';
     symbol = '◌';
   } else if (phase === 'voice') {
-    cue = frame.speech ? 'Finding your voice…' : 'Now hum gently: mmm';
+    cue = 'Hum gently while we find your voice';
     symbol = '〰';
   } else if (phase === 'done') {
     cue = demoResult
@@ -319,7 +350,7 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
       symbol = '↓';
       tone = 'strong';
     } else if (frame.held) {
-      cue = 'Keep going';
+      cue = 'Take your time';
       symbol = '〰';
     } else if (!frame.speech) {
       cue =
@@ -333,7 +364,11 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
       symbol = '↓';
       tone = 'strong';
     } else if (module === 'words') {
-      cue = matchedWord ? 'Word heard!' : 'Voice detected';
+      cue = matchedWord
+        ? 'Word heard!'
+        : recognition.state === 'processing'
+          ? 'Reading your words…'
+          : 'Say the word, then pause';
       symbol = matchedWord ? '★' : '●';
       tone = 'good';
     } else if (module !== 'volume' && !frame.hz) {
@@ -356,6 +391,15 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
       tone = 'good';
     }
   }
+  const stableCue = useStableCue([cue, symbol, tone].join('|'), phase);
+  [cue, symbol, tone] = stableCue.split('|');
+  const levelTarget =
+    (reference?.db ?? -28) + (module === 'volume' ? target : 0);
+  const voicePresent = frame.speech || frame.held;
+  const levelPosition = meterPosition(
+    voicePresent ? displayDb : -90,
+    levelTarget,
+  );
   const locked =
     phase === 'practice' || phase === 'room' || phase === 'voice' || demo;
   const chartTarget = Array.from(
@@ -454,9 +498,9 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
             </span>
             <div
               className="vg-earned"
-              aria-label={`${stars} of 3 practice stars`}
+              aria-label={`${stars} of ${module === 'words' ? 1 : 3} practice stars`}
             >
-              {[1, 2, 3].map((n) => (
+              {(module === 'words' ? [1] : [1, 2, 3]).map((n) => (
                 <Star
                   key={n}
                   className={stars >= n ? 'earned' : ''}
@@ -466,15 +510,67 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
             </div>
           </div>
           <div className="vg-feedback">
-            <div
-              className="vg-symbol"
-              key={`${symbol}-${stars}`}
-              aria-hidden="true"
-            >
+            <div className="vg-symbol" aria-hidden="true">
               {symbol}
             </div>
-            <h2>{cue}</h2>
+            <h2 aria-live="polite" aria-atomic="true">
+              {cue}
+            </h2>
           </div>
+          <section
+            className="vg-target-meter"
+            aria-label="Voice level and personal target"
+          >
+            <div className="vg-target-heading">
+              <strong>
+                {voicePresent
+                  ? 'Your voice level'
+                  : live
+                    ? 'Waiting for voice'
+                    : 'Your voice target'}
+              </strong>
+              <span>
+                {reference
+                  ? 'Your comfortable range'
+                  : 'Calibrate to set your range'}
+              </span>
+            </div>
+            <div className="vg-target-track" aria-hidden="true">
+              <span className="vg-target-band">✓</span>
+              <span
+                className={`vg-target-pointer ${voicePresent ? 'active' : ''}`}
+                style={{ left: `${levelPosition}%` }}
+              >
+                ●
+              </span>
+            </div>
+            <meter
+              className="sr-only"
+              min={0}
+              max={100}
+              low={37.5}
+              high={62.5}
+              optimum={50}
+              value={levelPosition}
+              aria-label="Voice level relative to your calibrated target"
+            />
+            <div className="vg-target-labels">
+              <span>Softer</span>
+              <strong>Target</strong>
+              <span>Stronger</span>
+            </div>
+            <p>
+              {!reference
+                ? 'Use a comfortable voice. No need to shout.'
+                : !voicePresent
+                  ? 'Room sounds do not move your voice marker.'
+                  : Math.abs(levelDelta) <= 6
+                    ? '✓ In your target range'
+                    : levelDelta > 6
+                      ? '↓ Try a little softer'
+                      : '↗ Move a little closer'}
+            </p>
+          </section>
           {module === 'words' ? (
             <div className="vg-word">
               <strong>{word}</strong>
@@ -576,9 +672,11 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
               value={round.progress * 100}
             />
             <span>
-              {module === 'rhythm'
-                ? `${round.bursts} / ${difficulty.cycles} cycles`
-                : `${(round.progress * difficulty.seconds).toFixed(1)} / ${difficulty.seconds}s of voice`}
+              {module === 'words'
+                ? `${matchedWord ? 1 : 0} / 1 phrase matched`
+                : module === 'rhythm'
+                  ? `${round.bursts} / ${difficulty.cycles} cycles`
+                  : `${(round.progress * difficulty.seconds).toFixed(1)} / ${difficulty.seconds}s of voice`}
             </span>
           </div>
           <div className="vg-round-actions">
@@ -598,7 +696,11 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
               <Button
                 className="vg-go"
                 disabled={
-                  !live || !reference || phase === 'room' || phase === 'voice'
+                  !live ||
+                  !reference ||
+                  phase === 'room' ||
+                  phase === 'voice' ||
+                  (module === 'words' && recognition.state !== 'listening')
                 }
                 onClick={startRound}
               >
@@ -614,56 +716,6 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
           </div>
         </section>
         <aside className="vg-sidebar">
-          <section className="vg-meter-card">
-            <div className="vg-meter-title">
-              <Mic size={17} />
-              <strong>
-                {demo
-                  ? 'Demo signal'
-                  : live
-                    ? 'Microphone on'
-                    : 'Microphone off'}
-              </strong>
-            </div>
-            <div className="vg-level-readout">
-              <strong>{live || demo ? Math.round(frame.db) : '—'}</strong>
-              <span>dBFS</span>
-              <small>
-                {frame.hz ? `${Math.round(frame.hz)} Hz` : 'Pitch —'}
-              </small>
-            </div>
-            <meter
-              className="sr-only"
-              min={-90}
-              max={0}
-              value={frame.db}
-              aria-label="Microphone level in dBFS"
-            />
-            <div className="vg-bars" aria-hidden="true">
-              {Array.from({ length: 24 }, (_, i) => {
-                const db = -70 + i * 3;
-                const zone = reference
-                  ? db < reference.db - 6
-                    ? 'blue'
-                    : db > reference.db + 6
-                      ? 'red'
-                      : 'green'
-                  : 'blue';
-                return <i key={i} className={frame.db >= db ? zone : ''} />;
-              })}
-            </div>
-            <div className="vg-meter-labels">
-              <span>Soft</span>
-              <span>Target</span>
-              <span>Strong</span>
-            </div>
-            <div className="vg-noise">
-              <span>Background</span>
-              <strong>
-                {live ? `${Math.round(frame.noiseDb)} dBFS` : '—'}
-              </strong>
-            </div>
-          </section>
           <section className="vg-calibration">
             <h3>
               <SlidersHorizontal size={17} /> Calibration
@@ -696,48 +748,65 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
                     : 'Starts automatically with the mic.'}
             </p>
           </section>
-          {module === 'words' && (
-            <section className="vg-recognition">
-              <h3>
-                <AudioLines size={17} /> Word recognition
-              </h3>
-              <Button
-                disabled={!live || demo}
-                variant="outline"
-                onClick={() =>
-                  recognition.state === 'off'
-                    ? void recognition.start(online)
-                    : recognition.stop()
-                }
-              >
-                {recognition.state === 'starting'
-                  ? 'Cancel recognition'
+          <section className="vg-recognition">
+            <h3>
+              <AudioLines size={17} /> Live captions
+            </h3>
+            <p>English · on this device</p>
+            <Button
+              disabled={!live || demo || phase === 'room' || phase === 'voice'}
+              variant="outline"
+              onClick={() =>
+                recognition.state === 'off'
+                  ? recognition.start()
+                  : recognition.stop()
+              }
+            >
+              {recognition.state === 'starting'
+                ? 'Cancel download'
+                : recognition.state === 'off'
+                  ? 'Enable captions'
+                  : 'Stop captions'}
+            </Button>
+            <p>
+              {recognition.state === 'starting'
+                ? `Loading speech model · ${recognition.progress}% of current file`
+                : recognition.state === 'processing'
+                  ? 'Reading your phrase… wait for Ready before speaking again.'
                   : recognition.state === 'listening'
-                    ? 'Stop recognition'
-                    : 'Recognize words'}
-              </Button>
-              <p>
-                {recognition.state === 'listening'
-                  ? online
-                    ? 'Browser speech service active'
-                    : 'On-device recognition active'
-                  : 'English · optional'}
-              </p>
-              <label className="vg-consent">
-                <input
-                  type="checkbox"
-                  checked={online}
-                  onChange={(e) => {
-                    recognition.stop();
-                    setOnline(e.target.checked);
-                  }}
-                />
-                Allow online browser recognition (may send audio to its
-                provider)
-              </label>
-              {recognition.error && <output>{recognition.error}</output>}
-            </section>
-          )}
+                    ? 'Ready · say a short phrase, then pause.'
+                    : 'First use downloads a small speech model. Audio stays on your device.'}
+            </p>
+            {recognition.state === 'starting' && (
+              <Progress
+                value={recognition.progress}
+                aria-label="Speech model file download"
+              />
+            )}
+            <output className="vg-caption-text" aria-live="polite">
+              {recognition.text || 'Your words will appear here.'}
+            </output>
+            {recognition.notes.length > 0 && (
+              <details className="vg-notes">
+                <summary>
+                  This session · {recognition.notes.length} phrases
+                </summary>
+                <ol>
+                  {recognition.notes.map((note, i) => (
+                    <li key={i}>{note}</li>
+                  ))}
+                </ol>
+                <Button variant="ghost" onClick={() => recognition.clear()}>
+                  Clear phrases
+                </Button>
+              </details>
+            )}
+            {recognition.error && <output>{recognition.error}</output>}
+            <small>
+              Captions can mishear. A missing match does not mean you spoke
+              incorrectly.
+            </small>
+          </section>
         </aside>
       </div>
       {(mic.error || notice === 'error') && (
@@ -759,24 +828,39 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
           them. A word-recognition match is not a pronunciation or therapy
           assessment.
         </p>
+        <p className="vg-diagnostics">
+          Input: {live ? Math.round(displayDb) : '—'} dBFS · Target:{' '}
+          {reference ? Math.round(levelTarget) : '—'} dBFS · Pitch:{' '}
+          {frame.hz ? Math.round(frame.hz) : '—'} Hz · Background:{' '}
+          {live ? Math.round(frame.noiseDb) : '—'} dBFS
+        </p>
         <p>
           The microphone measures device-relative dBFS, not environmental
           decibels. Automatic setup samples room noise, then a comfortable
-          voice. Browser noise suppression and a noise-relative gate reduce
-          steady fan pickup but cannot isolate a speaker perfectly. If your
-          voice is missed, lower the manual noise margin or move the microphone
-          closer; do not strain to reach the guide.
+          voice. A noise-relative periodicity gate reduces steady fan pickup but
+          cannot isolate a speaker perfectly. If your voice is missed, lower the
+          manual noise margin or move the microphone closer; do not strain to
+          reach the guide.
         </p>
         <p>
-          Audio analysis stays in memory. Word recognition is on-device by
-          default where supported; the separately selected online mode may send
-          audio to your browser’s recognition provider. Nothing is recorded or
-          saved by this app. Stop or leave the page to release both microphone
-          and recognition. Speech recognition can mishear children and atypical
-          speech.
+          Audio is buffered briefly in memory for optional Whisper captions and
+          never uploaded. Model files download from Hugging Face and may be
+          cached by your browser. The last eight transcribed phrases stay in
+          this session only; use Clear phrases to erase them. Stop or leave the
+          page to release the microphone and model. Captions may be delayed on
+          phones and can mishear children and atypical speech.
         </p>
       </details>
-      <Dialog open={manualOpen} onOpenChange={setManualOpen}>
+      <Dialog
+        open={manualOpen}
+        onOpenChange={(open) => {
+          setManualOpen(open);
+          if (!open && live && !reference) {
+            calibration.current = true;
+            setPhase('voice');
+          }
+        }}
+      >
         <DialogContent className="vg-manual">
           <DialogTitle>Manual calibration</DialogTitle>
           <DialogDescription>
@@ -824,6 +908,12 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
               onChange={(e) => setManualPitch(Number(e.target.value))}
             />
           </label>
+          {manualLevel < manualFloor + sensitivity && (
+            <p className="vg-error">
+              The comfortable voice level must be above the background plus
+              noise margin.
+            </p>
+          )}
           <Button
             disabled={
               !live ||
@@ -832,6 +922,7 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
               manualFloor > -10 ||
               manualLevel < -65 ||
               manualLevel > -8 ||
+              manualLevel < manualFloor + sensitivity ||
               manualPitch < 60 ||
               manualPitch > 1000
             }

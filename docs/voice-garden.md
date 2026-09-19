@@ -1,37 +1,37 @@
 # Voice Garden
 
-An optional voice-exploration feature at `/?view=voice`. Existing lessons remain usable without speaking or enabling a microphone.
+Optional voice exploration at `/?view=voice`. Lessons remain usable without speech or microphone access.
 
-## Learner flow
+## Practice and phone layout
 
-1. Start the microphone or try the clearly labelled simulated demo.
-2. Auto calibration learns room noise for about 2.2 seconds, then asks for a comfortable hum to set a personal reference. The Auto calibrate button repeats this process. Manual calibration adjusts the room floor, noise margin, reference level and pitch.
-3. Choose Steady voice, Pitch hills, Volume waves, Speak & pause, or Words & phrases. Starter (classes 1–2), Explorer (3–4), and Challenge (5+) offer longer rounds, narrower pitch guides and varied prompts. Learners can freely choose another level.
-4. Follow the large symbol, short instruction, animated trace and colour feedback. Pauses preserve progress. Stars arrive during practice; simulated stars do not enter the session total.
-5. Word recognition is separately opt-in. Recognition of a prompt earns a star, but is not a pronunciation or intelligibility assessment.
+Start the microphone, stay quiet for room calibration, then hum comfortably to set a personal level and pitch. Auto-calibrate repeats setup; manual calibration adjusts the background floor, noise margin, comfortable level and pitch. A reference below the detection threshold cannot be applied. Cancelling manual setup resumes unfinished automatic calibration.
 
-## Signal processing and rewards
+The full-width level marker sits beside the feedback and chart on phones. Its green range always represents the current personal target ±6 dB, including the moving Volume waves target; it no longer uses a hard-coded bar scale with an unrelated centre label. Pitch and loudness are separate quantities. Values are device-relative dBFS, not environmental decibels or clinical targets. Recalibrate when changing microphone distance or device.
 
-- `hooks/use-voice-input.ts` owns microphone capture and cleanup. It requests browser noise suppression and echo cancellation, with automatic gain control off. A 75 Hz high-pass and 5 kHz low-pass feed an analyser, never speakers.
-- `lib/voice/analysis.ts` analyses 4096 samples approximately every 80 ms using RMS dBFS and a periodicity-based pitch estimate across 60–1000 Hz. This is an estimator range, not a target for children. Calibration needs at least 12 clear, unclipped frames and median pitch deviation within two semitones.
-- `lib/voice/practice.ts` learns the 80th-percentile room level and suppresses similar low-SNR periodic background sound. Manual noise margin ranges from 3–18 dB. A short visual hold bridges tiny gaps without inventing pitch or earning credit during silence.
-- Pitch rounds wait for measurable pitch; volume and word rounds can accept unvoiced consonant energy. Ordinary pauses freeze the active clock. Rhythm requires alternating voice bursts and rests; silence alone and clipped input cannot earn credit.
-- Three stars reward 20%, 50% and 80% of a round near the guide (or completed rhythm cycles). Word-round effort and recognized-word rewards are distinct. Session totals, reference values and transcripts are held in memory only.
+Feedback requires a change to persist for 400 ms, with at least 900 ms between ordinary changes. Phase changes appear immediately. The symbol no longer remounts or bounces on every sample. Meter motion uses a 180 ms exponential smoother. A 450 ms visual hold spans small gaps without awarding silence any progress. Reduced-motion settings disable transitions.
 
-The meter measures **dBFS**, not calibrated sound pressure (dB SPL). Pitch and loudness are separate quantities. Level guides use the reference ±6 dB; pitch tolerance depends on the chosen level. These are relative practice guides, not clinical or universally correct voice targets.
+## Capture and detection
 
-## Recognition and privacy
+`hooks/use-voice-input.ts` owns the stream and AudioContext. Browser automatic gain, noise suppression and echo cancellation are requested off: speech enhancement was observed fading a sustained synthetic hum by more than 10 dB after calibration. Device hardware may still process its signal. A 75 Hz high-pass and 5 kHz low-pass feed analysis and a silent AudioWorklet. The worklet transfers 2048-sample mono PCM blocks; microphone audio is never played through speakers.
 
-`hooks/use-word-recognition.ts` requests English browser speech recognition only after its own Start action. It defaults to on-device recognition and checks that the browser reports an installed local language pack. Unsupported browsers show a message rather than silently using an online service. The explicit online-service checkbox permits the browser provider to receive audio; its availability and processing policies depend on the browser. No application backend receives recordings or transcripts, and the application does not save them.
+RMS level and YIN pitch are measured approximately every 80 ms. Pitch analysis subsamples toward 12 kHz to reduce phone work. Room calibration learns the 80th-percentile level and any consistent room pitch. A candidate must exceed the noise margin and contain confident periodic voice for at least 120 ms to open the gate. Nearby unvoiced consonants are allowed within 200 ms of periodic voice. Loud unpitched noise or isolated taps cannot open it. This heuristic is not a neural voice detector or speaker identification: music and other voices may pass, while breathy voices can be missed. Manual sensitivity and close microphone placement help; do not strain to satisfy the display.
 
-Stop mic, hidden-page, page navigation, disconnect and unmount paths release microphone resources. Recognition has independent cancellation and cleanup, and stops with the microphone. A generation token discards late permission or recognition-availability results. Pausing a round keeps the microphone active until Stop mic is selected.
+Pitch rounds require measurable pitch; volume and rhythm use gated voice. Pauses preserve progress. Word rounds do not award progress or stars for microphone energy. A final recognised match during an active word round earns one star; failures are not graded as incorrect pronunciation. Demos remain labelled and do not add session stars.
+
+## Local captions and temporary phrases
+
+“Enable captions” loads [Transformers.js](https://huggingface.co/docs/transformers.js/en/index) and the quantised [Whisper tiny.en ONNX model](https://huggingface.co/onnx-community/whisper-tiny.en). The model revision is pinned to `2575352d61be1bf7225cf8f8b268a4678025fc58`. English is the initial supported language. The base [model card](https://huggingface.co/openai/whisper-tiny.en) declares Apache-2.0; the original [Whisper project](https://github.com/openai/whisper/blob/main/LICENSE) is MIT. Transformers.js is Apache-2.0 and ONNX Runtime is MIT. Model assets are fetched from their source, not committed to this repository.
+
+A single Web Worker performs quantised WASM inference with one CPU thread, no GPU and one request at a time. Model/runtime files download only after opt-in and may be cached by the browser. Initial download needs internet and memory use still varies by device. Audio is not sent to an inference service. There is no online fallback.
+
+The in-memory utterance buffer includes up to 300 ms of lead-in, waits for a 700 ms pause and submits at most six seconds at once. At least 240 ms of gated voice is required. Audio is resampled to 16 kHz. While processing, the UI asks the learner to wait; incoming audio is discarded rather than queued. This is short-phrase transcription, not word-by-word streaming or a continuous recording service. Download and inference have timeouts, with cancellation and retry controls.
+
+The latest eight text phrases stay in React state only. Clear phrases erases them; navigation/unmount discards them. No recordings, child identifiers or transcripts enter persistent storage or the backend. Stop captions terminates its worker; Stop microphone, hidden tab, page exit and disconnect release the microphone and transcription resources. Generation IDs reject late results after changing words or clearing text. Model errors never grant rewards.
 
 ## Verification and limits
 
-Automated tests cover signal analysis, room-noise rejection, manual sensitivity, pauses, rhythm rests, clipping, partial-success rewards and whole-word matching. Headless Edge with synthetic fan/voice input completed automatic calibration and a rewarded round. Browser checks exercised manual calibration, demo isolation, level selection and mobile layout. Recognition integration checks use a mocked browser engine to verify explicit opt-in, local/online routing, word rewards and cancellation; they do not establish real transcription accuracy.
+Unit tests cover pitch across sample rates, calibration, clipping, fan rejection, transient/noise rejection, pauses, rhythm, stable cues, target mapping, bounded utterances and resampling. Browser checks cover 320/390/768 px layouts across the main views, microphone calibration and rewarded rounds, manual controls, demos, caption opt-in, PCM capture, stale results and cleanup. A public JFK speech fixture was transcribed by the actual model in headless Edge; synthetic microphone and mock-worker tests separately exercise UI controls. This does not establish recognition accuracy for children, atypical speech or physical phone microphones.
 
-Background sound can still resemble speech; the gate does not identify a speaker. Breathy voices may lack a stable pitch. Physical microphones, fan environments and actual recognition need further testing with users and deaf educators. This prototype has no validated therapeutic or muscle-memory benefit. Recognition failure is not evidence of incorrect speech. Prompt content is illustrative and should be reviewed before instructional use. Keep practice comfortable; do not strain to match the guide.
+Captions can hallucinate or mishear; they are not a pronunciation, intelligibility or therapy assessment. Validate on real Android/iOS devices and with deaf educators before claiming mobile accuracy or learning benefits. The feature provides visual practice feedback, not a guaranteed therapeutic outcome.
 
-Synthetic inputs and screenshots stay under ignored `work/`. No child recordings are committed.
-
-References: [MDN waveform analysis](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatTimeDomainData), [MDN on-device recognition](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/processLocally).
+Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm build:vercel`. Browser fixtures and temporary screenshots remain under ignored `work/`; no child recordings are committed.

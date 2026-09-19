@@ -27,7 +27,7 @@ export function analyseVoice(
   const clipped = input.some((value) => Math.abs(value) >= 0.98);
   const empty = { db, hz: null, confidence: 0, clipped };
   if (db < -70 || input.length < 1024 || sampleRate < 8000) return empty;
-  const stride = sampleRate >= 32000 ? 2 : 1;
+  const stride = Math.max(1, Math.floor(sampleRate / 12000));
   const size = Math.floor(input.length / stride);
   const rate = sampleRate / stride;
   const minLag = Math.floor(rate / 1000);

@@ -15,12 +15,16 @@ export class NoiseGate {
   private until = 0;
   private lastVoice = -Infinity;
   private pitches: number[] = [];
+  private candidateSince: number | null = null;
+  private lastPeriodic = -Infinity;
   reset(time: number) {
     this.room = [];
     this.until = time + 2200;
     this.lastVoice = -Infinity;
     this.pitches = [];
     this.roomPitch = null;
+    this.candidateSince = null;
+    this.lastPeriodic = -Infinity;
   }
   manual(floor: number, margin: number) {
     this.floor = clamp(floor, -85, -10);
@@ -29,6 +33,9 @@ export class NoiseGate {
     this.room = [];
     this.roomPitch = null;
     this.pitches = [];
+    this.candidateSince = null;
+    this.lastPeriodic = -Infinity;
+    this.lastVoice = -Infinity;
   }
   update(sample: VoiceSample, time: number): VoiceFrame {
     if (this.until) {
@@ -65,8 +72,20 @@ export class NoiseGate {
       this.roomPitch !== null &&
       Math.abs(semitones(sample.hz, this.roomPitch)) < 0.8 &&
       snr < Math.max(10, this.margin + 3);
-    const speech =
+    const aboveNoise =
       snr >= this.margin && sample.db > -70 && !resemblesFan && !sample.clipped;
+    const periodic = sample.hz !== null && sample.confidence >= 0.85;
+    if (aboveNoise && periodic) this.lastPeriodic = time;
+    // A burst of energy alone (tap, clap, fan gust) cannot open the voice gate.
+    // Once voiced sound starts it, allow nearby unvoiced consonants.
+    const candidate =
+      aboveNoise && (periodic || time - this.lastPeriodic < 200);
+    if (!candidate) this.candidateSince = null;
+    else if (this.candidateSince === null) this.candidateSince = time;
+    const speech =
+      candidate &&
+      this.candidateSince !== null &&
+      time - this.candidateSince >= 120;
     let hz: number | null = null;
     if (speech) {
       this.lastVoice = time;
@@ -80,7 +99,7 @@ export class NoiseGate {
       ...sample,
       hz,
       speech,
-      held: !speech && time - this.lastVoice < 240,
+      held: !speech && time - this.lastVoice < 450,
       noiseDb: this.floor,
       snr,
       learningNoise: false,
@@ -150,7 +169,7 @@ export function advanceRound(
   level: number,
   reference: { db: number; hz: number },
 ): Round {
-  if (previous.done) return previous;
+  if (previous.done || module === 'words') return previous;
   const next = { ...previous };
   const step = clamp(dt, 0, 0.15);
   const difficulty = levels[level];
@@ -174,7 +193,7 @@ export function advanceRound(
     return next;
   }
   if (!frame.speech) return next;
-  // Pitch exercises wait for an actual pitch, but words/volume accept unvoiced consonants.
+  // Pitch exercises wait for an actual pitch, while volume accepts nearby unvoiced consonants.
   if ((module === 'steady' || module === 'hill') && frame.hz === null)
     return next;
   const target = guideAt(module, next.progress);
@@ -185,9 +204,7 @@ export function advanceRound(
     frame.hz !== null &&
     Math.abs(semitones(frame.hz, reference.hz) - target) <=
       difficulty.tolerance;
-  const matched =
-    module === 'words' ||
-    (module === 'volume' ? goodLevel : goodLevel && goodPitch);
+  const matched = module === 'volume' ? goodLevel : goodLevel && goodPitch;
   next.progress = Math.min(1, next.progress + step / difficulty.seconds);
   if (matched) next.matched += step;
   next.done = next.progress >= 1;

@@ -1,60 +1,39 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-type RecognitionResult = {
-  isFinal: boolean;
-  0: { transcript: string; confidence: number };
-};
-type Recognition = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  processLocally?: boolean;
-  onresult:
-    | ((event: {
-        resultIndex: number;
-        results: ArrayLike<RecognitionResult>;
-      }) => void)
-    | null;
-  onerror: ((event: { error: string }) => void) | null;
-  onend: (() => void) | null;
-  onstart: (() => void) | null;
-  start: () => void;
-  abort: () => void;
-};
-type Constructor = {
-  new (): Recognition;
-  available?: (options: {
-    langs: string[];
-    processLocally: boolean;
-  }) => Promise<string>;
-  install?: (options: {
-    langs: string[];
-    processLocally: boolean;
-  }) => Promise<boolean>;
-};
+import { UtteranceBuffer } from '@/lib/voice/utterance';
+
 export function useWordRecognition() {
-  const [state, setState] = useState<'off' | 'starting' | 'listening'>('off');
+  const [state, setState] = useState<
+    'off' | 'starting' | 'listening' | 'processing'
+  >('off');
   const [text, setText] = useState('');
   const [finalText, setFinalText] = useState('');
+  const [notes, setNotes] = useState<string[]>([]);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
-  const instance = useRef<Recognition | null>(null);
-  const generation = useRef(0);
-  const release = useCallback(() => {
-    generation.current++;
-    if (instance.current) {
-      const current = instance.current;
-      instance.current = null;
-      current.onend = null;
-      current.onerror = null;
-      current.onstart = null;
-      current.onresult = null;
-      current.abort();
-    }
-  }, []);
+  const worker = useRef<Worker | null>(null);
+  const ready = useRef(false);
+  const busy = useRef(false);
+  const epoch = useRef(0);
+  const buffer = useRef(new UtteranceBuffer());
+  const watchdog = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stop = useCallback(() => {
-    release();
+    epoch.current++;
+    ready.current = false;
+    busy.current = false;
+    worker.current?.terminate();
+    worker.current = null;
+    if (watchdog.current) clearTimeout(watchdog.current);
+    buffer.current.reset();
     setState('off');
-  }, [release]);
+  }, []);
+  const clear = useCallback((clearNotes = true) => {
+    epoch.current++;
+    buffer.current.reset();
+    setText('');
+    setFinalText('');
+    if (clearNotes) setNotes([]);
+  }, []);
   useEffect(() => {
     const hide = () => {
       if (document.hidden) stop();
@@ -62,105 +41,109 @@ export function useWordRecognition() {
     document.addEventListener('visibilitychange', hide);
     window.addEventListener('pagehide', stop);
     return () => {
-      release();
+      stop();
       document.removeEventListener('visibilitychange', hide);
       window.removeEventListener('pagehide', stop);
     };
-  }, [release, stop]);
-  async function start(online: boolean) {
-    release();
-    const token = generation.current;
+  }, [stop]);
+  function start() {
+    stop();
+    clear();
     setError('');
-    setText('');
-    setFinalText('');
+    setProgress(0);
     setState('starting');
     try {
-      const global = window as Window & {
-        SpeechRecognition?: Constructor;
-        webkitSpeechRecognition?: Constructor;
-      };
-      const Ctor = global.SpeechRecognition ?? global.webkitSpeechRecognition;
-      if (!Ctor)
-        throw new Error(
-          'Word recognition is unavailable in this browser. The sound exercises still work.',
-        );
-      const recognizer = new Ctor();
-      if (!online) {
-        if (!('processLocally' in recognizer) || !Ctor.available)
-          throw new Error(
-            'On-device recognition is unavailable here. You can choose the online browser service below.',
-          );
-        const available = await Ctor.available({
-          langs: ['en-US'],
-          processLocally: true,
-        });
-        if (token !== generation.current) return;
-        if (available !== 'available')
-          throw new Error(
-            'The English on-device language pack is not installed. Use a browser with a local English pack, or choose the online service below.',
-          );
-        recognizer.processLocally = true;
-      } else if ('processLocally' in recognizer)
-        recognizer.processLocally = false;
-      if (token !== generation.current) return;
-      recognizer.lang = 'en-US';
-      recognizer.continuous = true;
-      recognizer.interimResults = true;
-      recognizer.onstart = () => {
-        if (token === generation.current) setState('listening');
-      };
-      recognizer.onresult = (event) => {
-        if (token !== generation.current) return;
-        let interim = '';
-        let final = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const result = event.results[i];
-          interim += result[0].transcript + ' ';
-          if (result.isFinal) final += result[0].transcript + ' ';
-        }
-        setText(interim.trim().slice(-200));
-        if (final) setFinalText(final.trim().slice(-200));
-      };
-      recognizer.onerror = (event) => {
-        if (token !== generation.current) return;
-        setError(
-          event.error === 'no-speech'
-            ? 'No words detected. Try again when ready.'
-            : event.error === 'not-allowed'
-              ? 'Speech permission was denied. Check your browser settings.'
-              : `Word recognition stopped (${event.error}). You can retry.`,
-        );
+      const instance = new Worker(
+        new URL('../workers/transcription.worker.ts', import.meta.url),
+        { type: 'module' },
+      );
+      worker.current = instance;
+      const fail = (message: string) => {
+        if (worker.current !== instance) return;
         stop();
+        setError(message);
       };
-      recognizer.onend = () => {
-        if (token === generation.current) {
-          instance.current = null;
-          setState('off');
+      watchdog.current = setTimeout(
+        () =>
+          fail(
+            'The model download timed out. Check your connection and try again.',
+          ),
+        180000,
+      );
+      instance.onerror = () =>
+        fail(
+          'Captions are unavailable here. Try again or use the visual exercises.',
+        );
+      instance.onmessage = (
+        event: MessageEvent<{
+          type: string;
+          text?: string;
+          id?: number;
+          progress?: number;
+          message?: string;
+        }>,
+      ) => {
+        if (worker.current !== instance) return;
+        const data = event.data;
+        if (data.type === 'progress') setProgress(data.progress ?? 0);
+        if (data.type === 'ready') {
+          if (watchdog.current) clearTimeout(watchdog.current);
+          ready.current = true;
+          setState('listening');
+        }
+        if (data.type === 'error')
+          fail(data.message ?? 'Captions stopped. Please retry.');
+        if (data.type === 'result') {
+          if (watchdog.current) clearTimeout(watchdog.current);
+          busy.current = false;
+          setState('listening');
+          if (data.id !== epoch.current) return;
+          const words =
+            data.text?.replace(/\[[^\]]*\]|\([^)]*\)/g, '').trim() ?? '';
+          if (!words || !/[a-z]/i.test(words)) {
+            setText('No clear words this time. Try again when ready.');
+            return;
+          }
+          setText(words);
+          setFinalText(words);
+          setNotes((previous) => [...previous, words].slice(-8));
         }
       };
-      instance.current = recognizer;
-      recognizer.start();
-    } catch (reason) {
-      if (token !== generation.current) return;
-      release();
-      setState('off');
+      instance.postMessage({ type: 'load' });
+    } catch {
+      stop();
       setError(
-        reason instanceof Error
-          ? reason.message
-          : 'Word recognition could not start.',
+        'This browser cannot start local captions. The visual exercises still work.',
       );
     }
+  }
+  function acceptAudio(audio: Float32Array, rate: number, speech: boolean) {
+    if (!ready.current || busy.current || !worker.current) return;
+    const utterance = buffer.current.push(audio, rate, speech);
+    if (!utterance) return;
+    busy.current = true;
+    setState('processing');
+    watchdog.current = setTimeout(() => {
+      stop();
+      setError(
+        'This device needs more time for captions. Try a shorter phrase.',
+      );
+    }, 45000);
+    worker.current.postMessage(
+      { type: 'transcribe', audio: utterance, id: epoch.current },
+      [utterance.buffer],
+    );
   }
   return {
     state,
     text,
     finalText,
+    notes,
+    progress,
     error,
     start,
     stop,
-    clear: () => {
-      setText('');
-      setFinalText('');
-    },
+    clear,
+    acceptAudio,
   };
 }
