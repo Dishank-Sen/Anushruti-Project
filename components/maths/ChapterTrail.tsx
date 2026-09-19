@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-img-element */
 
 import React from 'react';
 import { ArrowRight, CheckCircle2, Sparkles, Lock, Star } from 'lucide-react';
@@ -65,8 +66,18 @@ export function ChapterTrail({
               }`}
               aria-label={`Chapter ${chapter.number}: ${chapter.title}`}
             >
-              {/* Top Row: Number, Icon, Status */}
+              {/* Top Row: Cover Image, Number, Icon, Status */}
               <div>
+                {chapter.coverImage && (
+                  <div className="w-full h-36 rounded-2xl overflow-hidden mb-4 bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shadow-xs">
+                    <img
+                      src={chapter.coverImage}
+                      alt=""
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <span

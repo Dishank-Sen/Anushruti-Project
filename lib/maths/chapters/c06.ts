@@ -7,6 +7,7 @@ export const chapter06: MathsChapter = {
   hindiTitle: 'सब्ज़ी की बगिया',
   blurb: 'Count carrots, tomatoes, and pumpkins in two baskets up to 20.',
   icon: '🥕',
+  coverImage: '/images/maths/c06-time.svg',
   themeColor: '#84CC16',
   status: 'ready',
   ncertPage: 64,

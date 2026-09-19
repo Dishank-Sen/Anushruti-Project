@@ -16,6 +16,7 @@ import { TapToCount } from './TapToCount';
 import { TenFrame } from './TenFrame';
 import { CoinTray } from './CoinTray';
 import { HintLadder } from './HintLadder';
+import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
 
 interface MathsLessonPlayerProps {
   lesson: MathsLesson;
@@ -151,14 +152,14 @@ export function MathsLessonPlayer({
           </div>
         </div>
 
-        {/* Caption Strip: Strictly <= 12 words */}
+        {/* Caption Strip: Strictly <= 12 words with optional Fitzgerald Key colors */}
         <div className="p-4 rounded-2xl bg-[var(--surface)] border-2 border-[#d8e2fd] text-center">
           <h3 className="text-base font-bold text-[var(--ink)] m-0 mb-1">
             {activeStep.title}
           </h3>
-          <p className="text-lg sm:text-xl font-bold text-[var(--maths)] m-0">
-            {activeStep.text}
-          </p>
+          <div className="text-lg sm:text-xl font-bold text-[var(--maths)] m-0 flex justify-center">
+            <FitzgeraldText text={activeStep.text} enabled={true} />
+          </div>
         </div>
 
         {/* Interactive Manipulative (if applicable) */}

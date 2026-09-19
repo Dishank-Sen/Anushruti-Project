@@ -71,6 +71,7 @@ export type MathsChapter = {
   hindiTitle?: string;
   blurb: string;
   icon: string;
+  coverImage?: string;
   themeColor: string;
   status: ChapterStatus;
   ncertPage: number;

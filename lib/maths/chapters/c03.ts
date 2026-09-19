@@ -7,6 +7,7 @@ export const chapter03: MathsChapter = {
   hindiTitle: 'आम की दावत',
   blurb: 'Count fruits, fingers, and happy birds from 1 to 9.',
   icon: '🥭',
+  coverImage: '/images/maths/c03-addition.svg',
   themeColor: '#FFA502',
   status: 'ready',
   ncertPage: 17,

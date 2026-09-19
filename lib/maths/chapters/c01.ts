@@ -7,6 +7,7 @@ export const chapter01: MathsChapter = {
   hindiTitle: 'बिल्ली कहाँ है?',
   blurb: 'Explore inside, outside, top, bottom, near, and far.',
   icon: '🐱',
+  coverImage: '/images/maths/c01-shapes.svg',
   themeColor: '#FF6B6B',
   status: 'ready',
   ncertPage: 1,

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#E0E7FF"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <filter id="shadow6" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="400" height="200" rx="16" fill="url(#bg6)"/>
+
+  <!-- Morning Sun Left -->
+  <g filter="url(#shadow6)" transform="translate(60, 60)">
+    <circle cx="35" cy="35" r="30" fill="#F59E0B"/>
+    <!-- Sun Rays -->
+    <path d="M 35 -5 L 35 5 M 35 65 L 35 75 M -5 35 L 5 35 M 65 35 L 75 35" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
+    <text x="35" y="85" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="14" fill="#92400E" text-anchor="middle">Morning</text>
+  </g>
+
+  <!-- Big Central Clock -->
+  <g filter="url(#shadow6)" transform="translate(160, 40)">
+    <circle cx="40" cy="40" r="38" fill="#FFFFFF" stroke="#4F46E5" stroke-width="4"/>
+    <!-- Clock Hands at 9:00 -->
+    <line x1="40" y1="40" x2="40" y2="18" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round"/>
+    <line x1="40" y1="40" x2="20" y2="40" stroke="#EF4444" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="40" cy="40" r="4" fill="#4F46E5"/>
+    <text x="40" y="102" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="14" fill="#1E1B4B" text-anchor="middle">Clock</text>
+  </g>
+
+  <!-- Night Moon & Stars Right -->
+  <g filter="url(#shadow6)" transform="translate(280, 50)">
+    <path d="M 35 15 A 25 25 0 1 0 60 55 A 28 28 0 1 1 35 15 Z" fill="#FDE047"/>
+    <!-- Stars -->
+    <circle cx="15" cy="20" r="2.5" fill="#FFFFFF"/>
+    <circle cx="65" cy="15" r="3" fill="#FFFFFF"/>
+    <circle cx="70" cy="65" r="2" fill="#FFFFFF"/>
+    <text x="35" y="95" font-family="'Baloo 2', sans-serif" font-weight="900" font-size="14" fill="#E0E7FF" text-anchor="middle">Night</text>
+  </g>
+</svg>

@@ -7,6 +7,7 @@ export const chapter12: MathsChapter = {
   hindiTitle: 'हम कितना खर्च कर सकते हैं?',
   blurb: 'Indian coins ₹1, ₹2, ₹5, ₹10 and paper notes for shopping.',
   icon: '🪙',
+  coverImage: '/images/maths/c12-money.svg',
   themeColor: '#6366F1',
   status: 'ready',
   ncertPage: 136,

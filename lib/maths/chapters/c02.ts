@@ -7,6 +7,7 @@ export const chapter02: MathsChapter = {
   hindiTitle: 'क्या है लंबा? क्या है गोल?',
   blurb: 'Discover round balls, long pencils, rolling, and sliding.',
   icon: '⚽',
+  coverImage: '/images/maths/c02-numbers.svg',
   themeColor: '#4ECDC4',
   status: 'ready',
   ncertPage: 8,

@@ -18,6 +18,14 @@ import {
   type ThemeMode,
   saveSettings,
 } from '@/lib/settings';
+import {
+  loadProfiles,
+  getActiveProfile,
+  setActiveProfileId,
+  createProfile,
+  DEFAULT_AVATARS,
+  type UserProfile,
+} from '@/lib/profiles';
 
 interface SettingsSheetProps {
   open: boolean;
@@ -34,12 +42,33 @@ export function SettingsSheet({
   onSettingsChange,
   onResetProgress,
 }: SettingsSheetProps) {
+  const [profiles, setProfiles] = React.useState<UserProfile[]>(() => loadProfiles());
+  const [activeProfile, setActiveProfile] = React.useState<UserProfile>(() => getActiveProfile());
+  const [isCreating, setIsCreating] = React.useState(false);
+  const [newName, setNewName] = React.useState('');
+  const [newAvatar, setNewAvatar] = React.useState('🦊');
+
   if (!open) return null;
 
   function update<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
     const next = { ...settings, [key]: value };
     onSettingsChange(next);
     saveSettings(next);
+  }
+
+  function handleSelectProfile(p: UserProfile) {
+    setActiveProfileId(p.id);
+    setActiveProfile(p);
+  }
+
+  function handleCreateProfile(e: React.SyntheticEvent) {
+    e.preventDefault();
+    if (!newName.trim()) return;
+    const created = createProfile(newName.trim(), newAvatar, activeProfile.grade);
+    setProfiles(loadProfiles());
+    setActiveProfile(created);
+    setNewName('');
+    setIsCreating(false);
   }
 
   return (
@@ -71,6 +100,80 @@ export function SettingsSheet({
 
         {/* Settings Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Local User Profile Management */}
+          <div className="p-4 rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+                Active Learner / शिक्षार्थी
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsCreating(!isCreating)}
+                className="text-xs font-bold text-[var(--maths)] hover:underline"
+              >
+                {isCreating ? 'Cancel' : '+ Add Learner'}
+              </button>
+            </div>
+
+            {/* Profiles List */}
+            <div className="flex flex-wrap gap-2">
+              {profiles.map((p) => {
+                const isSelected = p.id === activeProfile.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => handleSelectProfile(p)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-2xl border-2 font-bold text-xs transition ${
+                      isSelected
+                        ? 'bg-[var(--surface)] border-[var(--maths)] shadow-xs text-[var(--maths)]'
+                        : 'bg-[var(--surface)] border-[var(--line)] text-[var(--ink-soft)] hover:border-[#c2d0eb]'
+                    }`}
+                  >
+                    <span className="text-lg">{p.avatar}</span>
+                    <span>{p.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Create New Profile Drawer */}
+            {isCreating && (
+              <form onSubmit={handleCreateProfile} className="pt-2 border-t border-[var(--line)] space-y-3">
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Child's nickname (e.g. Aarav)"
+                  className="w-full px-3 py-2 rounded-xl border-2 border-[var(--line)] bg-[var(--surface)] text-sm font-bold text-[var(--ink)]"
+                  autoFocus
+                />
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  <span className="text-[11px] font-bold text-[var(--ink-soft)] mr-1">Avatar:</span>
+                  {DEFAULT_AVATARS.slice(0, 6).map((av) => (
+                    <button
+                      key={av}
+                      type="button"
+                      onClick={() => setNewAvatar(av)}
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-base border-2 transition ${
+                        newAvatar === av ? 'border-[var(--maths)] bg-[var(--maths-tint)]' : 'border-[var(--line)]'
+                      }`}
+                    >
+                      {av}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="submit"
+                  disabled={!newName.trim()}
+                  className="btn-tactile w-full py-2 bg-[var(--maths)] text-white font-bold text-xs rounded-xl disabled:opacity-50"
+                >
+                  Save Profile
+                </button>
+              </form>
+            )}
+          </div>
+
           {/* Text Size */}
           <div>
             <div className="text-sm font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-3 flex items-center gap-2">
@@ -177,6 +280,35 @@ export function SettingsSheet({
               <span
                 className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform ${
                   settings.islEnabled ? 'left-7' : 'left-0.5'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Fitzgerald Key Grammar Colors */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)]">
+            <div className="flex items-center gap-3">
+              <Type size={20} className="text-[var(--gold)]" />
+              <div>
+                <p className="font-bold text-sm m-0">Grammar Colors (Fitzgerald Key)</p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">Color-code Who, Action, What, and Where</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => update('fitzgeraldGrammar', !settings.fitzgeraldGrammar)}
+              className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
+                settings.fitzgeraldGrammar
+                  ? 'bg-[var(--ok)] border-[var(--ok)]'
+                  : 'bg-[var(--line)] border-[#c8beaa]'
+              }`}
+              role="switch"
+              aria-checked={Boolean(settings.fitzgeraldGrammar)}
+              aria-label="Fitzgerald grammar switch"
+            >
+              <span
+                className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform ${
+                  settings.fitzgeraldGrammar ? 'left-7' : 'left-0.5'
                 }`}
               />
             </button>

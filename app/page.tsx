@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { LearningWorkspace } from '@/components/learning-workspace';
 import { VoiceStudio } from '@/components/voice-studio';
+import { TextToSignPlayer } from '@/components/isl/TextToSignPlayer';
 import { AppShell } from '@/components/shell/AppShell';
 import {
   ArrowRight,
@@ -37,6 +38,8 @@ export default function Page() {
         <>
           {view === 'voice' ? (
             <VoiceStudio grade={grade} />
+          ) : view === 'sign-studio' ? (
+            <TextToSignPlayer />
           ) : (
             <LearningWorkspace view={view} grade={grade} />
           )}

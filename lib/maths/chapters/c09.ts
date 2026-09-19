@@ -7,6 +7,7 @@ export const chapter09: MathsChapter = {
   hindiTitle: 'उत्सव',
   blurb: 'Rangoli patterns, festival torans, and repeating shapes.',
   icon: '🪔',
+  coverImage: '/images/maths/c09-data.svg',
   themeColor: '#EC4899',
   status: 'ready',
   ncertPage: 104,

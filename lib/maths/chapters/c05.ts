@@ -7,6 +7,7 @@ export const chapter05: MathsChapter = {
   hindiTitle: 'कितने?',
   blurb: 'Put groups together to add, or take away to find what remains.',
   icon: '➕',
+  coverImage: '/images/maths/c05-ten-twenty.svg',
   themeColor: '#10B981',
   status: 'ready',
   ncertPage: 48,

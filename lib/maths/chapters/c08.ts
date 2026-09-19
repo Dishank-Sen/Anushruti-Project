@@ -7,6 +7,7 @@ export const chapter08: MathsChapter = {
   hindiTitle: 'संख्याओं का खेल',
   blurb: 'Build numbers 21 to 99 using bundles of ten and loose sticks.',
   icon: '🧮',
+  coverImage: '/images/maths/c08-twentyone-fifty.svg',
   themeColor: '#8B5CF6',
   status: 'ready',
   ncertPage: 90,

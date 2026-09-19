@@ -7,6 +7,7 @@ export const chapter04: MathsChapter = {
   hindiTitle: '१० बनाना',
   blurb: 'Fill ten frames, make bundles of ten, and count up to 20.',
   icon: '🔟',
+  coverImage: '/images/maths/c04-subtraction.svg',
   themeColor: '#3B82F6',
   status: 'ready',
   ncertPage: 32,

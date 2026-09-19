@@ -7,6 +7,7 @@ export const chapter11: MathsChapter = {
   hindiTitle: 'कितनी बार?',
   blurb: 'Equal groups of swings, toy trains, and sweet jalebi plates.',
   icon: '🎠',
+  coverImage: '/images/maths/c11-numbers.svg',
   themeColor: '#14B8A6',
   status: 'ready',
   ncertPage: 126,

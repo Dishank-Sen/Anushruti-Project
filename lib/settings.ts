@@ -9,6 +9,8 @@ export type AppSettings = {
   islEnabled: boolean;
   haptics: boolean;
   adultMode: boolean;
+  fitzgeraldGrammar?: boolean;
+  sidebarCollapsed?: boolean;
 };
 
 export const SETTINGS_STORAGE_KEY = 'anushruti.settings.v1';
@@ -21,6 +23,8 @@ export const defaultSettings: AppSettings = {
   islEnabled: true,
   haptics: true,
   adultMode: false,
+  fitzgeraldGrammar: true,
+  sidebarCollapsed: false,
 };
 
 export function loadSettings(): AppSettings {
@@ -38,6 +42,8 @@ export function loadSettings(): AppSettings {
       islEnabled: parsed.islEnabled !== undefined ? Boolean(parsed.islEnabled) : true,
       haptics: parsed.haptics !== undefined ? Boolean(parsed.haptics) : true,
       adultMode: Boolean(parsed.adultMode),
+      fitzgeraldGrammar: parsed.fitzgeraldGrammar !== undefined ? Boolean(parsed.fitzgeraldGrammar) : true,
+      sidebarCollapsed: Boolean(parsed.sidebarCollapsed),
     };
   } catch {
     return defaultSettings;

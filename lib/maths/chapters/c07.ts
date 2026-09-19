@@ -7,6 +7,7 @@ export const chapter07: MathsChapter = {
   hindiTitle: 'लीना का परिवार',
   blurb: 'Compare heights, heavier vs lighter, and measure with handspans.',
   icon: '📏',
+  coverImage: '/images/maths/c07-measurement.svg',
   themeColor: '#06B6D4',
   status: 'ready',
   ncertPage: 78,

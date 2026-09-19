@@ -7,6 +7,7 @@ export const chapter10: MathsChapter = {
   hindiTitle: 'मैं अपना दिन कैसे बिताऊँ?',
   blurb: 'Morning sunrise, school time, sunset, night stars, and seasons.',
   icon: '☀️',
+  coverImage: '/images/maths/c10-patterns.svg',
   themeColor: '#F59E0B',
   status: 'ready',
   ncertPage: 114,

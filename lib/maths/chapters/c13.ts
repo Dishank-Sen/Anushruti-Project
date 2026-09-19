@@ -7,6 +7,7 @@ export const chapter13: MathsChapter = {
   hindiTitle: 'खिलौनों का संसार',
   blurb: 'Sort colorful toys, count each group, and make picture charts.',
   icon: '🧩',
+  coverImage: '/images/maths/c13-how-many.svg',
   themeColor: '#D946EF',
   status: 'ready',
   ncertPage: 148,
