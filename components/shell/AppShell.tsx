@@ -29,6 +29,7 @@ interface AppShellProps {
   view: string;
   grade: number;
   onGradeChange: (grade: number) => void;
+  onNavigate?: (view: string) => void;
   children: React.ReactNode;
   onResetProgress?: () => void;
 }
@@ -46,6 +47,7 @@ export function AppShell({
   view,
   grade,
   onGradeChange,
+  onNavigate,
   children,
   onResetProgress,
 }: AppShellProps) {
@@ -342,6 +344,7 @@ export function AppShell({
         settings={settings}
         onSettingsChange={setSettings}
         onResetProgress={onResetProgress}
+        onNavigate={onNavigate}
       />
     </div>
   );

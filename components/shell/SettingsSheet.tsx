@@ -11,10 +11,10 @@ import {
   GraduationCap,
   RotateCcw,
   Check,
+  Languages,
 } from 'lucide-react';
 import {
   type AppSettings,
-  type TextSize,
   type ThemeMode,
   saveSettings,
 } from '@/lib/settings';
@@ -33,6 +33,7 @@ interface SettingsSheetProps {
   settings: AppSettings;
   onSettingsChange: (settings: AppSettings) => void;
   onResetProgress?: () => void;
+  onNavigate?: (view: string) => void;
 }
 
 export function SettingsSheet({
@@ -41,6 +42,7 @@ export function SettingsSheet({
   settings,
   onSettingsChange,
   onResetProgress,
+  onNavigate,
 }: SettingsSheetProps) {
   const [profiles, setProfiles] = React.useState<UserProfile[]>(() => loadProfiles());
   const [activeProfile, setActiveProfile] = React.useState<UserProfile>(() => getActiveProfile());
@@ -174,31 +176,6 @@ export function SettingsSheet({
             )}
           </div>
 
-          {/* Text Size */}
-          <div>
-            <div className="text-sm font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-3 flex items-center gap-2">
-              <Type size={16} /> Text Size
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {([100, 125, 150] as TextSize[]).map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  onClick={() => update('textSize', size)}
-                  className={`min-h-[56px] rounded-2xl font-bold flex flex-col items-center justify-center border-2 transition ${
-                    settings.textSize === size
-                      ? 'bg-[var(--maths)] text-white border-[var(--maths)] shadow-[0_4px_0_#1a328a]'
-                      : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--surface)]'
-                  }`}
-                  aria-pressed={settings.textSize === size}
-                >
-                  <span style={{ fontSize: `${size * 0.12}rem` }}>Aa</span>
-                  <span className="text-xs">{size}%</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Theme & Contrast */}
           <div>
             <div className="text-sm font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-3 flex items-center gap-2">
@@ -291,7 +268,19 @@ export function SettingsSheet({
               <Type size={20} className="text-[var(--gold)]" />
               <div>
                 <p className="font-bold text-sm m-0">Grammar Colors (Fitzgerald Key)</p>
-                <p className="text-xs text-[var(--ink-soft)] m-0">Color-code Who, Action, What, and Where</p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">
+                  Learn grammar colors in Sign Studio
+                </p>
+                {onNavigate && (
+                  <button
+                    type="button"
+                    onClick={() => { onClose(); onNavigate('sign-studio'); }}
+                    className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-[var(--maths-tint)] text-[var(--maths)] border border-[var(--maths)] hover:bg-[var(--maths)] hover:text-white transition"
+                    aria-label="Open Sign Studio to explore grammar colors"
+                  >
+                    <Languages size={11} /> Sign Studio →
+                  </button>
+                )}
               </div>
             </div>
             <button

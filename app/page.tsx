@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 /* oxlint-disable react/react-compiler, next/no-html-link-for-pages -- Browser query hydration is intentional; full document links reset each demo view and read its local progress. React Compiler is not enabled. */
 import { useState, useEffect } from 'react';
 import { LearningWorkspace } from '@/components/learning-workspace';
@@ -32,8 +32,15 @@ export default function Page() {
     history.replaceState(null, '', url);
   }
 
+  function handleNavigate(nextView: string) {
+    setView(nextView);
+    const url = new URL(location.href);
+    url.searchParams.set('view', nextView);
+    history.replaceState(null, '', url);
+  }
+
   return (
-    <AppShell view={view} grade={grade} onGradeChange={changeGrade}>
+    <AppShell view={view} grade={grade} onGradeChange={changeGrade} onNavigate={handleNavigate}>
       {view !== 'garden' ? (
         <>
           {view === 'voice' ? (
@@ -48,11 +55,11 @@ export default function Page() {
         <>
           <div className="page-heading">
             <div>
-              <p className="eyebrow">LET’S GROW TOGETHER</p>
+              <p className="eyebrow">LET&apos;S LEARN TOGETHER</p>
               <h1>
-                Hello, curious explorer <span>☀️</span>
+                Hello, little learner <span>☀️</span>
               </h1>
-              <p>Big discoveries start with little steps.</p>
+              <p>Every step is a new discovery.</p>
             </div>
             <label className="grade-label">
               I’m learning in
@@ -73,13 +80,13 @@ export default function Page() {
             <div>
               <span className="pill">YOUR NEXT LITTLE ADVENTURE</span>
               <h2>
-                A world of wonder.
-                <br />A way that’s yours.
+                See it. Learn it.
+                <br />At your own pace.
               </h2>
               <p>
-                See it. Try it. Understand it.
+                Try it. Understand it.
                 <br />
-                Let’s discover something new today.
+                Find something new today.
               </p>
               <a className="primary" href={`/?view=lessons&grade=${grade}`}>
                 Explore lessons <ArrowRight size={18} />
@@ -89,7 +96,7 @@ export default function Page() {
               className="math-art"
               aria-label="Two circles plus one circle equals three"
             >
-              <div className="art-label">small steps, BIG discoveries</div>
+              <div className="art-label">small steps, big learning</div>
               <div className="equation">
                 <span>●●</span>
                 <b>+</b>
@@ -100,14 +107,14 @@ export default function Page() {
                 <span>●●●</span>
               </div>
               <span className="art-footer">
-                Let’s count together! <Sparkles size={20} />
+                Let&apos;s count together <Sparkles size={20} />
               </span>
             </div>
           </section>
 
           <div className="section-heading">
-            <h2>What will you discover?</h2>
-            <span>CHOOSE YOUR ADVENTURE</span>
+            <h2>Choose a subject</h2>
+            <span>PICK AND LEARN</span>
           </div>
 
           <div className="subject-grid">
@@ -124,8 +131,8 @@ export default function Page() {
                 <h3>Magic of maths</h3>
                 <p>
                   {grade === 1
-                    ? '13 full chapters of visual discoveries and games.'
-                    : 'Numbers, shapes & little aha! moments.'}
+                    ? 'Count, compare, and explore shapes.'
+                    : 'Numbers, shapes, and patterns.'}
                 </p>
                 <div className="card-bottom">
                   <span>Class {grade} · Visual lessons</span>
@@ -144,7 +151,7 @@ export default function Page() {
               <div className="subject-body">
                 <span className="subject-tag">LET’S ASK WHY</span>
                 <h3>Wonderful science</h3>
-                <p>Plants, our planet &amp; everyday wonders.</p>
+                <p>Plants, animals, and our world.</p>
                 <div className="card-bottom">
                   <span>Class 1–5 · Explore &amp; try</span>
                   <ArrowRight />
@@ -161,8 +168,8 @@ export default function Page() {
               <span className="eyebrow">
                 A LITTLE PLAY, A LOT OF LEARNING
               </span>
-              <h3>Ready for a brain break?</h3>
-              <p>Try a picture challenge. There’s no timer.</p>
+              <h3>Take a quick picture challenge.</h3>
+              <p>No timer. Just explore and play.</p>
             </div>
             <a
               className="secondary"
@@ -174,9 +181,9 @@ export default function Page() {
 
           <footer className="page-footer">
             <span>
-              <Sprout size={16} /> Every learner grows at their own pace.
+              <Sprout size={16} /> Every learner moves at their pace.
             </span>
-            <span>Free to learn. Open to everyone.</span>
+            <span>Free for everyone to learn.</span>
           </footer>
         </>
       )}

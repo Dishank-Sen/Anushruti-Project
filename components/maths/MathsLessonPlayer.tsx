@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -110,17 +110,49 @@ export function MathsLessonPlayer({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
   const [hintLevelUsed, setHintLevelUsed] = useState<number>(0);
+  const [stepAnimating, setStepAnimating] = useState(false);
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current !== null) {
+        clearTimeout(transitionTimerRef.current);
+      }
+    };
+  }, []);
 
   const isCompleted = progress.completed.includes(lesson.id);
   const currentStars = progress.stars[lesson.id] || 0;
 
   function goToStep(index: number) {
     const clamped = Math.max(0, Math.min(lesson.steps.length - 1, index));
-    setCurrentStep(clamped);
-    onSaveProgress({
-      ...progress,
-      steps: { ...progress.steps, [lesson.id]: clamped },
-    });
+
+    const prefersReduced =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      document.documentElement.getAttribute('data-reduce-motion') === 'true';
+
+    if (prefersReduced) {
+      setCurrentStep(clamped);
+      onSaveProgress({
+        ...progress,
+        steps: { ...progress.steps, [lesson.id]: clamped },
+      });
+      return;
+    }
+
+    setStepAnimating(true);
+    if (transitionTimerRef.current !== null) {
+      clearTimeout(transitionTimerRef.current);
+    }
+    transitionTimerRef.current = setTimeout(() => {
+      setCurrentStep(clamped);
+      onSaveProgress({
+        ...progress,
+        steps: { ...progress.steps, [lesson.id]: clamped },
+      });
+      setStepAnimating(false);
+      transitionTimerRef.current = null;
+    }, 200);
   }
 
   function handleCheckAnswer() {
@@ -222,7 +254,10 @@ export function MathsLessonPlayer({
         {(() => {
           const activeSignKey = getStepSignKey(activeStep, chapter);
           return (
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+            <div
+              className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch step-transition"
+              data-animating={stepAnimating ? 'true' : undefined}
+            >
               {/* Main Visual Display */}
               <div
                 className={`${
