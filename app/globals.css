@@ -1229,6 +1229,43 @@ button:disabled {
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   Step Transition — MathsLessonPlayer Visual Stage fade (Requirement 4)
+   ========================================================================== */
+
+@keyframes step-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes step-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.step-transition {
+  animation: step-fade-in 0.2s ease-out both;
+}
+
+.step-transition[data-animating='true'] {
+  animation: step-fade-out 0.2s ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-transition,
+  .step-transition[data-animating='true'] {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+[data-reduce-motion='true'] .step-transition,
+[data-reduce-motion='true'] .step-transition[data-animating='true'] {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
 @media (max-width: 1100px) {
   .lesson-layout {
     grid-template-columns: 1fr;
