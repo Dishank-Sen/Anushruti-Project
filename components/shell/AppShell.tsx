@@ -15,6 +15,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Languages,
+  Moon,
+  Sun,
+  Menu,
 } from 'lucide-react';
 import {
   type AppSettings,
@@ -38,6 +41,7 @@ const mainNavItems = [
   { view: 'garden', label: 'Home', icon: Home },
   { view: 'lessons', label: 'Learn', icon: BookOpen },
   { view: 'activities', label: 'Play', icon: Sparkles },
+  { view: 'voice', label: 'Voice Garden', icon: Mic },
   { view: 'sign-studio', label: 'Sign Studio', icon: Languages },
   { view: 'progress', label: 'Progress', icon: Trophy },
   { view: 'communication', label: 'Talk', icon: Hand },
@@ -52,15 +56,25 @@ export function AppShell({
   onResetProgress,
 }: AppShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings());
-  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(
-    () => Boolean(loadSettings().sidebarCollapsed)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() =>
+    Boolean(loadSettings().sidebarCollapsed),
   );
   const [profile, setProfile] = useState<UserProfile>(() => getActiveProfile());
 
   useEffect(() => {
     applySettingsToDOM(settings);
   }, [settings]);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMoreOpen(false);
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [moreOpen]);
 
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;
@@ -140,7 +154,10 @@ export function AppShell({
         )}
 
         {/* Navigation Items */}
-        <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto" aria-label="Main Navigation">
+        <nav
+          className="flex-1 p-3 space-y-1.5 overflow-y-auto"
+          aria-label="Main Navigation"
+        >
           {!sidebarCollapsed && (
             <p className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">
               My Learning Space
@@ -158,7 +175,9 @@ export function AppShell({
                 href={`/?view=${v}&grade=${grade}`}
                 title={sidebarCollapsed ? label : undefined}
                 className={`flex items-center rounded-2xl font-bold transition min-h-[52px] text-sm no-underline ${
-                  sidebarCollapsed ? 'justify-center px-2 py-3' : 'gap-3.5 px-4 py-3'
+                  sidebarCollapsed
+                    ? 'justify-center px-2 py-3'
+                    : 'gap-3.5 px-4 py-3'
                 } ${
                   isActive
                     ? 'bg-[var(--maths-tint)] text-[var(--maths)] border-2 border-[var(--maths)] shadow-[0_2px_0_#1a328a]'
@@ -166,7 +185,12 @@ export function AppShell({
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <Icon size={20} className={isActive ? 'text-[var(--maths)]' : 'text-[var(--ink-soft)]'} />
+                <Icon
+                  size={20}
+                  className={
+                    isActive ? 'text-[var(--maths)]' : 'text-[var(--ink-soft)]'
+                  }
+                />
                 {!sidebarCollapsed && <span>{label}</span>}
               </a>
             );
@@ -179,28 +203,15 @@ export function AppShell({
               </p>
             )}
             <a
-              href={`/?view=voice&grade=${grade}`}
-              title={sidebarCollapsed ? 'Voice Garden' : undefined}
-              className={`flex items-center rounded-2xl font-bold transition min-h-[52px] text-sm no-underline ${
-                sidebarCollapsed ? 'justify-center px-2 py-3' : 'gap-3.5 px-4 py-3'
-              } ${
-                view === 'voice'
-                  ? 'bg-[var(--voice-tint)] text-[var(--voice)] border-2 border-[var(--voice)]'
-                  : 'text-[var(--ink)] hover:bg-[var(--bg)] border-2 border-transparent'
-              }`}
-            >
-              <Mic size={20} className="text-[var(--voice)]" />
-              {!sidebarCollapsed && <span>Voice Garden</span>}
-            </a>
-
-            <a
               href={`/?view=team`}
               title={sidebarCollapsed ? 'Team Workspace' : undefined}
               className={`flex items-center rounded-2xl font-bold transition min-h-[52px] text-sm no-underline ${
-                sidebarCollapsed ? 'justify-center px-2 py-3' : 'gap-3.5 px-4 py-3'
+                sidebarCollapsed
+                  ? 'justify-center px-2 py-3'
+                  : 'gap-3.5 px-4 py-3'
               } ${
                 view === 'team'
-                  ? 'bg-[#f4ebd0] text-[#6d5117] border-2 border-[#6d5117]'
+                  ? 'bg-[light-dark(#f4ebd0,#3f3720)] text-[light-dark(#6d5117,#edd8ab)] border-2 border-[light-dark(#6d5117,#836d3f)]'
                   : 'text-[var(--ink)] hover:bg-[var(--bg)] border-2 border-transparent'
               }`}
             >
@@ -224,7 +235,9 @@ export function AppShell({
                 <span className="block text-xs font-bold text-[var(--ink)] truncate max-w-[120px]">
                   {profile.name}
                 </span>
-                <span className="text-[10px] text-[var(--ink-soft)]">Learner Profile</span>
+                <span className="text-[10px] text-[var(--ink-soft)]">
+                  Learner Profile
+                </span>
               </div>
             </button>
           ) : (
@@ -255,13 +268,18 @@ export function AppShell({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0">
         {/* Top Bar */}
-        <header className="h-16 lg:h-18 border-b-2 border-[var(--line)] bg-[var(--surface)] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        <header className="app-topbar min-h-16 lg:h-18 border-b-2 border-[var(--line)] bg-[var(--surface)] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20 shadow-xs">
           <div className="flex items-center gap-3">
-            <a href="/?view=garden" className="lg:hidden flex items-center gap-2 text-[var(--ink)] no-underline">
+            <a
+              href="/?view=garden"
+              className="lg:hidden flex items-center gap-2 text-[var(--ink)] no-underline"
+            >
               <span className="p-2 rounded-xl bg-[var(--maths-tint)] text-[var(--maths)]">
                 <Sprout size={18} />
               </span>
-              <span className="font-bold font-heading text-lg">Anushruti</span>
+              <span className="app-brand-name font-bold font-heading text-lg">
+                Anushruti
+              </span>
             </a>
 
             <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--science-tint)] text-[var(--science)] text-xs font-bold">
@@ -274,16 +292,18 @@ export function AppShell({
             <button
               type="button"
               onClick={() => setSettingsOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)] hover:border-[#c2d0eb] transition"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[var(--bg)] border-2 border-[var(--line)] hover:border-[light-dark(#c2d0eb,#3f5683)] transition"
               title="Click to switch learner"
             >
               <span className="text-base">{profile.avatar}</span>
-              <span className="text-xs font-bold text-[var(--ink)] hidden sm:inline">{profile.name}</span>
+              <span className="text-xs font-bold text-[var(--ink)] hidden sm:inline">
+                {profile.name}
+              </span>
             </button>
 
             {/* Grade Selector */}
             <label className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[var(--ink-soft)] bg-[var(--bg)] px-3 py-1.5 rounded-2xl border-2 border-[var(--line)]">
-              <span>Level:</span>
+              <span className="hidden sm:inline">Level:</span>
               <select
                 value={grade}
                 onChange={(e) => onGradeChange(Number(e.target.value))}
@@ -298,6 +318,32 @@ export function AppShell({
               </select>
             </label>
 
+            <button
+              type="button"
+              className="theme-toggle"
+              aria-label={
+                settings.theme === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
+              }
+              onClick={() => {
+                const next = {
+                  ...settings,
+                  theme:
+                    settings.theme === 'dark'
+                      ? ('default' as const)
+                      : ('dark' as const),
+                };
+                setSettings(next);
+                saveSettings(next);
+              }}
+            >
+              {settings.theme === 'dark' ? (
+                <Sun size={20} />
+              ) : (
+                <Moon size={20} />
+              )}
+            </button>
             {/* Settings Trigger button */}
             <button
               type="button"
@@ -311,31 +357,76 @@ export function AppShell({
         </header>
 
         {/* Main View Container */}
-        <main id="main" className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <main
+          id="main"
+          className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"
+        >
           {children}
         </main>
       </div>
 
       {/* Mobile/Tablet Bottom Navigation Bar */}
       <nav className="bottom-nav-bar" aria-label="Mobile Navigation">
-        {mainNavItems.map(({ view: v, label, icon: Icon }) => {
-          const isActive =
-            view === v ||
-            (view === 'lesson' && v === 'lessons') ||
-            (view === 'activity' && v === 'activities');
-          return (
-            <a
-              key={v}
-              href={`/?view=${v}&grade=${grade}`}
-              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              <Icon />
-              <span>{label}</span>
-            </a>
-          );
-        })}
+        {mainNavItems
+          .filter((item) =>
+            ['garden', 'lessons', 'activities', 'voice'].includes(item.view),
+          )
+          .map(({ view: v, label, icon: Icon }) => {
+            const isActive =
+              view === v ||
+              (view === 'lesson' && v === 'lessons') ||
+              (view === 'activity' && v === 'activities');
+            return (
+              <a
+                key={v}
+                href={`/?view=${v}&grade=${grade}`}
+                className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <Icon />
+                <span>{label}</span>
+              </a>
+            );
+          })}
+        <button
+          type="button"
+          className={`bottom-nav-item ${moreOpen ? 'active' : ''}`}
+          aria-expanded={moreOpen}
+          aria-controls="mobile-more"
+          onClick={() => setMoreOpen(!moreOpen)}
+        >
+          <Menu />
+          <span>More</span>
+        </button>
       </nav>
+      {moreOpen && (
+        <nav id="mobile-more" className="mobile-more" aria-label="More pages">
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setMoreOpen(false)}
+          >
+            Close menu
+          </button>
+          {mainNavItems
+            .filter(
+              (item) =>
+                !['garden', 'lessons', 'activities', 'voice'].includes(
+                  item.view,
+                ),
+            )
+            .map(({ view: v, label, icon: Icon }) => (
+              <a key={v} href={`/?view=${v}&grade=${grade}`}>
+                <Icon size={20} />
+                {label}
+              </a>
+            ))}
+          <a href="/?view=team">
+            <Users size={20} />
+            Team workspace
+          </a>
+        </nav>
+      )}
 
       {/* Settings Modal */}
       <SettingsSheet
