@@ -1,60 +1,47 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { convertSentenceToISL } from '../lib/isl-converter.ts';
 import {
-  convertSentenceToISL,
-  ISL_CORE_LEXICON,
-  ISL_MANUAL_ALPHABET,
-} from '../lib/isl-converter.ts';
+  findOfficialSign,
+  OFFICIAL_SIGNS,
+  ISL_CHARTS,
+} from '../lib/isl-sources.ts';
+import { lessons } from '../lib/lessons.ts';
 
-void test('ISL core lexicon contains authentic foundational signs', () => {
-  const keys = Object.keys(ISL_CORE_LEXICON);
-  assert.ok(keys.length >= 15, 'Should have at least 15 core foundational signs');
-  for (const key of keys) {
-    const item = ISL_CORE_LEXICON[key];
-    assert.ok(item.handshape.length > 0);
-    assert.ok(item.movement.length > 0);
-    assert.ok(item.location.length > 0);
-  }
-});
-
-void test('ISL manual alphabet covers all 26 letters with authentic two-handed descriptions', () => {
-  for (let i = 65; i <= 90; i++) {
-    const char = String.fromCharCode(i);
-    assert.ok(ISL_MANUAL_ALPHABET[char], `Missing alphabet entry for ${char}`);
-    assert.ok(ISL_MANUAL_ALPHABET[char].handshape.length > 0);
-    assert.ok(ISL_MANUAL_ALPHABET[char].movement.length > 0);
-  }
-});
-
-void test('convertSentenceToISL filters stop words and maps recognized words to lexical signs', () => {
+void test('dictionary lookup retains English words without claiming an ISL translation', () => {
   const tokens = convertSentenceToISL('The cat is inside the school');
-  // 'The', 'is' should be filtered out
-  const words = tokens.map((t) => t.displayWord);
-  assert.ok(!words.includes('THE'), 'Should filter out "THE"');
-  assert.ok(!words.includes('IS'), 'Should filter out "IS"');
-  assert.ok(words.includes('CAT'), 'Should retain "CAT"');
-  assert.ok(words.includes('INSIDE'), 'Should retain "INSIDE"');
-  assert.ok(words.includes('SCHOOL'), 'Should retain "SCHOOL"');
-
-  const catToken = tokens.find((t) => t.displayWord === 'CAT');
-  assert.equal(catToken?.isFingerspelled, false);
-  assert.ok(catToken?.handshape.includes('whiskers') || catToken?.movement.includes('whiskers'));
-});
-
-void test('convertSentenceToISL gracefully falls back to two-handed fingerspelling for unknown words', () => {
-  const tokens = convertSentenceToISL('Rohan');
-  assert.equal(tokens.length, 1);
-  const rohan = tokens[0];
-  assert.equal(rohan.displayWord, 'ROHAN');
-  assert.equal(rohan.isFingerspelled, true);
-  assert.equal(rohan.letterSequence?.length, 5);
   assert.deepEqual(
-    rohan.letterSequence?.map((l) => l.letter),
-    ['R', 'O', 'H', 'A', 'N']
+    tokens.map((t) => t.displayWord),
+    ['THE', 'CAT', 'IS', 'INSIDE', 'THE', 'SCHOOL'],
   );
+  assert.equal(tokens.find((t) => t.displayWord === 'CAT')?.available, true);
+  assert.equal(convertSentenceToISL('Rohan')[0].available, false);
+  assert.deepEqual(convertSentenceToISL('  '), []);
+  assert.equal(convertSentenceToISL('water '.repeat(100)).length, 40);
 });
 
-void test('empty or whitespace input returns empty array without throwing', () => {
-  assert.deepEqual(convertSentenceToISL(''), []);
-  assert.deepEqual(convertSentenceToISL('   '), []);
+void test('numbers reference numeric dictionary files, never alphabet hand shapes', () => {
+  assert.equal(findOfficialSign('two')?.filename, '2_Two.mp4');
+  assert.equal(findOfficialSign('2'), findOfficialSign('TWO'));
+  assert.equal(findOfficialSign('ROHAN'), undefined);
+  for (const sign of Object.values(OFFICIAL_SIGNS)) {
+    assert.match(sign.fileId, /^[\w-]{20,}$/);
+    assert.ok(sign.filename.endsWith('.mp4'));
+  }
+  for (const chart of Object.values(ISL_CHARTS)) {
+    assert.equal(new URL(chart.url).hostname, 'cdnbbsr.s3waas.gov.in');
+    assert.ok(chart.url.endsWith('.pdf'));
+  }
+});
+
+void test('every science module links only curated official dictionary terms', () => {
+  for (const lesson of lessons.filter((l) => l.subject === 'Science')) {
+    assert.ok(lesson.islTerms?.length, `${lesson.id} needs ISL references`);
+    for (const term of lesson.islTerms!) {
+      assert.ok(
+        findOfficialSign(term),
+        `${lesson.id}: no official reference for ${term}`,
+      );
+    }
+  }
 });

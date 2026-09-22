@@ -10,26 +10,7 @@ export const chapter08: MathsChapter = {
   themeColor: '#8B5CF6',
   status: 'ready',
   ncertPage: 90,
-  islVocab: [
-    {
-      word: 'Tens',
-      handShape: 'Shows bundles with both hands',
-      movement: 'Presents distinct grouped tens',
-      description: 'Sign indicates groups of ten.',
-    },
-    {
-      word: 'Ones',
-      handShape: 'Single finger tapping for each loose unit',
-      movement: 'Taps single loose units one by one',
-      description: 'Indicates individual single units.',
-    },
-    {
-      word: 'Twenty',
-      handShape: 'Two open hands of five shown twice',
-      movement: 'Two tens presented sequentially',
-      description: 'Sign shows two full tens (20).',
-    },
-  ],
+  islVocab: [{ word: 'Tens' }, { word: 'Ones' }, { word: 'Twenty' }],
   lessons: [
     {
       id: 'bundles-of-ten-twenties',
@@ -133,7 +114,8 @@ export const chapter08: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'A garland has 3 strings of 10 beads and 4 loose beads. Total beads? 📿',
+        prompt:
+          'A garland has 3 strings of 10 beads and 4 loose beads. Total beads? 📿',
         options: ['34 beads', '43 beads', '7 beads'],
         answer: 0,
         hint: '3 tens is 30, plus 4 ones.',
@@ -143,7 +125,8 @@ export const chapter08: MathsChapter = {
           hint3WorkedOut: 'Correct: 34 beads in total.',
         },
       },
-      teacherNote: 'Let children string beads into groups of ten using pipe cleaners.',
+      teacherNote:
+        'Let children string beads into groups of ten using pipe cleaners.',
     },
     {
       id: 'mystery-number-puzzle',
@@ -181,7 +164,8 @@ export const chapter08: MathsChapter = {
           hint3WorkedOut: 'Correct: 35 is between 34 and 36.',
         },
       },
-      teacherNote: 'Show flash cards with missing numbers for quick visual recognition.',
+      teacherNote:
+        'Show flash cards with missing numbers for quick visual recognition.',
     },
   ],
 };

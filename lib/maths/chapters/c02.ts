@@ -11,30 +11,10 @@ export const chapter02: MathsChapter = {
   status: 'ready',
   ncertPage: 8,
   islVocab: [
-    {
-      word: 'Round',
-      handShape: 'C-handshape drawing a circle in air',
-      movement: 'Traces a complete smooth circular loop',
-      description: 'Sign indicates round spherical or circular contour.',
-    },
-    {
-      word: 'Long',
-      handShape: 'Both open index fingers pull apart horizontally',
-      movement: 'Hands stretch out to show length',
-      description: 'Indicates length stretching from end to end.',
-    },
-    {
-      word: 'Roll',
-      handShape: 'Curved hands tumble over each other',
-      movement: 'Hands roll forward smoothly like a wheel',
-      description: 'Sign represents continuous rolling motion.',
-    },
-    {
-      word: 'Slide',
-      handShape: 'Flat hand glides across another flat palm',
-      movement: 'Hand slides smoothly without turning over',
-      description: 'Sign indicates flat gliding along a ramp.',
-    },
+    { word: 'Round' },
+    { word: 'Long' },
+    { word: 'Roll' },
+    { word: 'Slide' },
   ],
   lessons: [
     {
@@ -42,7 +22,8 @@ export const chapter02: MathsChapter = {
       chapterId: 'maths-c02',
       grade: 1,
       title: 'Round and long things',
-      description: 'Sort objects that are round like balls or long like pencils.',
+      description:
+        'Sort objects that are round like balls or long like pencils.',
       minutes: 4,
       toolkitType: 'sort-buckets',
       steps: [
@@ -73,7 +54,8 @@ export const chapter02: MathsChapter = {
           hint3WorkedOut: 'Correct: The football is round.',
         },
       },
-      teacherNote: 'Provide blindfold feely-bag activities with everyday classroom items.',
+      teacherNote:
+        'Provide blindfold feely-bag activities with everyday classroom items.',
     },
     {
       id: 'roll-and-slide',
@@ -111,7 +93,8 @@ export const chapter02: MathsChapter = {
           hint3WorkedOut: 'Correct: The box slides down flat.',
         },
       },
-      teacherNote: 'Build a cardboard ramp so students can test erasers, sharpeners, and bottle caps.',
+      teacherNote:
+        'Build a cardboard ramp so students can test erasers, sharpeners, and bottle caps.',
     },
     {
       id: 'roll-or-slide-mystery',
@@ -149,7 +132,8 @@ export const chapter02: MathsChapter = {
           hint3WorkedOut: 'Correct: A round coin can do both.',
         },
       },
-      teacherNote: 'Provide coins and bottle caps on a wooden ramp to test both motions.',
+      teacherNote:
+        'Provide coins and bottle caps on a wooden ramp to test both motions.',
     },
     {
       id: 'stacking-tower-challenge',
@@ -178,7 +162,11 @@ export const chapter02: MathsChapter = {
       ],
       question: {
         prompt: 'Which shapes should you choose to build a stable tower? 📦',
-        options: ['Flat wooden blocks', 'Smooth round marbles', 'Inflated balloons'],
+        options: [
+          'Flat wooden blocks',
+          'Smooth round marbles',
+          'Inflated balloons',
+        ],
         answer: 0,
         hint: 'Choose shapes with flat faces that do not roll.',
         hintLadder: {

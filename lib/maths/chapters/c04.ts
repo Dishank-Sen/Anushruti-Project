@@ -10,26 +10,7 @@ export const chapter04: MathsChapter = {
   themeColor: '#3B82F6',
   status: 'ready',
   ncertPage: 32,
-  islVocab: [
-    {
-      word: 'Ten',
-      handShape: 'Both open hands showing five fingers each',
-      movement: 'Fingers shimmer forward slightly together',
-      description: 'Sign shows two open hands (5 + 5 = 10).',
-    },
-    {
-      word: 'Bundle',
-      handShape: 'Curved hands grasp together like tying sticks',
-      movement: 'Hands bring loose items into one tight unit',
-      description: 'Shows grouping ten loose items into one bundle.',
-    },
-    {
-      word: 'Frame',
-      handShape: 'Index fingers and thumbs form a rectangle',
-      movement: 'Outlines the rectangular grid',
-      description: 'Sign outlines a ten-frame grid.',
-    },
-  ],
+  islVocab: [{ word: 'Ten' }, { word: 'Bundle' }, { word: 'Frame' }],
   lessons: [
     {
       id: 'making-ten-frame',
@@ -143,7 +124,8 @@ export const chapter04: MathsChapter = {
           hint3WorkedOut: 'Correct: 3 more dots make 10.',
         },
       },
-      teacherNote: 'Have students use two different colored counters to see number pairs to 10.',
+      teacherNote:
+        'Have students use two different colored counters to see number pairs to 10.',
     },
     {
       id: 'bundle-mystery-problem',
@@ -171,7 +153,8 @@ export const chapter04: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'You have 1 bundle of 10 sticks and 6 loose sticks. How many in total? 🥢',
+        prompt:
+          'You have 1 bundle of 10 sticks and 6 loose sticks. How many in total? 🥢',
         options: ['16 sticks', '10 sticks', '60 sticks'],
         answer: 0,
         hint: 'Add 10 and 6 together.',
@@ -181,7 +164,8 @@ export const chapter04: MathsChapter = {
           hint3WorkedOut: 'Correct: 10 + 6 is 16 sticks.',
         },
       },
-      teacherNote: 'Use real craft sticks and rubber bands for hands-on bundling.',
+      teacherNote:
+        'Use real craft sticks and rubber bands for hands-on bundling.',
     },
   ],
 };

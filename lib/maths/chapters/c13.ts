@@ -10,26 +10,7 @@ export const chapter13: MathsChapter = {
   themeColor: '#D946EF',
   status: 'ready',
   ncertPage: 148,
-  islVocab: [
-    {
-      word: 'Sort',
-      handShape: 'Both hands separate items into distinct left and right piles',
-      movement: 'Hands distribute objects into distinct groups',
-      description: 'Sign shows separating mixed items by type.',
-    },
-    {
-      word: 'Chart / List',
-      handShape: 'Flat hand draws vertical and horizontal grid lines in air',
-      movement: 'Traces columns of a data chart',
-      description: 'Outlines a structured table or pictograph.',
-    },
-    {
-      word: 'Most / Highest',
-      handShape: 'Open hand rises above all other levels',
-      movement: 'Stretches highest above other groups',
-      description: 'Indicates the group with maximum count.',
-    },
-  ],
+  islVocab: [{ word: 'Sort' }, { word: 'Chart' }, { word: 'Total' }],
   lessons: [
     {
       id: 'sorting-toys-shelf',
@@ -67,7 +48,8 @@ export const chapter13: MathsChapter = {
           hint3WorkedOut: 'Correct: Toy cars (3) are more.',
         },
       },
-      teacherNote: 'Provide physical sorting trays for beads, pebbles, and small cars.',
+      teacherNote:
+        'Provide physical sorting trays for beads, pebbles, and small cars.',
     },
     {
       id: 'toy-pictograph',
@@ -105,7 +87,8 @@ export const chapter13: MathsChapter = {
           hint3WorkedOut: 'Correct: Plastic yo-yos are loved most.',
         },
       },
-      teacherNote: 'Create a classroom sticky-note chart of favorite fruits or games.',
+      teacherNote:
+        'Create a classroom sticky-note chart of favorite fruits or games.',
     },
     {
       id: 'toy-difference-puzzle',
@@ -133,7 +116,8 @@ export const chapter13: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'There are 8 blocks and 3 spinning tops. How many MORE blocks are there? 🧱',
+        prompt:
+          'There are 8 blocks and 3 spinning tops. How many MORE blocks are there? 🧱',
         options: ['5 more blocks', '3 more blocks', '11 blocks'],
         answer: 0,
         hint: 'Subtract 3 from 8.',
@@ -171,7 +155,8 @@ export const chapter13: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'You have 4 cars and 6 soft bears on the rug. How many toys in total? 🧩',
+        prompt:
+          'You have 4 cars and 6 soft bears on the rug. How many toys in total? 🧩',
         options: ['10 toys', '8 toys', '12 toys'],
         answer: 0,
         hint: '4 and 6 make ten.',
@@ -181,7 +166,8 @@ export const chapter13: MathsChapter = {
           hint3WorkedOut: 'Correct: 10 toys in total.',
         },
       },
-      teacherNote: 'Have students put toys into a toy chest while counting up to ten.',
+      teacherNote:
+        'Have students put toys into a toy chest while counting up to ten.',
     },
   ],
 };

@@ -11,30 +11,10 @@ export const chapter03: MathsChapter = {
   status: 'ready',
   ncertPage: 17,
   islVocab: [
-    {
-      word: 'One',
-      handShape: 'Index finger pointing straight up',
-      movement: 'Held steady in front of chest',
-      description: 'Single index finger extended.',
-    },
-    {
-      word: 'Five',
-      handShape: 'All five fingers spread wide',
-      movement: 'Held with palm facing forward',
-      description: 'Open hand showing all five digits.',
-    },
-    {
-      word: 'Nine',
-      handShape: 'One open hand of five plus four fingers',
-      movement: 'Clear visual demonstration of 5 + 4',
-      description: 'Showing nine fingers total.',
-    },
-    {
-      word: 'Count',
-      handShape: 'Thumb touches fingertips sequentially',
-      movement: 'Taps each finger one after another',
-      description: 'Sign indicates sequential one-by-one counting.',
-    },
+    { word: 'One' },
+    { word: 'Five' },
+    { word: 'Nine' },
+    { word: 'Count' },
   ],
   lessons: [
     {
@@ -83,7 +63,8 @@ export const chapter03: MathsChapter = {
           hint3WorkedOut: 'Correct: 9 friends shared the mango.',
         },
       },
-      teacherNote: 'Use seeds or counters to physically replicate the story on desks.',
+      teacherNote:
+        'Use seeds or counters to physically replicate the story on desks.',
     },
     {
       id: 'mango-one-more',
@@ -126,7 +107,8 @@ export const chapter03: MathsChapter = {
           hint3WorkedOut: 'Correct: One more than 5 is 6.',
         },
       },
-      teacherNote: 'Show the number track on the floor so learners can hop forward one step.',
+      teacherNote:
+        'Show the number track on the floor so learners can hop forward one step.',
     },
     {
       id: 'birds-and-fingers',
@@ -164,7 +146,8 @@ export const chapter03: MathsChapter = {
           hint3WorkedOut: 'Correct: 🖐️ Open hand of 5.',
         },
       },
-      teacherNote: 'Practice quick finger flash: teacher shows fingers, students tap the number.',
+      teacherNote:
+        'Practice quick finger flash: teacher shows fingers, students tap the number.',
     },
     {
       id: 'zero-concept',
@@ -197,7 +180,8 @@ export const chapter03: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'When all mangoes are eaten from the basket, how many remain? 🧺',
+        prompt:
+          'When all mangoes are eaten from the basket, how many remain? 🧺',
         options: ['0 (Zero)', '1', '5'],
         answer: 0,
         hint: 'The basket is completely empty.',
@@ -235,7 +219,8 @@ export const chapter03: MathsChapter = {
         },
       ],
       question: {
-        prompt: '6 mangoes were on the plate. 2 were eaten. How many remain? 🥭',
+        prompt:
+          '6 mangoes were on the plate. 2 were eaten. How many remain? 🥭',
         options: ['4 mangoes', '2 mangoes', '8 mangoes'],
         answer: 0,
         hint: 'Count the remaining mangoes on the plate.',
@@ -245,7 +230,8 @@ export const chapter03: MathsChapter = {
           hint3WorkedOut: 'Correct: 4 mangoes remain on the plate.',
         },
       },
-      teacherNote: 'Have learners physically remove two counters from a row of six.',
+      teacherNote:
+        'Have learners physically remove two counters from a row of six.',
     },
   ],
 };

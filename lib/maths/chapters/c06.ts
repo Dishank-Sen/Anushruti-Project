@@ -10,26 +10,7 @@ export const chapter06: MathsChapter = {
   themeColor: '#84CC16',
   status: 'ready',
   ncertPage: 64,
-  islVocab: [
-    {
-      word: 'Carrot',
-      handShape: 'Curved fist pretending to hold and nibble a carrot',
-      movement: 'Gentle tap near chin like eating fresh carrot',
-      description: 'Sign imitates holding a crunchy carrot.',
-    },
-    {
-      word: 'Basket',
-      handShape: 'Both cupped hands hold an imaginary basket handle',
-      movement: 'Hands show deep rounded basket shape',
-      description: 'Outlines a wide woven basket.',
-    },
-    {
-      word: 'More',
-      handShape: 'Flat fingertips tap together repeatedly',
-      movement: 'Hands touch tips to express abundance',
-      description: 'Sign indicates extra quantity or addition.',
-    },
-  ],
+  islVocab: [{ word: 'Carrot' }, { word: 'Basket' }, { word: 'More' }],
   lessons: [
     {
       id: 'two-vegetable-baskets',
@@ -67,7 +48,8 @@ export const chapter06: MathsChapter = {
           hint3WorkedOut: 'Correct: 7 + 5 = 12 carrots.',
         },
       },
-      teacherNote: 'Use two small bowls and colored beads to represent carrots.',
+      teacherNote:
+        'Use two small bowls and colored beads to represent carrots.',
     },
     {
       id: 'vegetable-tally',
@@ -133,7 +115,8 @@ export const chapter06: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'Basket A has 8 tomatoes. Basket B has 5 tomatoes. How many MORE in Basket A? 🍅',
+        prompt:
+          'Basket A has 8 tomatoes. Basket B has 5 tomatoes. How many MORE in Basket A? 🍅',
         options: ['3 more tomatoes', '5 more tomatoes', '13 tomatoes'],
         answer: 0,
         hint: 'Subtract 5 from 8 to find how many extra.',
@@ -143,7 +126,8 @@ export const chapter06: MathsChapter = {
           hint3WorkedOut: 'Correct: Basket A has 3 more tomatoes.',
         },
       },
-      teacherNote: 'Align counters in two parallel rows to clearly show the difference.',
+      teacherNote:
+        'Align counters in two parallel rows to clearly show the difference.',
     },
     {
       id: 'potato-sack-challenge',
@@ -171,7 +155,8 @@ export const chapter06: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'Farmer Ramu picked 10 potatoes, then picked 7 more. How many in total? 🥔',
+        prompt:
+          'Farmer Ramu picked 10 potatoes, then picked 7 more. How many in total? 🥔',
         options: ['17 potatoes', '70 potatoes', '12 potatoes'],
         answer: 0,
         hint: 'One bundle of 10 and 7 ones.',
@@ -181,7 +166,8 @@ export const chapter06: MathsChapter = {
           hint3WorkedOut: 'Correct: 17 potatoes in total.',
         },
       },
-      teacherNote: 'Connect place-value bundling directly with farm counting stories.',
+      teacherNote:
+        'Connect place-value bundling directly with farm counting stories.',
     },
   ],
 };

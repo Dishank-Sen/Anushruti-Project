@@ -10,26 +10,7 @@ export const chapter11: MathsChapter = {
   themeColor: '#14B8A6',
   status: 'ready',
   ncertPage: 126,
-  islVocab: [
-    {
-      word: 'Times / Repeat',
-      handShape: 'Dominant hand leaps repeatedly over index finger',
-      movement: 'Rhythmic repeated hops',
-      description: 'Sign indicates doing or counting something repeatedly.',
-    },
-    {
-      word: 'Group / Pair',
-      handShape: 'Both cupped hands circle to encircle a cluster',
-      movement: 'Gathers items into clear distinct sets',
-      description: 'Sign shows gathering into equal sets.',
-    },
-    {
-      word: 'Altogether',
-      handShape: 'Both open hands sweep inwards together into center',
-      movement: 'Unites all scattered groups into one total',
-      description: 'Shows combining all groups for the final sum.',
-    },
-  ],
+  islVocab: [{ word: 'Repeat' }, { word: 'Group' }, { word: 'Total' }],
   lessons: [
     {
       id: 'equal-groups-swings',
@@ -57,7 +38,8 @@ export const chapter11: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'If 4 swings each carry 2 children, how many children in all? 🎠',
+        prompt:
+          'If 4 swings each carry 2 children, how many children in all? 🎠',
         options: ['8 children', '6 children', '10 children'],
         answer: 0,
         hint: 'Count by twos: 2, 4, 6, 8.',
@@ -67,7 +49,8 @@ export const chapter11: MathsChapter = {
           hint3WorkedOut: 'Correct: 8 children in all.',
         },
       },
-      teacherNote: 'Let children stand in pairs and count total students by skipping twos.',
+      teacherNote:
+        'Let children stand in pairs and count total students by skipping twos.',
     },
     {
       id: 'jalebi-plates',
@@ -105,7 +88,8 @@ export const chapter11: MathsChapter = {
           hint3WorkedOut: 'Correct: 9 sweets in total.',
         },
       },
-      teacherNote: 'Use paper plates and buttons to physically group by threes.',
+      teacherNote:
+        'Use paper plates and buttons to physically group by threes.',
     },
     {
       id: 'bicycle-wheels-puzzle',
@@ -133,7 +117,8 @@ export const chapter11: MathsChapter = {
         },
       ],
       question: {
-        prompt: '3 bicycles are parked outside. Each has 2 wheels. Total wheels? 🚲',
+        prompt:
+          '3 bicycles are parked outside. Each has 2 wheels. Total wheels? 🚲',
         options: ['6 wheels', '5 wheels', '8 wheels'],
         answer: 0,
         hint: 'Skip count by twos: 2, 4, 6.',

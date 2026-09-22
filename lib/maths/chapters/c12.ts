@@ -10,26 +10,7 @@ export const chapter12: MathsChapter = {
   themeColor: '#6366F1',
   status: 'ready',
   ncertPage: 136,
-  islVocab: [
-    {
-      word: 'Money / Rupee',
-      handShape: 'Thumb rubs against index and middle fingertips',
-      movement: 'Gentle circular rubbing motion',
-      description: 'Standard sign for money and rupee currency.',
-    },
-    {
-      word: 'Coin',
-      handShape: 'Index and thumb form a small round circle',
-      movement: 'Held out flat like placing a coin on palm',
-      description: 'Indicates a small hard metallic coin.',
-    },
-    {
-      word: 'Shop / Buy',
-      handShape: 'Flat hand extends forward like handing money',
-      movement: 'Hands exchange items over a counter',
-      description: 'Sign shows buying goods at a bazaar.',
-    },
-  ],
+  islVocab: [{ word: 'Rupee' }, { word: 'Coin' }, { word: 'Shop' }],
   lessons: [
     {
       id: 'indian-coins-recognition',
@@ -72,7 +53,8 @@ export const chapter12: MathsChapter = {
           hint3WorkedOut: 'Correct: The ₹10 coin has two coloured rings.',
         },
       },
-      teacherNote: 'Provide play coins and coin rubbings with paper and crayons.',
+      teacherNote:
+        'Provide play coins and coin rubbings with paper and crayons.',
     },
     {
       id: 'buying-at-toy-shop',
@@ -110,7 +92,8 @@ export const chapter12: MathsChapter = {
           hint3WorkedOut: 'Correct: ₹2 + ₹2 + ₹1 = ₹5.',
         },
       },
-      teacherNote: 'Set up a classroom pretend market with priced stationery items.',
+      teacherNote:
+        'Set up a classroom pretend market with priced stationery items.',
     },
     {
       id: 'stationery-bill-puzzle',
@@ -138,7 +121,8 @@ export const chapter12: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'You buy an eraser for ₹2 and a sharpener for ₹3. Total cost? 🪙',
+        prompt:
+          'You buy an eraser for ₹2 and a sharpener for ₹3. Total cost? 🪙',
         options: ['₹5', '₹6', '₹4'],
         answer: 0,
         hint: 'Add 2 and 3 together.',
@@ -176,7 +160,8 @@ export const chapter12: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'You give ₹10 to buy a ₹6 ruler. How much change do you receive? 🪙',
+        prompt:
+          'You give ₹10 to buy a ₹6 ruler. How much change do you receive? 🪙',
         options: ['₹4 change', '₹6 change', '₹16 change'],
         answer: 0,
         hint: 'Subtract 6 from 10.',
@@ -186,7 +171,8 @@ export const chapter12: MathsChapter = {
           hint3WorkedOut: 'Correct: ₹4 change received.',
         },
       },
-      teacherNote: 'Role-play buyer and seller exchanging change with mock currency.',
+      teacherNote:
+        'Role-play buyer and seller exchanging change with mock currency.',
     },
   ],
 };

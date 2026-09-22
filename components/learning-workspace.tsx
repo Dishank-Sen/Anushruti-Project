@@ -115,9 +115,13 @@ export function LearningWorkspace({
     }
   }
   const mathsLesson = getMathsLesson(lessonId);
-  const mathsChapter = mathsLesson ? getMathsChapter(mathsLesson.chapterId) : undefined;
+  const mathsChapter = mathsLesson
+    ? getMathsChapter(mathsLesson.chapterId)
+    : undefined;
   const selectedMathsChapter = ALL_MATHS_CHAPTERS.find(
-    (c) => c.id === chapterName || c.title.toLowerCase() === chapterName.toLowerCase(),
+    (c) =>
+      c.id === chapterName ||
+      c.title.toLowerCase() === chapterName.toLowerCase(),
   );
   const lesson = lessons.find((l) => l.id === lessonId);
   const filtered = lessons.filter(
@@ -136,7 +140,9 @@ export function LearningWorkspace({
   );
   const step = lesson ? progress.steps[lesson.id] || 0 : 0;
   const browseSubject = subjectIsChapterList(subject) ? subject : null;
-  const browseChapters = browseSubject ? subjectChapterOrder(browseSubject) : [];
+  const browseChapters = browseSubject
+    ? subjectChapterOrder(browseSubject)
+    : [];
   const browseChapter =
     browseSubject && browseChapters.includes(chapterName) ? chapterName : '';
   function chapterLessons(s: string, c: string): Lesson[] {
@@ -277,7 +283,9 @@ export function LearningWorkspace({
               <div className="page-heading">
                 <div>
                   <p className="eyebrow">
-                    CHAPTER {String(selectedMathsChapter.number).padStart(2, '0')} · CLASS 1 MATHS
+                    CHAPTER{' '}
+                    {String(selectedMathsChapter.number).padStart(2, '0')} ·
+                    CLASS 1 MATHS
                   </p>
                   <h1>{selectedMathsChapter.title}</h1>
                   <p>{selectedMathsChapter.blurb}</p>
@@ -308,7 +316,9 @@ export function LearningWorkspace({
                         <h3>{m.title}</h3>
                         <p>{m.description}</p>
                         <div className="card-bottom">
-                          <span>{m.minutes} min · {m.steps.length} visual steps</span>
+                          <span>
+                            {m.minutes} min · {m.steps.length} visual steps
+                          </span>
                           {progress.completed.includes(m.id) ? (
                             <CheckCircle aria-label="Completed" />
                           ) : (
@@ -413,9 +423,7 @@ export function LearningWorkspace({
             </a>
             <div className="page-heading">
               <div>
-                <p className="eyebrow">
-                  SCIENCE · CLASS {grade}
-                </p>
+                <p className="eyebrow">SCIENCE · CLASS {grade}</p>
                 <h1>Science Discoveries</h1>
                 <p>Explore NCERT topics and extra science adventures.</p>
               </div>
@@ -479,16 +487,14 @@ export function LearningWorkspace({
                       ))}
                   </ul>
                   <p>
-                    Educator review is still needed. Screen activities supplement
-                    real-world learning and do not certify physical or sensory
-                    competencies.
+                    Educator review is still needed. Screen activities
+                    supplement real-world learning and do not certify physical
+                    or sensory competencies.
                   </p>
                 </details>
               </>
             )}
-            <div className="lesson-grid">
-              {filtered.map((l) => card(l))}
-            </div>
+            <div className="lesson-grid">{filtered.map((l) => card(l))}</div>
           </>
         ) : (
           <>
@@ -503,10 +509,18 @@ export function LearningWorkspace({
                 const isClass1Maths = grade === 1 && s === 'Maths';
                 const totalCount = isClass1Maths
                   ? getAllMathsLessons().length
-                  : lessons.filter((l) => l.grade === grade && l.subject === s).length;
+                  : lessons.filter((l) => l.grade === grade && l.subject === s)
+                      .length;
                 const count = isClass1Maths
-                  ? getAllMathsLessons().filter((l) => progress.completed.includes(l.id)).length
-                  : lessons.filter((l) => l.grade === grade && l.subject === s && progress.completed.includes(l.id)).length;
+                  ? getAllMathsLessons().filter((l) =>
+                      progress.completed.includes(l.id),
+                    ).length
+                  : lessons.filter(
+                      (l) =>
+                        l.grade === grade &&
+                        l.subject === s &&
+                        progress.completed.includes(l.id),
+                    ).length;
                 return (
                   <a
                     className={`lesson-card subject ${s.toLowerCase()}`}
@@ -520,13 +534,19 @@ export function LearningWorkspace({
                     <div className="lesson-card-body">
                       <span className="subject-tag">{s}</span>
                       <h3>{s}</h3>
-                      <p>{isClass1Maths ? '13 NCERT chapters, shapes & counting.' : SUBJECT_META[s].blurb}</p>
+                      <p>
+                        {isClass1Maths
+                          ? '13 NCERT chapters, shapes & counting.'
+                          : SUBJECT_META[s].blurb}
+                      </p>
                       <div className="card-bottom">
                         <span>
                           {isClass1Maths ? '13 Chapters · ' : ''}
                           {totalCount} {totalCount === 1 ? 'module' : 'modules'}
                         </span>
-                        <span className="mini-progress">{count}/{totalCount}</span>
+                        <span className="mini-progress">
+                          {count}/{totalCount}
+                        </span>
                       </div>
                     </div>
                   </a>
@@ -563,7 +583,8 @@ export function LearningWorkspace({
               url.searchParams.set('view', 'lessons');
               url.searchParams.set('subject', 'Maths');
               url.searchParams.set('grade', String(grade));
-              if (mathsChapter) url.searchParams.set('chapter', mathsChapter.id);
+              if (mathsChapter)
+                url.searchParams.set('chapter', mathsChapter.id);
               url.searchParams.delete('id');
               location.href = url.toString();
             }}
@@ -591,6 +612,12 @@ export function LearningWorkspace({
                 {view === 'activity' ? 'Picture challenge' : 'Visual lesson'}
               </span>
             </div>
+            {lesson.subject === 'Science' && lesson.islTerms && (
+              <IslPip
+                key={lesson.id}
+                vocab={lesson.islTerms.map((word) => ({ word }))}
+              />
+            )}
             {lesson.science && lesson.grade === 1 && (
               <>
                 <ScienceLab key={lesson.id} lesson={lesson} />
@@ -674,14 +701,6 @@ export function LearningWorkspace({
                         {s.title}
                       </button>
                     ))}
-                    <div className="media-note">
-                      <Hand />
-                      <strong>Sign-language video</strong>
-                      <p>
-                        Coming with educator-reviewed ISL clips. This sample
-                        uses pictures and text.
-                      </p>
-                    </div>
                   </aside>
                 </div>
                 <details className="transcript">
