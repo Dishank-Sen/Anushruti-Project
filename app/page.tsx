@@ -12,6 +12,8 @@ import {
   Leaf,
   Sparkles,
   Sprout,
+  Mic,
+  Trophy,
 } from 'lucide-react';
 
 export default function Page() {
@@ -40,7 +42,12 @@ export default function Page() {
   }
 
   return (
-    <AppShell view={view} grade={grade} onGradeChange={changeGrade} onNavigate={handleNavigate}>
+    <AppShell
+      view={view}
+      grade={grade}
+      onGradeChange={changeGrade}
+      onNavigate={handleNavigate}
+    >
       {view !== 'garden' ? (
         <>
           {view === 'voice' ? (
@@ -55,39 +62,20 @@ export default function Page() {
         <>
           <div className="page-heading">
             <div>
-              <p className="eyebrow">LET&apos;S LEARN TOGETHER</p>
               <h1>
                 Hello, little learner <span>☀️</span>
               </h1>
-              <p>Every step is a new discovery.</p>
             </div>
-            <label className="grade-label">
-              I’m learning in
-              <select
-                value={grade}
-                onChange={(e) => changeGrade(Number(e.target.value))}
-              >
-                {[1, 2, 3, 4, 5].map((g) => (
-                  <option key={g} value={g}>
-                    Class {g}
-                  </option>
-                ))}
-              </select>
-            </label>
           </div>
 
           <section className="welcome">
             <div>
-              <span className="pill">YOUR NEXT LITTLE ADVENTURE</span>
               <h2>
                 See it. Learn it.
-                <br />At your own pace.
-              </h2>
-              <p>
-                Try it. Understand it.
                 <br />
-                Find something new today.
-              </p>
+                At your own pace.
+              </h2>
+              <p>Choose a lesson and explore.</p>
               <a className="primary" href={`/?view=lessons&grade=${grade}`}>
                 Explore lessons <ArrowRight size={18} />
               </a>
@@ -114,7 +102,6 @@ export default function Page() {
 
           <div className="section-heading">
             <h2>Choose a subject</h2>
-            <span>PICK AND LEARN</span>
           </div>
 
           <div className="subject-grid">
@@ -160,21 +147,30 @@ export default function Page() {
             </a>
           </div>
 
+          <section className="home-tools" aria-label="Practice tools">
+            <a href={`/?view=voice&grade=${grade}`} className="home-voice">
+              <Mic size={28} />
+              <div>
+                <h2>Voice Garden</h2>
+                <p>Optional voice practice with visual feedback.</p>
+              </div>
+              <ArrowRight size={22} />
+            </a>
+            <a href={`/?view=progress&grade=${grade}`}>
+              <Trophy size={26} />
+              <span>My progress</span>
+              <ArrowRight size={20} />
+            </a>
+          </section>
           <section className="activity-strip">
             <span className="activity-icon">
               <Sparkles />
             </span>
             <div>
-              <span className="eyebrow">
-                A LITTLE PLAY, A LOT OF LEARNING
-              </span>
               <h3>Take a quick picture challenge.</h3>
               <p>No timer. Just explore and play.</p>
             </div>
-            <a
-              className="secondary"
-              href={`/?view=activities&grade=${grade}`}
-            >
+            <a className="secondary" href={`/?view=activities&grade=${grade}`}>
               Let’s play <ArrowRight size={17} />
             </a>
           </section>

@@ -36,13 +36,21 @@ export function loadSettings(): AppSettings {
     if (!parsed || parsed.version !== 1) return defaultSettings;
     return {
       version: 1,
-      textSize: [100, 125, 150].includes(parsed.textSize) ? parsed.textSize : 100,
-      theme: ['default', 'high-contrast', 'dark'].includes(parsed.theme) ? parsed.theme : 'default',
+      textSize: [100, 125, 150].includes(parsed.textSize)
+        ? parsed.textSize
+        : 100,
+      theme: ['default', 'high-contrast', 'dark'].includes(parsed.theme)
+        ? parsed.theme
+        : 'default',
       reduceMotion: Boolean(parsed.reduceMotion),
-      islEnabled: parsed.islEnabled !== undefined ? Boolean(parsed.islEnabled) : true,
+      islEnabled:
+        parsed.islEnabled !== undefined ? Boolean(parsed.islEnabled) : true,
       haptics: parsed.haptics !== undefined ? Boolean(parsed.haptics) : true,
       adultMode: Boolean(parsed.adultMode),
-      fitzgeraldGrammar: parsed.fitzgeraldGrammar !== undefined ? Boolean(parsed.fitzgeraldGrammar) : true,
+      fitzgeraldGrammar:
+        parsed.fitzgeraldGrammar !== undefined
+          ? Boolean(parsed.fitzgeraldGrammar)
+          : true,
       sidebarCollapsed: Boolean(parsed.sidebarCollapsed),
     };
   } catch {
@@ -54,10 +62,10 @@ export function saveSettings(settings: AppSettings): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-    applySettingsToDOM(settings);
   } catch {
-    // Graceful fallback for private browsing or quota limits
+    // Persistence may be unavailable, but the active page still updates.
   }
+  applySettingsToDOM(settings);
 }
 
 export function applySettingsToDOM(settings: AppSettings): void {
@@ -81,4 +89,6 @@ export function applySettingsToDOM(settings: AppSettings): void {
 
   // Apply reduced motion
   root.setAttribute('data-reduce-motion', String(settings.reduceMotion));
+  root.setAttribute('data-isl-enabled', String(settings.islEnabled));
+  root.style.colorScheme = settings.theme === 'dark' ? 'dark' : 'light';
 }

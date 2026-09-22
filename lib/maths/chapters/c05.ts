@@ -10,26 +10,7 @@ export const chapter05: MathsChapter = {
   themeColor: '#10B981',
   status: 'ready',
   ncertPage: 48,
-  islVocab: [
-    {
-      word: 'Add / Plus',
-      handShape: 'Both hands sweep together to join palms',
-      movement: 'Two separate groups meet in center',
-      description: 'Sign indicates combining two distinct amounts.',
-    },
-    {
-      word: 'Take away / Minus',
-      handShape: 'Flat hand sweeps across and moves away',
-      movement: 'Pulls a portion away from the group',
-      description: 'Sign indicates removing some items.',
-    },
-    {
-      word: 'Equal / Total',
-      handShape: 'Both index fingers held parallel horizontally',
-      movement: 'Brought together side-by-side',
-      description: 'Indicates balanced or total sum.',
-    },
-  ],
+  islVocab: [{ word: 'Add' }, { word: 'Subtract' }, { word: 'Equal' }],
   lessons: [
     {
       id: 'adding-frogs',
@@ -105,7 +86,8 @@ export const chapter05: MathsChapter = {
           hint3WorkedOut: 'Correct: 3 birds stay on the branch.',
         },
       },
-      teacherNote: 'Use counters on desks and physically move one away into a pocket.',
+      teacherNote:
+        'Use counters on desks and physically move one away into a pocket.',
     },
     {
       id: 'pond-ducks-problem',
@@ -133,7 +115,8 @@ export const chapter05: MathsChapter = {
         },
       ],
       question: {
-        prompt: '3 ducks were swimming and 3 more joined them. How many in all? 🦆',
+        prompt:
+          '3 ducks were swimming and 3 more joined them. How many in all? 🦆',
         options: ['6 ducks', '5 ducks', '3 ducks'],
         answer: 0,
         hint: 'Add 3 and 3 together.',
@@ -143,7 +126,8 @@ export const chapter05: MathsChapter = {
           hint3WorkedOut: 'Correct: 3 + 3 = 6 ducks in all.',
         },
       },
-      teacherNote: 'Have students clap three times, then three more times, and count total claps.',
+      teacherNote:
+        'Have students clap three times, then three more times, and count total claps.',
     },
     {
       id: 'balloon-mystery-puzzle',
@@ -171,7 +155,8 @@ export const chapter05: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'You hold 7 balloons. 3 float away into the clouds. How many remain? 🎈',
+        prompt:
+          'You hold 7 balloons. 3 float away into the clouds. How many remain? 🎈',
         options: ['4 balloons', '3 balloons', '10 balloons'],
         answer: 0,
         hint: 'Start with 7 and take away 3.',

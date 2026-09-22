@@ -10,26 +10,7 @@ export const chapter09: MathsChapter = {
   themeColor: '#EC4899',
   status: 'ready',
   ncertPage: 104,
-  islVocab: [
-    {
-      word: 'Pattern',
-      handShape: 'Fingers trace a repeating wave pattern in air',
-      movement: 'Rhythmic repeated waving arcs',
-      description: 'Sign shows predictable recurring repetition.',
-    },
-    {
-      word: 'Festival / Utsav',
-      handShape: 'Both open hands flutter upward like fireworks',
-      movement: 'Hands expand with joyous celebration',
-      description: 'Sign indicates bright festival joy.',
-    },
-    {
-      word: 'Next',
-      handShape: 'Dominant hand leaps forward over non-dominant hand',
-      movement: 'Leaps forward to point to the next place',
-      description: 'Shows following step in a sequence.',
-    },
-  ],
+  islVocab: [{ word: 'Pattern' }, { word: 'Festival' }, { word: 'Next' }],
   lessons: [
     {
       id: 'festival-toran-patterns',
@@ -105,7 +86,8 @@ export const chapter09: MathsChapter = {
           hint3WorkedOut: 'Correct: 4 triangles make the points.',
         },
       },
-      teacherNote: 'Draw chalk grids in the courtyard for students to join dots.',
+      teacherNote:
+        'Draw chalk grids in the courtyard for students to join dots.',
     },
     {
       id: 'rangoli-petals-puzzle',
@@ -133,7 +115,8 @@ export const chapter09: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'A rangoli has 4 inner petals and 6 outer petals. How many petals in all? 🌸',
+        prompt:
+          'A rangoli has 4 inner petals and 6 outer petals. How many petals in all? 🌸',
         options: ['10 petals', '8 petals', '12 petals'],
         answer: 0,
         hint: 'Add 4 and 6 together.',
@@ -143,7 +126,8 @@ export const chapter09: MathsChapter = {
           hint3WorkedOut: 'Correct: 10 petals in all.',
         },
       },
-      teacherNote: 'Use flower petals on floor paper to practice combinations of ten.',
+      teacherNote:
+        'Use flower petals on floor paper to practice combinations of ten.',
     },
     {
       id: 'diya-lighting-problem',
@@ -171,7 +155,8 @@ export const chapter09: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'Meena lights 10 diyas on the steps and 8 in the courtyard. Total diyas? 🪔',
+        prompt:
+          'Meena lights 10 diyas on the steps and 8 in the courtyard. Total diyas? 🪔',
         options: ['18 diyas', '15 diyas', '20 diyas'],
         answer: 0,
         hint: '10 plus 8 ones.',
@@ -181,7 +166,8 @@ export const chapter09: MathsChapter = {
           hint3WorkedOut: 'Correct: 18 diyas shine brightly.',
         },
       },
-      teacherNote: 'Have learners place small clay lamps on desks and count in groups.',
+      teacherNote:
+        'Have learners place small clay lamps on desks and count in groups.',
     },
   ],
 };

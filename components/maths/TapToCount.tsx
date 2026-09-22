@@ -82,7 +82,7 @@ export function TapToCount({
             >
               <span>{emoji}</span>
               {isTapped && (
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[var(--maths)] text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-xs">
+                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[var(--primary)] text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-xs">
                   {tapOrder}
                 </span>
               )}

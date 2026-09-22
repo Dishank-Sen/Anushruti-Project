@@ -11,30 +11,10 @@ export const chapter07: MathsChapter = {
   status: 'ready',
   ncertPage: 78,
   islVocab: [
-    {
-      word: 'Long / Tall',
-      handShape: 'Open hand rises upward from chest level',
-      movement: 'Moves straight up to show height',
-      description: 'Sign indicates vertical height.',
-    },
-    {
-      word: 'Short',
-      handShape: 'Flat hand held low near waist',
-      movement: 'Gentle downward pat',
-      description: 'Indicates shorter height.',
-    },
-    {
-      word: 'Heavy',
-      handShape: 'Both cupped hands pretend to lift heavy stone',
-      movement: 'Hands dip down as if pulled by weight',
-      description: 'Sign expresses weight and effort.',
-    },
-    {
-      word: 'Handspan',
-      handShape: 'Thumb and little finger stretched wide',
-      movement: 'Pivots across surface like measuring',
-      description: 'Traditional span from thumb to pinky tip.',
-    },
+    { word: 'Long' },
+    { word: 'Short' },
+    { word: 'Heavy' },
+    { word: 'Handspan' },
   ],
   lessons: [
     {
@@ -73,7 +53,8 @@ export const chapter07: MathsChapter = {
           hint3WorkedOut: 'Correct: Father is taller.',
         },
       },
-      teacherNote: 'Have pairs of students stand back-to-back to compare heights visually.',
+      teacherNote:
+        'Have pairs of students stand back-to-back to compare heights visually.',
     },
     {
       id: 'handspan-measurement',
@@ -101,7 +82,8 @@ export const chapter07: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'If a desk is 6 handspans and a notebook is 2 handspans, which is longer? 📏',
+        prompt:
+          'If a desk is 6 handspans and a notebook is 2 handspans, which is longer? 📏',
         options: ['The desk', 'The notebook', 'Both are equal'],
         answer: 0,
         hint: '6 handspans is greater than 2 handspans.',
@@ -111,7 +93,8 @@ export const chapter07: MathsChapter = {
           hint3WorkedOut: 'Correct: The desk is longer.',
         },
       },
-      teacherNote: 'Demonstrate non-standard measurement along classroom benches.',
+      teacherNote:
+        'Demonstrate non-standard measurement along classroom benches.',
     },
     {
       id: 'table-measuring-puzzle',
@@ -139,7 +122,8 @@ export const chapter07: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'A table is 6 handspans. A pencil box is 2 handspans. How many handspans LONGER is the table? 📏',
+        prompt:
+          'A table is 6 handspans. A pencil box is 2 handspans. How many handspans LONGER is the table? 📏',
         options: ['4 handspans', '2 handspans', '8 handspans'],
         answer: 0,
         hint: 'Subtract 2 from 6.',
@@ -149,7 +133,8 @@ export const chapter07: MathsChapter = {
           hint3WorkedOut: 'Correct: The table is 4 handspans longer.',
         },
       },
-      teacherNote: 'Have students measure their own desk and pencil box with handspans.',
+      teacherNote:
+        'Have students measure their own desk and pencil box with handspans.',
     },
     {
       id: 'pace-distance-puzzle',
@@ -177,7 +162,8 @@ export const chapter07: MathsChapter = {
         },
       ],
       question: {
-        prompt: 'The door is 8 paces away. You walk 5 paces. How many MORE paces to the door? 🚪',
+        prompt:
+          'The door is 8 paces away. You walk 5 paces. How many MORE paces to the door? 🚪',
         options: ['3 more paces', '5 more paces', '13 more paces'],
         answer: 0,
         hint: 'Count how many steps are left between 5 and 8.',

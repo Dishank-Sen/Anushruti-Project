@@ -1,12 +1,7 @@
 export type ChapterStatus = 'ready' | 'partial' | 'coming-soon';
 
-export type IslVocabItem = {
-  word: string;
-  handShape: string;
-  movement: string;
-  description: string;
-  placeholderPrompt?: string;
-};
+/* English lookup terms; only the official source registry supplies ISL media. */
+export type IslVocabItem = { word: string };
 
 export type ToolkitType =
   | 'tap-to-count'

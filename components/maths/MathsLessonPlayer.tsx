@@ -18,8 +18,12 @@ import { CoinTray } from './CoinTray';
 import { HintLadder } from './HintLadder';
 import { FitzgeraldText } from '../ui/FitzgeraldText.tsx';
 import { HandSignVisual } from '../isl/HandSignVisual.tsx';
+import { findOfficialSign } from '@/lib/isl-sources';
 
-function getStepSignKey(step: LessonStep, _chapter?: MathsChapter): string | null {
+function getStepSignKey(
+  step: LessonStep,
+  _chapter?: MathsChapter,
+): string | null {
   // 1. Explicit step sign override ALWAYS wins
   if (step.islSign) return step.islSign;
 
@@ -38,7 +42,9 @@ function getStepSignKey(step: LessonStep, _chapter?: MathsChapter): string | nul
 
   // Count emojis in visual if it's an addition equation like "🐸 🐸 + 🐸"
   if (step.visual.includes('+')) {
-    const emojis = step.visual.match(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu);
+    const emojis = step.visual.match(
+      /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu,
+    );
     if (emojis && emojis.length >= 1 && emojis.length <= 5) {
       return String(emojis.length);
     }
@@ -48,13 +54,26 @@ function getStepSignKey(step: LessonStep, _chapter?: MathsChapter): string | nul
   const titleNum = step.title.match(/\b(one|two|three|four|five|[1-5])\b/i);
   if (titleNum) {
     const n = titleNum[1].toLowerCase();
-    const map: Record<string, string> = { one: '1', two: '2', three: '3', four: '4', five: '5' };
+    const map: Record<string, string> = {
+      one: '1',
+      two: '2',
+      three: '3',
+      four: '4',
+      five: '5',
+    };
     return map[n] || n;
   }
 
   // 5. Count emojis in visual if between 1 and 5 countable emojis
-  const countEmojis = step.visual.match(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu);
-  if (countEmojis && countEmojis.length >= 1 && countEmojis.length <= 5 && !step.visual.includes('-')) {
+  const countEmojis = step.visual.match(
+    /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/gu,
+  );
+  if (
+    countEmojis &&
+    countEmojis.length >= 1 &&
+    countEmojis.length <= 5 &&
+    !step.visual.includes('-')
+  ) {
     const allSame = countEmojis.every((e: string) => e === countEmojis[0]);
     if (allSame) {
       return String(countEmojis.length);
@@ -64,8 +83,18 @@ function getStepSignKey(step: LessonStep, _chapter?: MathsChapter): string | nul
   // 6. Check chapter-specific SPATIAL or SHAPE concepts ONLY:
   // These are legitimate foundational ISL concepts (Chapters 1 & 2)
   const spatialAndShapes = [
-    'INSIDE', 'OUTSIDE', 'TOP', 'BOTTOM', 'NEAR', 'FAR', 'BIG', 'SMALL',
-    'ROUND', 'LONG', 'ROLL', 'SLIDE',
+    'INSIDE',
+    'OUTSIDE',
+    'TOP',
+    'BOTTOM',
+    'NEAR',
+    'FAR',
+    'BIG',
+    'SMALL',
+    'ROUND',
+    'LONG',
+    'ROLL',
+    'SLIDE',
   ];
   for (const kw of spatialAndShapes) {
     const regex = new RegExp(`\\b${kw}\\b`, 'i');
@@ -106,7 +135,9 @@ export function MathsLessonPlayer({
   onSaveProgress,
   onBack,
 }: MathsLessonPlayerProps) {
-  const [currentStep, setCurrentStep] = useState(progress.steps[lesson.id] || 0);
+  const [currentStep, setCurrentStep] = useState(
+    progress.steps[lesson.id] || 0,
+  );
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
   const [hintLevelUsed, setHintLevelUsed] = useState<number>(0);
@@ -239,7 +270,7 @@ export function MathsLessonPlayer({
                 onClick={() => goToStep(i)}
                 className={`w-3 h-3 rounded-full transition-all ${
                   currentStep === i
-                    ? 'w-8 bg-[var(--maths)]'
+                    ? 'w-8 bg-[var(--primary)]'
                     : i < currentStep
                       ? 'bg-[var(--ok)]'
                       : 'bg-[var(--line)]'
@@ -252,7 +283,9 @@ export function MathsLessonPlayer({
 
         {/* Multimodal Pedagogy Stage: Visual Scene + Real ISL Hand Sign */}
         {(() => {
-          const activeSignKey = getStepSignKey(activeStep, chapter);
+          const candidate = getStepSignKey(activeStep, chapter);
+          const activeSignKey =
+            candidate && findOfficialSign(candidate) ? candidate : null;
           return (
             <div
               className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch step-transition"
@@ -274,15 +307,11 @@ export function MathsLessonPlayer({
 
               {/* Real Hand Sign Demonstration for this Step */}
               {activeSignKey && (
-                <div className="md:col-span-5 p-4 rounded-3xl bg-[var(--surface)] border-2 border-[#c2d2fc] flex flex-col items-center justify-center text-center shadow-xs">
+                <div className="isl-step-support md:col-span-5 p-4 rounded-3xl bg-[var(--surface)] border-2 border-[light-dark(#c2d2fc,#3f5283)] flex flex-col items-center justify-center text-center shadow-xs">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--maths)] mb-2">
-                    🤟 Real Sign: {activeSignKey}
+                    ISL reference: {activeSignKey}
                   </span>
-                  <HandSignVisual
-                    signKey={activeSignKey}
-                    size={160}
-                    showFingerspellingStrip={true}
-                  />
+                  <HandSignVisual signKey={activeSignKey} size={160} />
                 </div>
               )}
             </div>
@@ -290,7 +319,7 @@ export function MathsLessonPlayer({
         })()}
 
         {/* Caption Strip: Strictly <= 12 words with optional Fitzgerald Key colors */}
-        <div className="p-4 rounded-2xl bg-[var(--surface)] border-2 border-[#d8e2fd] text-center">
+        <div className="p-4 rounded-2xl bg-[var(--surface)] border-2 border-[light-dark(#d8e2fd,#3f5183)] text-center">
           <h3 className="text-base font-bold text-[var(--ink)] m-0 mb-1">
             {activeStep.title}
           </h3>
@@ -306,9 +335,7 @@ export function MathsLessonPlayer({
         {lesson.toolkitType === 'ten-frame' && (
           <TenFrame targetCount={10} initialCount={currentStep + 1} />
         )}
-        {lesson.toolkitType === 'coin-tray' && (
-          <CoinTray targetAmount={5} />
-        )}
+        {lesson.toolkitType === 'coin-tray' && <CoinTray targetAmount={5} />}
 
         {/* Stepper Navigation Buttons */}
         <div className="flex items-center justify-between pt-4 border-t border-[var(--line)]">
@@ -343,7 +370,10 @@ export function MathsLessonPlayer({
         </div>
 
         {/* Options Grid (Min 56px touch target each) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Choices">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+          aria-label="Choices"
+        >
           {lesson.question.options.map((opt, idx) => {
             const isSelected = selectedOption === idx;
             return (
@@ -357,15 +387,15 @@ export function MathsLessonPlayer({
                 className={`min-h-[56px] p-4 rounded-2xl border-2 text-left font-bold text-base transition flex items-center gap-3 select-none ${
                   isSelected
                     ? 'bg-[var(--maths-tint)] border-[var(--maths)] text-[var(--maths)] shadow-[0_4px_0_#1a328a]'
-                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface)] hover:border-[#c2d2fc]'
+                    : 'bg-[var(--bg)] border-[var(--line)] text-[var(--ink)] hover:bg-[var(--surface)] hover:border-[light-dark(#c2d2fc,#3f5283)]'
                 }`}
                 aria-pressed={isSelected}
               >
                 <span
                   className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${
                     isSelected
-                      ? 'bg-[var(--maths)] text-white'
-                      : 'bg-white border border-[var(--line)] text-[var(--ink-soft)]'
+                      ? 'bg-[var(--primary)] text-white'
+                      : 'bg-[var(--surface)] border border-[var(--line)] text-[var(--ink-soft)]'
                   }`}
                 >
                   {String.fromCharCode(65 + idx)}
@@ -395,10 +425,17 @@ export function MathsLessonPlayer({
             {isCorrect ? (
               <div className="feedback-box correct animate-in fade-in flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 size={28} className="text-[var(--ok)] shrink-0" />
+                  <CheckCircle2
+                    size={28}
+                    className="text-[var(--ok)] shrink-0"
+                  />
                   <div>
-                    <span className="block text-lg font-bold">✓ You got it!</span>
-                    <span className="text-sm font-medium">{lesson.question.hint}</span>
+                    <span className="block text-lg font-bold">
+                      ✓ You got it!
+                    </span>
+                    <span className="text-sm font-medium">
+                      {lesson.question.hint}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-[var(--gold)]">
@@ -411,10 +448,17 @@ export function MathsLessonPlayer({
             ) : (
               <div className="feedback-box retry animate-in fade-in flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <RotateCcw size={28} className="text-[var(--retry)] shrink-0" />
+                  <RotateCcw
+                    size={28}
+                    className="text-[var(--retry)] shrink-0"
+                  />
                   <div>
-                    <span className="block text-lg font-bold">↻ Let’s look again!</span>
-                    <span className="text-sm font-medium">{lesson.question.hint}</span>
+                    <span className="block text-lg font-bold">
+                      ↻ Let’s look again!
+                    </span>
+                    <span className="text-sm font-medium">
+                      {lesson.question.hint}
+                    </span>
                   </div>
                 </div>
                 <button
@@ -423,7 +467,7 @@ export function MathsLessonPlayer({
                     setChecked(false);
                     setSelectedOption(null);
                   }}
-                  className="px-4 py-2 rounded-xl bg-white border border-[var(--retry)] text-[var(--retry)] font-bold text-sm hover:bg-[#fff4e6] transition"
+                  className="px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--retry)] text-[var(--retry)] font-bold text-sm hover:bg-[light-dark(#fff4e6,#3c2f1f)] transition"
                 >
                   Try Again
                 </button>
@@ -436,7 +480,9 @@ export function MathsLessonPlayer({
         <HintLadder
           ladder={lesson.question.hintLadder}
           fallbackHint={lesson.question.hint}
-          onHintRevealed={(lvl) => setHintLevelUsed((prev) => Math.max(prev, lvl))}
+          onHintRevealed={(lvl) =>
+            setHintLevelUsed((prev) => Math.max(prev, lvl))
+          }
         />
 
         {/* ISL Sign Reference */}
@@ -451,9 +497,7 @@ export function MathsLessonPlayer({
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
             Teacher &amp; Parent Guide
           </span>
-          <p className="text-sm text-[var(--ink)] m-0">
-            {lesson.teacherNote}
-          </p>
+          <p className="text-sm text-[var(--ink)] m-0">{lesson.teacherNote}</p>
         </div>
       )}
     </div>

@@ -11,7 +11,10 @@ void test('all 13 NCERT Class 1 Maths chapters exist in correct sequence', () =>
     assert.ok(chapter.blurb.length > 0);
     assert.ok(chapter.icon.length > 0);
     assert.ok(chapter.themeColor.startsWith('#'));
-    assert.ok(chapter.lessons.length >= 2, `Chapter ${chapter.number} must have at least 2 lessons`);
+    assert.ok(
+      chapter.lessons.length >= 2,
+      `Chapter ${chapter.number} must have at least 2 lessons`,
+    );
   });
 });
 
@@ -20,9 +23,15 @@ void test('every lesson caption is 12 words or fewer for young deaf learners', (
   assert.ok(lessons.length >= 26);
 
   for (const lesson of lessons) {
-    assert.ok(lesson.steps.length >= 2, `Lesson ${lesson.id} needs at least 2 steps`);
+    assert.ok(
+      lesson.steps.length >= 2,
+      `Lesson ${lesson.id} needs at least 2 steps`,
+    );
     for (const step of lesson.steps) {
-      assert.ok(step.visual.trim().length > 0, `Step visual in ${lesson.id} must not be empty`);
+      assert.ok(
+        step.visual.trim().length > 0,
+        `Step visual in ${lesson.id} must not be empty`,
+      );
       const wordCount = step.text.trim().split(/\s+/).filter(Boolean).length;
       assert.ok(
         wordCount <= 12,
@@ -48,14 +57,15 @@ void test('every question has valid options, 0-indexed answer, and hint ladder',
   }
 });
 
-void test('ISL vocabulary is populated with authentic handshape & movement descriptions', () => {
+void test('chapters retain vocabulary without invented sign instructions', () => {
   for (const chapter of ALL_MATHS_CHAPTERS) {
-    assert.ok(chapter.islVocab.length >= 2, `Chapter ${chapter.id} should have ISL vocabulary`);
+    assert.ok(
+      chapter.islVocab.length >= 2,
+      `Chapter ${chapter.id} should have ISL vocabulary`,
+    );
     for (const item of chapter.islVocab) {
       assert.ok(item.word.length > 0);
-      assert.ok(item.handShape.length > 0);
-      assert.ok(item.movement.length > 0);
-      assert.ok(item.description.length > 0);
+      assert.deepEqual(Object.keys(item), ['word']);
     }
   }
 });

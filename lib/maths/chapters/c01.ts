@@ -11,30 +11,10 @@ export const chapter01: MathsChapter = {
   status: 'ready',
   ncertPage: 1,
   islVocab: [
-    {
-      word: 'Inside',
-      handShape: 'Curved open palm facing down',
-      movement: 'Dominant hand moves inside the non-dominant curved hand cup',
-      description: 'Sign shows one object nestled inside a space.',
-    },
-    {
-      word: 'Outside',
-      handShape: 'Open flat hand moving outwards',
-      movement: 'Hand pulls out and moves away from body',
-      description: 'Sign indicates coming out of a boundary.',
-    },
-    {
-      word: 'Top',
-      handShape: 'Index finger pointing upward',
-      movement: 'Hand rests on top of flat palm',
-      description: 'Indicates upper surface or highest position.',
-    },
-    {
-      word: 'Bottom',
-      handShape: 'Flat palm facing downward',
-      movement: 'Hand points underneath the surface',
-      description: 'Indicates lower surface or floor.',
-    },
+    { word: 'Inside' },
+    { word: 'Outside' },
+    { word: 'Top' },
+    { word: 'Bottom' },
   ],
   lessons: [
     {
@@ -78,7 +58,8 @@ export const chapter01: MathsChapter = {
           hint3WorkedOut: 'Correct: The kitten is inside the basket.',
         },
       },
-      teacherNote: 'Encourage children to point to classroom objects inside pencil boxes and school bags.',
+      teacherNote:
+        'Encourage children to point to classroom objects inside pencil boxes and school bags.',
     },
     {
       id: 'cat-top-bottom',
@@ -116,7 +97,8 @@ export const chapter01: MathsChapter = {
           hint3WorkedOut: 'Correct: The monkey is at the top.',
         },
       },
-      teacherNote: 'Use climbing actions and spatial hand gestures to reinforce top and bottom.',
+      teacherNote:
+        'Use climbing actions and spatial hand gestures to reinforce top and bottom.',
     },
     {
       id: 'cat-near-far',
@@ -154,7 +136,8 @@ export const chapter01: MathsChapter = {
           hint3WorkedOut: 'Correct: The sunflower is near the house.',
         },
       },
-      teacherNote: 'Demonstrate by placing toys near a student and far across the classroom.',
+      teacherNote:
+        'Demonstrate by placing toys near a student and far across the classroom.',
     },
     {
       id: 'cat-bigger-smaller',
@@ -192,7 +175,8 @@ export const chapter01: MathsChapter = {
           hint3WorkedOut: 'Correct: Watermelon is bigger.',
         },
       },
-      teacherNote: 'Use actual leaves and pebbles of different sizes for tactile comparison.',
+      teacherNote:
+        'Use actual leaves and pebbles of different sizes for tactile comparison.',
     },
     {
       id: 'cat-hiding-puzzle',
@@ -230,7 +214,8 @@ export const chapter01: MathsChapter = {
           hint3WorkedOut: 'Correct: The kitten is under the chair.',
         },
       },
-      teacherNote: 'Place a toy under a desk and have children sign the location.',
+      teacherNote:
+        'Place a toy under a desk and have children sign the location.',
     },
   ],
 };

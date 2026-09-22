@@ -666,6 +666,28 @@ export function VoiceStudio({ grade = 1 }: { grade?: number }) {
               </text>
             </svg>
           )}
+          {module === 'words' && recognition.state !== 'listening' && (
+            <div className="vg-caption-shortcut">
+              {recognition.state === 'off' ? (
+                <Button
+                  variant="outline"
+                  disabled={
+                    !live || demo || phase === 'room' || phase === 'voice'
+                  }
+                  onClick={() => recognition.start()}
+                >
+                  <AudioLines size={17} /> Enable word matching
+                </Button>
+              ) : (
+                <p role="status">
+                  {recognition.state === 'starting'
+                    ? `Loading captions · ${recognition.progress}%`
+                    : 'Reading your phrase…'}
+                </p>
+              )}
+              <p>English captions · audio stays on this device.</p>
+            </div>
+          )}
           <div className="vg-round-bar">
             <Progress
               aria-label="Practice progress"

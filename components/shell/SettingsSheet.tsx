@@ -13,11 +13,7 @@ import {
   Check,
   Languages,
 } from 'lucide-react';
-import {
-  type AppSettings,
-  type ThemeMode,
-  saveSettings,
-} from '@/lib/settings';
+import { type AppSettings, type ThemeMode, saveSettings } from '@/lib/settings';
 import {
   loadProfiles,
   getActiveProfile,
@@ -44,11 +40,23 @@ export function SettingsSheet({
   onResetProgress,
   onNavigate,
 }: SettingsSheetProps) {
-  const [profiles, setProfiles] = React.useState<UserProfile[]>(() => loadProfiles());
-  const [activeProfile, setActiveProfile] = React.useState<UserProfile>(() => getActiveProfile());
+  const [profiles, setProfiles] = React.useState<UserProfile[]>(() =>
+    loadProfiles(),
+  );
+  const [activeProfile, setActiveProfile] = React.useState<UserProfile>(() =>
+    getActiveProfile(),
+  );
   const [isCreating, setIsCreating] = React.useState(false);
   const [newName, setNewName] = React.useState('');
   const [newAvatar, setNewAvatar] = React.useState('🦊');
+
+  const dialog = React.useRef<HTMLDialogElement>(null);
+  React.useEffect(() => {
+    if (!open) return;
+    const element = dialog.current;
+    if (element && !element.open) element.showModal();
+    return () => element?.close();
+  }, [open]);
 
   if (!open) return null;
 
@@ -66,7 +74,11 @@ export function SettingsSheet({
   function handleCreateProfile(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!newName.trim()) return;
-    const created = createProfile(newName.trim(), newAvatar, activeProfile.grade);
+    const created = createProfile(
+      newName.trim(),
+      newAvatar,
+      activeProfile.grade,
+    );
     setProfiles(loadProfiles());
     setActiveProfile(created);
     setNewName('');
@@ -75,7 +87,11 @@ export function SettingsSheet({
 
   return (
     <dialog
-      open
+      ref={dialog}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       className="fixed inset-0 z-[100] m-0 h-full w-full max-h-none max-w-none border-none flex items-center justify-end bg-black/40 backdrop-blur-xs p-0 sm:p-4"
       aria-labelledby="settings-heading"
     >
@@ -86,7 +102,10 @@ export function SettingsSheet({
             <span className="p-2 rounded-xl bg-[var(--maths-tint)] text-[var(--maths)]">
               <SunMedium size={22} />
             </span>
-            <h2 id="settings-heading" className="text-xl font-bold font-heading m-0">
+            <h2
+              id="settings-heading"
+              className="text-xl font-bold font-heading m-0"
+            >
               Learning Settings
             </h2>
           </div>
@@ -129,7 +148,7 @@ export function SettingsSheet({
                     className={`flex items-center gap-2 px-3 py-2 rounded-2xl border-2 font-bold text-xs transition ${
                       isSelected
                         ? 'bg-[var(--surface)] border-[var(--maths)] shadow-xs text-[var(--maths)]'
-                        : 'bg-[var(--surface)] border-[var(--line)] text-[var(--ink-soft)] hover:border-[#c2d0eb]'
+                        : 'bg-[var(--surface)] border-[var(--line)] text-[var(--ink-soft)] hover:border-[light-dark(#c2d0eb,#3f5683)]'
                     }`}
                   >
                     <span className="text-lg">{p.avatar}</span>
@@ -141,7 +160,10 @@ export function SettingsSheet({
 
             {/* Create New Profile Drawer */}
             {isCreating && (
-              <form onSubmit={handleCreateProfile} className="pt-2 border-t border-[var(--line)] space-y-3">
+              <form
+                onSubmit={handleCreateProfile}
+                className="pt-2 border-t border-[var(--line)] space-y-3"
+              >
                 <input
                   type="text"
                   value={newName}
@@ -151,14 +173,18 @@ export function SettingsSheet({
                   autoFocus
                 />
                 <div className="flex flex-wrap gap-1.5 items-center">
-                  <span className="text-[11px] font-bold text-[var(--ink-soft)] mr-1">Avatar:</span>
+                  <span className="text-[11px] font-bold text-[var(--ink-soft)] mr-1">
+                    Avatar:
+                  </span>
                   {DEFAULT_AVATARS.slice(0, 6).map((av) => (
                     <button
                       key={av}
                       type="button"
                       onClick={() => setNewAvatar(av)}
                       className={`w-8 h-8 rounded-xl flex items-center justify-center text-base border-2 transition ${
-                        newAvatar === av ? 'border-[var(--maths)] bg-[var(--maths-tint)]' : 'border-[var(--line)]'
+                        newAvatar === av
+                          ? 'border-[var(--maths)] bg-[var(--maths-tint)]'
+                          : 'border-[var(--line)]'
                       }`}
                     >
                       {av}
@@ -168,7 +194,7 @@ export function SettingsSheet({
                 <button
                   type="submit"
                   disabled={!newName.trim()}
-                  className="btn-tactile w-full py-2 bg-[var(--maths)] text-white font-bold text-xs rounded-xl disabled:opacity-50"
+                  className="btn-tactile w-full py-2 bg-[var(--primary)] text-white font-bold text-xs rounded-xl disabled:opacity-50"
                 >
                   Save Profile
                 </button>
@@ -183,9 +209,9 @@ export function SettingsSheet({
             </div>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { id: 'default' as ThemeMode, label: 'Warm Paper' },
+                { id: 'default' as ThemeMode, label: 'Light' },
                 { id: 'high-contrast' as ThemeMode, label: 'High Contrast' },
-                { id: 'dark' as ThemeMode, label: 'Night' },
+                { id: 'dark' as ThemeMode, label: 'Dark' },
               ].map((t) => (
                 <button
                   key={t.id}
@@ -193,7 +219,7 @@ export function SettingsSheet({
                   onClick={() => update('theme', t.id)}
                   className={`min-h-[56px] px-2 rounded-2xl font-bold text-sm flex items-center justify-center text-center border-2 transition ${
                     settings.theme === t.id
-                      ? 'bg-[var(--maths)] text-white border-[var(--maths)] shadow-[0_4px_0_#1a328a]'
+                      ? 'bg-[var(--primary)] text-white border-[var(--maths)] shadow-[0_4px_0_#1a328a]'
                       : 'bg-[var(--bg)] text-[var(--ink)] border-[var(--line)] hover:bg-[var(--surface)]'
                   }`}
                   aria-pressed={settings.theme === t.id}
@@ -210,7 +236,9 @@ export function SettingsSheet({
               <Sparkles size={20} className="text-[var(--gold)]" />
               <div>
                 <p className="font-bold text-sm m-0">Calm Motion</p>
-                <p className="text-xs text-[var(--ink-soft)] m-0">Turn off extra visual bouncing</p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">
+                  Turn off extra visual bouncing
+                </p>
               </div>
             </div>
             <button
@@ -219,7 +247,7 @@ export function SettingsSheet({
               className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
                 settings.reduceMotion
                   ? 'bg-[var(--ok)] border-[var(--ok)]'
-                  : 'bg-[var(--line)] border-[#c8beaa]'
+                  : 'bg-[var(--line)] border-[light-dark(#c8beaa,#76684c)]'
               }`}
               role="switch"
               aria-checked={settings.reduceMotion}
@@ -238,8 +266,12 @@ export function SettingsSheet({
             <div className="flex items-center gap-3">
               <Hand size={20} className="text-[var(--maths)]" />
               <div>
-                <p className="font-bold text-sm m-0">Indian Sign Language Support</p>
-                <p className="text-xs text-[var(--ink-soft)] m-0">Show ISL sign prompts for keywords</p>
+                <p className="font-bold text-sm m-0">
+                  Indian Sign Language Support
+                </p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">
+                  Show ISL sign prompts for keywords
+                </p>
               </div>
             </div>
             <button
@@ -248,7 +280,7 @@ export function SettingsSheet({
               className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
                 settings.islEnabled
                   ? 'bg-[var(--ok)] border-[var(--ok)]'
-                  : 'bg-[var(--line)] border-[#c8beaa]'
+                  : 'bg-[var(--line)] border-[light-dark(#c8beaa,#76684c)]'
               }`}
               role="switch"
               aria-checked={settings.islEnabled}
@@ -267,15 +299,20 @@ export function SettingsSheet({
             <div className="flex items-center gap-3">
               <Type size={20} className="text-[var(--gold)]" />
               <div>
-                <p className="font-bold text-sm m-0">Grammar Colors (Fitzgerald Key)</p>
+                <p className="font-bold text-sm m-0">
+                  Grammar Colors (Fitzgerald Key)
+                </p>
                 <p className="text-xs text-[var(--ink-soft)] m-0">
                   Learn grammar colors in Sign Studio
                 </p>
                 {onNavigate && (
                   <button
                     type="button"
-                    onClick={() => { onClose(); onNavigate('sign-studio'); }}
-                    className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-[var(--maths-tint)] text-[var(--maths)] border border-[var(--maths)] hover:bg-[var(--maths)] hover:text-white transition"
+                    onClick={() => {
+                      onClose();
+                      onNavigate('sign-studio');
+                    }}
+                    className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg bg-[var(--maths-tint)] text-[var(--maths)] border border-[var(--maths)] hover:bg-[var(--primary)] hover:text-white transition"
                     aria-label="Open Sign Studio to explore grammar colors"
                   >
                     <Languages size={11} /> Sign Studio →
@@ -285,11 +322,13 @@ export function SettingsSheet({
             </div>
             <button
               type="button"
-              onClick={() => update('fitzgeraldGrammar', !settings.fitzgeraldGrammar)}
+              onClick={() =>
+                update('fitzgeraldGrammar', !settings.fitzgeraldGrammar)
+              }
               className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
                 settings.fitzgeraldGrammar
                   ? 'bg-[var(--ok)] border-[var(--ok)]'
-                  : 'bg-[var(--line)] border-[#c8beaa]'
+                  : 'bg-[var(--line)] border-[light-dark(#c8beaa,#76684c)]'
               }`}
               role="switch"
               aria-checked={Boolean(settings.fitzgeraldGrammar)}
@@ -309,7 +348,9 @@ export function SettingsSheet({
               <Smartphone size={20} className="text-[var(--ink)]" />
               <div>
                 <p className="font-bold text-sm m-0">Vibrate / Haptic Feel</p>
-                <p className="text-xs text-[var(--ink-soft)] m-0">Gentle buzz on touch devices</p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">
+                  Gentle buzz on touch devices
+                </p>
               </div>
             </div>
             <button
@@ -318,7 +359,7 @@ export function SettingsSheet({
               className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
                 settings.haptics
                   ? 'bg-[var(--ok)] border-[var(--ok)]'
-                  : 'bg-[var(--line)] border-[#c8beaa]'
+                  : 'bg-[var(--line)] border-[light-dark(#c8beaa,#76684c)]'
               }`}
               role="switch"
               aria-checked={settings.haptics}
@@ -337,8 +378,12 @@ export function SettingsSheet({
             <div className="flex items-center gap-3">
               <GraduationCap size={20} className="text-[var(--voice)]" />
               <div>
-                <p className="font-bold text-sm m-0">Teacher &amp; Parent Notes</p>
-                <p className="text-xs text-[var(--ink-soft)] m-0">Show curriculum guidelines</p>
+                <p className="font-bold text-sm m-0">
+                  Teacher &amp; Parent Notes
+                </p>
+                <p className="text-xs text-[var(--ink-soft)] m-0">
+                  Show curriculum guidelines
+                </p>
               </div>
             </div>
             <button
@@ -347,7 +392,7 @@ export function SettingsSheet({
               className={`w-14 h-8 rounded-full transition-colors relative border-2 ${
                 settings.adultMode
                   ? 'bg-[var(--ok)] border-[var(--ok)]'
-                  : 'bg-[var(--line)] border-[#c8beaa]'
+                  : 'bg-[var(--line)] border-[light-dark(#c8beaa,#76684c)]'
               }`}
               role="switch"
               aria-checked={settings.adultMode}

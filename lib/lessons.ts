@@ -24,6 +24,8 @@ export function subjectChapterOrder(subject: SubjectName): string[] {
   return CHAPTER_ORDER.filter((c) => present.has(c));
 }
 export type Lesson = {
+  /** Dictionary terms linked to original ISLRTC demonstrations. */
+  islTerms?: string[];
   id: string;
   grade: number;
   subject: SubjectName;
@@ -276,11 +278,7 @@ export const lessons: Lesson[] = [
     ],
     question: {
       prompt: 'Which shows the number 4?',
-      options: [
-        '· · ·',
-        '· · · ·',
-        '✋ ✋ ✋',
-      ],
+      options: ['· · ·', '· · · ·', '✋ ✋ ✋'],
       answer: 1,
       hint: 'Count the dots. The group with 4 dots shows number 4.',
     },
@@ -666,6 +664,7 @@ export const lessons: Lesson[] = [
   // ----- Existing lessons -----
   {
     id: 'fruit-salad',
+    islTerms: ['apple', 'banana'],
     grade: 1,
     subject: 'Science',
     title: 'Build a fruit salad',
@@ -746,6 +745,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'water-source-detective',
+    islTerms: ['water', 'well', 'tap', 'lake'],
     grade: 1,
     subject: 'Science',
     title: 'Be a water detective',
@@ -811,6 +811,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'places-that-help',
+    islTerms: ['bank', 'train', 'library'],
     grade: 1,
     subject: 'Science',
     title: 'A place for each job',
@@ -878,6 +879,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'transport-sort',
+    islTerms: ['bus', 'train'],
     grade: 1,
     subject: 'Science',
     title: 'Sort the travel fleet',
@@ -968,6 +970,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'food-groups',
+    islTerms: ['food', 'rice', 'apple'],
     grade: 1,
     subject: 'Science',
     title: 'A colourful food basket',
@@ -1035,6 +1038,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'food-storage',
+    islTerms: ['food', 'milk'],
     grade: 1,
     subject: 'Science',
     title: 'Keep food fresh',
@@ -1109,6 +1113,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'clean-and-ready',
+    islTerms: ['wash hands'],
     grade: 1,
     subject: 'Science',
     title: 'Clean hands, tidy space',
@@ -1183,6 +1188,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'water-sources',
+    islTerms: ['water', 'well', 'lake'],
     grade: 1,
     subject: 'Science',
     title: 'Where does water come from?',
@@ -1255,6 +1261,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'wild-domestic',
+    islTerms: ['cat', 'dog', 'cow'],
     grade: 1,
     subject: 'Science',
     title: 'Meet our animal neighbours',
@@ -1320,6 +1327,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'shelter-materials',
+    islTerms: ['brick', 'wood'],
     grade: 1,
     subject: 'Science',
     title: 'Build a little shelter',
@@ -1387,6 +1395,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'family-care',
+    islTerms: ['family', 'help'],
     grade: 1,
     subject: 'Science',
     title: 'Small acts of kindness',
@@ -1462,6 +1471,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'helpful-tools',
+    islTerms: ['farmer', 'doctor'],
     grade: 1,
     subject: 'Science',
     title: 'Who uses this tool?',
@@ -1520,6 +1530,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'festival-stories',
+    islTerms: ['festival'],
     grade: 1,
     subject: 'Science',
     title: 'Stories we celebrate',
@@ -1596,6 +1607,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'play-together',
+    islTerms: ['play'],
     grade: 1,
     subject: 'Science',
     title: 'Games for everyone',
@@ -1668,6 +1680,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'public-places',
+    islTerms: ['library', 'bank'],
     grade: 1,
     subject: 'Science',
     title: 'Explore our neighbourhood',
@@ -1726,6 +1739,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'travel-modes',
+    islTerms: ['bus', 'train'],
     grade: 1,
     subject: 'Science',
     title: 'Land, water or air?',
@@ -1783,6 +1797,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'road-safety',
+    islTerms: ['road', 'safe'],
     grade: 1,
     subject: 'Science',
     title: 'A safer way across',
@@ -1860,6 +1875,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'home-appliances',
+    islTerms: ['fan'],
     grade: 1,
     subject: 'Science',
     title: 'Helpful machines at home',
@@ -1927,6 +1943,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'body-boundaries',
+    islTerms: ['body', 'help'],
     grade: 1,
     subject: 'Science',
     title: 'My body, my boundaries',
@@ -2004,6 +2021,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'fire-safety',
+    islTerms: ['fire', 'help'],
     grade: 1,
     subject: 'Science',
     title: 'Stay away from fire',
@@ -2080,6 +2098,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'leaf-food-factory',
+    islTerms: ['leaf', 'sun', 'water'],
     grade: 1,
     subject: 'Science',
     title: 'A leaf makes food',
@@ -2112,6 +2131,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'living-things',
+    islTerms: ['tree', 'cat'],
     grade: 1,
     subject: 'Science',
     title: 'Is it alive?',
@@ -2144,6 +2164,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'my-body',
+    islTerms: ['body', 'eye', 'nose'],
     grade: 1,
     subject: 'Science',
     title: 'Meet your amazing body',
@@ -2176,6 +2197,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'weather-watch',
+    islTerms: ['weather', 'cloud', 'sun'],
     grade: 1,
     subject: 'Science',
     title: 'What is the weather?',
@@ -2208,6 +2230,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'butterfly-life',
+    islTerms: ['butterfly', 'egg'],
     grade: 1,
     subject: 'Science',
     title: 'A butterfly begins',
@@ -2245,6 +2268,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'space-neighbours',
+    islTerms: ['earth', 'moon', 'sun'],
     grade: 1,
     subject: 'Science',
     title: 'Hello, space neighbours!',
@@ -2277,6 +2301,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'day-and-night',
+    islTerms: ['day', 'night'],
     grade: 1,
     subject: 'Science',
     title: 'Why does night come?',
@@ -2344,6 +2369,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'plant-needs',
+    islTerms: ['tree', 'leaf', 'water'],
     science: { topic: 'Biology', activity: 'grow', image: 'sunflower' },
     grade: 1,
     subject: 'Science',
@@ -2407,6 +2433,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'animal-homes',
+    islTerms: ['tree'],
     grade: 2,
     subject: 'Science',
     title: 'A home for every animal',
@@ -2469,6 +2496,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'water-cycle',
+    islTerms: ['water', 'cloud'],
     grade: 3,
     subject: 'Science',
     title: 'Water’s wonderful journey',
@@ -2531,6 +2559,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'matter',
+    islTerms: ['water'],
     grade: 4,
     subject: 'Science',
     title: 'One water, three forms',
@@ -2597,6 +2626,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'food-chains',
+    islTerms: ['grass', 'frog'],
     grade: 5,
     subject: 'Science',
     title: 'Follow the food chain',

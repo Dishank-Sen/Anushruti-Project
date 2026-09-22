@@ -10,26 +10,7 @@ export const chapter10: MathsChapter = {
   themeColor: '#F59E0B',
   status: 'ready',
   ncertPage: 114,
-  islVocab: [
-    {
-      word: 'Morning',
-      handShape: 'Curved hand rises up like the rising sun',
-      movement: 'Moves slowly upward above horizon level',
-      description: 'Sign represents the morning sun rising.',
-    },
-    {
-      word: 'Night',
-      handShape: 'Both flat hands cross over chest like dusk settling',
-      movement: 'Downward enveloping sweep',
-      description: 'Sign shows the quiet arrival of night.',
-    },
-    {
-      word: 'Time / Day',
-      handShape: 'Index finger taps the wrist where a watch rests',
-      movement: 'Two gentle taps on wrist',
-      description: 'Indicates clock time and daily sequence.',
-    },
-  ],
+  islVocab: [{ word: 'Morning' }, { word: 'Night' }, { word: 'Time' }],
   lessons: [
     {
       id: 'daily-routine-order',
@@ -63,7 +44,11 @@ export const chapter10: MathsChapter = {
       ],
       question: {
         prompt: 'Which activity happens earliest in the day? 🌅',
-        options: ['Waking up at sunrise', 'Playing in evening', 'Sleeping at night'],
+        options: [
+          'Waking up at sunrise',
+          'Playing in evening',
+          'Sleeping at night',
+        ],
         answer: 0,
         hint: 'Think about what you do first when the sun rises.',
         hintLadder: {
@@ -72,7 +57,8 @@ export const chapter10: MathsChapter = {
           hint3WorkedOut: 'Correct: Waking up at sunrise happens earliest.',
         },
       },
-      teacherNote: 'Use picture cards for students to peg onto a clothesline morning-to-night.',
+      teacherNote:
+        'Use picture cards for students to peg onto a clothesline morning-to-night.',
     },
     {
       id: 'duration-comparison',
@@ -101,7 +87,11 @@ export const chapter10: MathsChapter = {
       ],
       question: {
         prompt: 'Which activity takes MORE time? ⏱️',
-        options: ['Eating lunch with family', 'Snapping fingers once', 'Blinking an eye'],
+        options: [
+          'Eating lunch with family',
+          'Snapping fingers once',
+          'Blinking an eye',
+        ],
         answer: 0,
         hint: 'Eating a meal takes many minutes, not just a second.',
         hintLadder: {
@@ -110,7 +100,8 @@ export const chapter10: MathsChapter = {
           hint3WorkedOut: 'Correct: Eating lunch with family takes more time.',
         },
       },
-      teacherNote: 'Use a sand timer so learners can visually observe elapsed time.',
+      teacherNote:
+        'Use a sand timer so learners can visually observe elapsed time.',
     },
     {
       id: 'timeline-order-puzzle',
@@ -139,7 +130,11 @@ export const chapter10: MathsChapter = {
       ],
       question: {
         prompt: 'What happens AFTER school but BEFORE bedtime? 🌇',
-        options: ['Playing with friends outside', 'Waking up from sleep', 'Eating breakfast'],
+        options: [
+          'Playing with friends outside',
+          'Waking up from sleep',
+          'Eating breakfast',
+        ],
         answer: 0,
         hint: 'Think of what you do in the afternoon or evening.',
         hintLadder: {
@@ -177,7 +172,11 @@ export const chapter10: MathsChapter = {
       ],
       question: {
         prompt: 'Which of these takes the LEAST time? 👏',
-        options: ['Clapping your hands once', 'Walking to the market', 'Taking a night sleep'],
+        options: [
+          'Clapping your hands once',
+          'Walking to the market',
+          'Taking a night sleep',
+        ],
         answer: 0,
         hint: 'A single clap is finished in a split second.',
         hintLadder: {
