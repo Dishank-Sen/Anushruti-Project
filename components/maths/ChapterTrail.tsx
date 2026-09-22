@@ -39,7 +39,8 @@ export function ChapterTrail({
           <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[var(--gold-tint)] border-2 border-[var(--gold)] text-[var(--ink)] font-bold text-sm">
             <Star size={18} className="fill-[var(--gold)] text-[var(--gold)]" />
             <span>
-              {Object.values(progress.stars).reduce((acc, s) => acc + s, 0)} Stars
+              {Object.values(progress.stars).reduce((acc, s) => acc + s, 0)}{' '}
+              Stars
             </span>
           </div>
         </div>
@@ -51,7 +52,9 @@ export function ChapterTrail({
           const completedCount = chapter.lessons.filter((l) =>
             progress.completed.includes(l.id),
           ).length;
-          const isFullyDone = completedCount === chapter.lessons.length && chapter.lessons.length > 0;
+          const isFullyDone =
+            completedCount === chapter.lessons.length &&
+            chapter.lessons.length > 0;
           const isSelected = selectedChapterId === chapter.id;
 
           return (
@@ -62,7 +65,7 @@ export function ChapterTrail({
               className={`group relative p-5 rounded-3xl border-2 transition-all cursor-pointer flex flex-col justify-between select-none text-left w-full ${
                 isSelected
                   ? 'bg-[var(--surface)] border-[var(--maths)] ring-4 ring-[var(--maths-tint)] shadow-md translate-y-[-2px]'
-                  : 'bg-[var(--surface)] border-[var(--line)] hover:border-[#c2d0eb] hover:shadow-md hover:translate-y-[-2px]'
+                  : 'bg-[var(--surface)] border-[var(--line)] hover:border-[light-dark(#c2d0eb,#3f5683)] hover:shadow-md hover:translate-y-[-2px]'
               }`}
               aria-label={`Chapter ${chapter.number}: ${chapter.title}`}
             >
@@ -78,15 +81,15 @@ export function ChapterTrail({
                     />
                   </div>
                 )}
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span
                       className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-xs"
                       style={{ backgroundColor: `${chapter.themeColor}20` }}
                     >
                       {chapter.icon}
                     </span>
-                    <div>
+                    <div className="min-w-0 break-words">
                       <span className="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] block">
                         Chapter {String(chapter.number).padStart(2, '0')}
                       </span>
@@ -103,7 +106,7 @@ export function ChapterTrail({
                     </span>
                   )}
                   {chapter.status === 'partial' && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[var(--gold-tint)] text-[#8c6200] border border-[var(--gold)]">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[var(--gold-tint)] text-[light-dark(#8c6200,#edd9ab)] border border-[var(--gold)]">
                       Partial
                     </span>
                   )}
@@ -123,7 +126,8 @@ export function ChapterTrail({
               {/* Bottom Card Footer */}
               <div className="mt-5 pt-3 border-t border-[var(--line)] flex items-center justify-between text-xs font-bold text-[var(--ink-soft)]">
                 <span>
-                  {chapter.lessons.length} visual {chapter.lessons.length === 1 ? 'lesson' : 'lessons'}
+                  {chapter.lessons.length} visual{' '}
+                  {chapter.lessons.length === 1 ? 'lesson' : 'lessons'}
                 </span>
                 <div className="flex items-center gap-2">
                   {isFullyDone ? (

@@ -8,7 +8,10 @@ interface TenFrameProps {
   initialCount?: number;
 }
 
-export function TenFrame({ targetCount = 10, initialCount = 0 }: TenFrameProps) {
+export function TenFrame({
+  targetCount = 10,
+  initialCount = 0,
+}: TenFrameProps) {
   const [filled, setFilled] = useState<boolean[]>(
     Array(10)
       .fill(false)
@@ -69,7 +72,7 @@ export function TenFrame({ targetCount = 10, initialCount = 0 }: TenFrameProps) 
               onClick={() => toggleCell(i)}
               className={`min-w-[56px] min-h-[56px] h-14 rounded-xl border-2 flex items-center justify-center text-2xl transition select-none ${
                 filled[i]
-                  ? 'bg-[var(--maths)] border-[var(--maths)] text-white shadow-[0_3px_0_#1a328a]'
+                  ? 'bg-[var(--primary)] border-[var(--maths)] text-white shadow-[0_3px_0_#1a328a]'
                   : 'bg-[var(--surface)] border-dashed border-[var(--line)] hover:border-[var(--maths)]'
               }`}
               aria-label={`Box ${i + 1}, ${filled[i] ? 'filled' : 'empty'}`}
@@ -86,7 +89,7 @@ export function TenFrame({ targetCount = 10, initialCount = 0 }: TenFrameProps) 
               onClick={() => toggleCell(i)}
               className={`min-w-[56px] min-h-[56px] h-14 rounded-xl border-2 flex items-center justify-center text-2xl transition select-none ${
                 filled[i]
-                  ? 'bg-[var(--maths)] border-[var(--maths)] text-white shadow-[0_3px_0_#1a328a]'
+                  ? 'bg-[var(--primary)] border-[var(--maths)] text-white shadow-[0_3px_0_#1a328a]'
                   : 'bg-[var(--surface)] border-dashed border-[var(--line)] hover:border-[var(--maths)]'
               }`}
               aria-label={`Box ${i + 1}, ${filled[i] ? 'filled' : 'empty'}`}
